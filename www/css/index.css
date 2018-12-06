@@ -53,6 +53,14 @@ form#register > fieldset > legend:before
 
 form#register > fieldset > label:last-child { align-self: flex-start; }
 
+form#register > fieldset > label > span:first-child
+{
+	font-style: italic;
+	font-size: 0.75rem;
+	color: rgba(0, 0, 0, 0.65);
+	padding-left: 0.66rem;
+}
+
 input#alias_name
 {
 	text-align: right;
@@ -61,7 +69,7 @@ input#alias_name
 span#alias_expected_height
 {
 	position: absolute;
-	bottom: 0;
+	bottom: 0.025rem;
 	right: 0;
 
 	width: 11ex;
@@ -79,4 +87,45 @@ textarea#alias_paycode
 	font-size: 0.95rem;
 	height: 5.25em;
 	overflow: hidden;
+}
+
+ul
+{
+	display: flex;
+	flex-wrap: wrap;
+	align-content: space-around;
+	justify-content: space-between;
+	list-style-type: none;
+}
+
+li
+{
+	padding-right: 1ex;
+	border-right: 0.05rem solid rgba(0, 0, 0, 0.15);
+}
+
+li span
+{
+	display: block;
+	word-break: break-all;
+	font-family: monospace;
+}
+
+li span:first-child
+{
+	color: rgba(0, 0, 0, 0.44);
+}
+
+li:nth-child(4),
+li:nth-child(5),
+li:nth-child(6)
+{
+	padding-top: 0.40rem;
+	padding-right: 0;
+	border-right: 0;
+}
+
+li:nth-child(4)
+{
+	padding-top: 0;
 }

@@ -47,12 +47,12 @@
 				<legend align="center">You choose your name</legend>
 
 				<label>
-					<span>Choose a name for you Cash Address:</span>
-					<input id='alias_name' name='' type='' autocomplete='off'>
+					<span>Enter your name:</span>
+					<input id='alias_name' type='text' placeholder='SatoshiNakamoto' autocomplete='off'>
 					<span id='alias_expected_height'>#567890;</span>
 				</label>
 				<label>
-					<span>Paste your BIP-47 payment code here:</span>
+					<span>Enter your BIP-47 payment code:</span>
 					<textarea id='alias_paycode' name='' type=''>
 					</textarea>
 				</label>
@@ -67,18 +67,21 @@
 				<legend align="center">We create the transaction</legend>
 
 				<p>
+					<!--
 					<span>Full transaction in hex encoding:</span>
 					<pre>0x6a010101010101[code][alias]</pre>
 					<hr />
 					<span>Breakdown of transaction by part:</span>
-					<dl>
-						<dt>6a</dt><dd>OP_RETURN</dd>
-						<dt>01010101</dt><dd>Protocol</dd>
-						<dt>01</dt><dd>Version</dd>
-						<dt>01</dt><dd>Action</dd>
-						<dt>[code]</dt><dd>Payment Code</dd>
-						<dt>[alias]</dt><dd>Alias Name</dd>
-					</dl>
+					-->
+					<ul>
+						<li><span>OP_RETURN</span><span>6a</span></li>
+						<li><span>Protocol</span><span>01010101</span></li>
+						<li><span>Version</span><span>01</span></li>
+						<li><span>Action</span><span>01</span></li>
+
+						<li><span>Payment Code</span><span>f4fb9da4 ae9b6f0b 84d6278e c0e34205 406a3e3c 857a1a63 745719fa 6caa998a 4400d568 b4c7518a 151bf616 95439e3a 89ea65c9 e2cf245f 26d5dcc9 cab36889 3e952601 e164b6cc 10aff7d6 50256b42</span></li>
+						<li><span>Alias Name</span><span>5361746F 7368694E 616B616D 6F746F</span></li>
+					</ul>
 				</p>
 				<label>
 					<button>Broadcast Register Transaction</button>

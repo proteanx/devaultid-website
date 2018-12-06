@@ -63,12 +63,6 @@ pre
 	font-family: monospace;
 }
 
-dl { padding: 0.25rem; }
-dl > * { font-family: monospace; }
-dt { float: left; clear: left; text-align: right; margin-right: 2ex; }
-dd { float: left; clear: right; color: rgba(0, 0, 0, 0.44); }
-dd:before { content: '// '; }
-
 nav
 {
 	padding: 1rem;
