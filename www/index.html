@@ -14,92 +14,116 @@
 		<script type='text/javascript' src='js/index.js'></script>
 	</head>
 	<body>
-		<header>Cash Address Utilities</header>
-		<p>
+		<section id='introduction' style='height: 20rem; margin-bottom: 2rem;'>
+			<header>Cash Address</header>
+			<p>Bitcoin was supposed to be for everyone, even the non-technical people. It is time we build an addressing system that actually works the way people expect it to - with account names you can share over a phonecall.</p>
+			<p style='font-style: italic;'>Jonathan Silverblood, 2018</p>
+		</section>
+
+		<section>
+			<form id='register'>
+				<!-- Step 1: You choose a name and BIP-47 payment code -->
+				<fieldset>
+					<legend align="center">You choose your name</legend>
+
+					<label>
+						<span>Enter your name:</span>
+						<input id='alias_name' type='text' placeholder='SatoshiNakamoto' autocomplete='off'>
+						<span id='alias_expected_height'>#567890;</span>
+					</label>
+					<label>
+						<span>Enter your BIP-47 payment code:</span>
+						<textarea id='alias_paycode' name='' type=''>
+						</textarea>
+					</label>
+
+					<label>
+						<button>Create Register Transaction</button>
+					</label>
+				</fieldset>
+
+				<!-- Step 2: We create an on-chain transaction -->
+				<fieldset>
+					<legend align="center">We create the transaction</legend>
+
+					<p>
+						<!--
+						<span>Full transaction in hex encoding:</span>
+						<pre>0x6a010101010101[code][alias]</pre>
+						<hr />
+						<span>Breakdown of transaction by part:</span>
+						-->
+						<ul>
+							<li><span>OP_RETURN</span><span>6a</span></li>
+							<li><span>Protocol</span><span>01010101</span></li>
+							<li><span>Version</span><span>01</span></li>
+							<li><span>Action</span><span>01</span></li>
+
+							<!--li><span>Payment Code</span><span>f4fb9da4 ae9b6f0b 84d6278e c0e34205 406a3e3c 857a1a63 745719fa 6caa998a 4400d568 b4c7518a 151bf616 95439e3a 89ea65c9 e2cf245f 26d5dcc9 cab36889 3e952601 e164b6cc 10aff7d6 50256b42</span></li-->
+							<li><span>Payment Code</span><span style='opacity: 0.25;'>00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000</span></li>
+							<li><span>Alias Name</span><span style='opacity: 0.25;'>00</span></li>
+						</ul>
+					</p>
+					<label>
+						<button>Broadcast Register Transaction</button>
+					</label>
+				</fieldset>
+
+				<!-- Step 3: When a block is mined, define the alias -->
+				<fieldset>
+					<legend align="center">This is your Cash Address</legend>
+
+					<label>
+						<output>Status: Pending</output>
+					</label>
+					<label>
+						<output>Full identifier: ???</output>
+					</label>
+					<label>
+						<output>Shortest identifier: ???</output>
+					</label>
+					<label>
+						<output>final alias name</output>
+					</label>
+					<p>Feel free to search for your name in the lookup below to confirm that it has the correct payment code attached to it.</p>
+					<label>
+						<button>Lookup Cash Address</button>
+					</label>
+				</fieldset>
+			</form>
+		</section>
+
+		<section>
+			<form id='lookup'>
+				<fieldset>
+					<legend>Look up Cash Address</legend>
+					<table>
+						<thead>
+							<tr>
+								<th>
+									<b>Alias</b><b style='opacity: 0.66;'>#Blockheight</b><i style='opacity: 0.40;'>:Transaction;</i>
+								</th>
+								<th>Link</th>
+								<th>Payment Code</th>
+							</tr>
+							<tr>
+								<td colspan='3' class='search_field'>
+									<input id='alias_lookup' name='' type='text' placeholder='Search...' />
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td colspan='3' class='no_result'>No alias matched</td>
+							</tr>
+						</tbody>
+					</table>
+				</fieldset>
+			</form>
+		</section>
+
 		<hr />
-		<form id='lookup'>
-			<fieldset>
-				<legend>Look up Cash Address</legend>
-				<label>
-					<input id='alias_lookup' name='' type='text' />
-				</label>
-				<table>
-					<thead>
-						<tr>
-							<th>Alias</th>
-							<th>Blockheight</th>
-							<th>Transaction</th>
-							<th>Link</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td colspan='4'>No alias matched</td>
-						</tr>
-					</tbody>
-				</table>
-			</fieldset>
-		</form>
-		<hr />
-		<form id='register'>
-			<!-- Step 1: You choose a name and BIP-47 payment code -->
-			<fieldset>
-				<legend align="center">You choose your name</legend>
 
-				<label>
-					<span>Enter your name:</span>
-					<input id='alias_name' type='text' placeholder='SatoshiNakamoto' autocomplete='off'>
-					<span id='alias_expected_height'>#567890;</span>
-				</label>
-				<label>
-					<span>Enter your BIP-47 payment code:</span>
-					<textarea id='alias_paycode' name='' type=''>
-					</textarea>
-				</label>
-
-				<label>
-					<button>Create Register Transaction</button>
-				</label>
-			</fieldset>
-
-			<!-- Step 2: We create an on-chain transaction -->
-			<fieldset>
-				<legend align="center">We create the transaction</legend>
-
-				<p>
-					<!--
-					<span>Full transaction in hex encoding:</span>
-					<pre>0x6a010101010101[code][alias]</pre>
-					<hr />
-					<span>Breakdown of transaction by part:</span>
-					-->
-					<ul>
-						<li><span>OP_RETURN</span><span>6a</span></li>
-						<li><span>Protocol</span><span>01010101</span></li>
-						<li><span>Version</span><span>01</span></li>
-						<li><span>Action</span><span>01</span></li>
-
-						<li><span>Payment Code</span><span>f4fb9da4 ae9b6f0b 84d6278e c0e34205 406a3e3c 857a1a63 745719fa 6caa998a 4400d568 b4c7518a 151bf616 95439e3a 89ea65c9 e2cf245f 26d5dcc9 cab36889 3e952601 e164b6cc 10aff7d6 50256b42</span></li>
-						<li><span>Alias Name</span><span>5361746F 7368694E 616B616D 6F746F</span></li>
-					</ul>
-				</p>
-				<label>
-					<button>Broadcast Register Transaction</button>
-				</label>
-			</fieldset>
-
-			<!-- Step 3: When a block is mined, define the alias -->
-			<fieldset>
-				<legend align="center">This is your Cash Address</legend>
-
-				link to TX
-				<label>
-					<output>final alias name</output>
-				</label>
-			</fieldset>
-		</form>
-
-		<hr />
 		<nav>
 			<a href='https://gitlab.com/cash-address/specification'>Cash Address Specification</a> | <a href='https://github.com/OpenBitcoinPrivacyProject/bips/blob/master/bip-0047.mediawiki'>BIP-47 Specification</a> | <a href='https://gitlab.com/cash-address/website'>Source Code</a> | <a href='https://discord.gg/9kACN9t'>Discord Chat Server</a>
 		</nav>
