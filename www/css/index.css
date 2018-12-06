@@ -1,0 +1,16 @@
+body
+{
+	width: 150ex !important;
+	max-width: 150ex;
+	margin: auto;
+}
+
+form#lookup> fieldset
+{
+	width: 100%;
+}
+
+form#register > fieldset
+{
+	width: 33.3%;
+}

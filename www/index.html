@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<title>Cash Address Utilities</title>
+
+		<meta name='Description' content=''>
+		<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+
+		<link rel='icon' type='image/png' href='data:;base64,iVBORw0KGgo='>
+		<link type='text/css' rel='stylesheet' href='css/default.css'>
+		<link type='text/css' rel='stylesheet' href='css/elements.css'>
+		<link type='text/css' rel='stylesheet' href='css/index.css'>
+
+		<script type='text/javascript' src='js/index.js'></script>
+	</head>
+	<body>
+		<header>Cash Address Utilities</header>
+		<p>
+		<hr />
+		<form id='lookup'>
+			<fieldset>
+				<legend>Look up Cash Address</legend>
+				<label>
+					<input id='alias_lookup' name='' type='text' />
+				</label>
+				<table>
+					<thead>
+						<tr>
+							<th>Alias</th>
+							<th>Blockheight</th>
+							<th>Transaction</th>
+							<th>Link</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</fieldset>
+		</form>
+		<hr />
+		<form id='register'>
+			<!-- Step 1: You choose a name and BIP-47 payment code -->
+			<fieldset>
+				<legend>You choose your name</legend>
+
+				<label>
+					<span>Choose a name for you Cash Address:</span>
+					<input id='alias_name' name='' type='' autocomplete='off'><span id='alias_expected_height'>#height;</span>
+				</label>
+				<label>
+					<input id='alias_paycode' name='' type=''>
+				</label>
+
+				<label>
+					<button>Create Cash Address</button>
+				</label>
+			</fieldset>
+
+			<!-- Step 2: We create an on-chain transaction -->
+			<fieldset>
+				<legend>We create the transaction</legend>
+
+				<p>
+					<span>Full transaction in hex encoding:</span>
+					<pre>0x6a010101010101[code][alias]</pre>
+					<hr />
+					<span>Breakdown of transaction by part:</span>
+					<dl>
+						<dt>6a</dt><dd>OP_RETURN</dd>
+						<dt>01010101</dt><dd>Protocol</dd>
+						<dt>01</dt><dd>Version</dd>
+						<dt>01</dt><dd>Action</dd>
+						<dt>[code]</dt><dd>Payment Code</dd>
+						<dt>[alias]</dt><dd>Alias Name</dd>
+					</dl>
+				</p>
+			</fieldset>
+
+			<!-- Step 3: When a block is mined, define the alias -->
+			<fieldset>
+				<legend>This is your Cash Address</legend>
+
+				link to TX
+				<label>
+					<output>final alias name</output>
+				</label>
+			</fieldset>
+		</form>
+	</body>
+</html>

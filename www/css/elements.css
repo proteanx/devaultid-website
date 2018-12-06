@@ -1,0 +1,48 @@
+form
+{
+	display: flex;
+	align-items: stretch;
+	align-content: stretch;
+	justify-content: center;
+}
+
+fieldset
+{
+	background-color: transparent;
+	margin: 0.5rem;
+	padding: 0.5rem;
+}
+
+legend
+{
+	font-size: 1rem;
+	padding: 0 0.5rem;
+}
+
+input, select
+{
+	font-size: 1rem;
+	border-radius: 0.25rem;
+	background-color: rgba(255, 255, 255, 0.50);
+	border-color: rgba(255, 255, 255, 0.75);
+	border-width: 0.05rem;
+}
+
+/* Remove text decorations. */
+a, u {
+	text-decoration: none;
+}
+
+hr { opacity: 0.33; }
+
+pre
+{
+	padding: 0.25rem;
+	font-family: monospace;
+}
+
+dl { padding: 0.25rem; }
+dl > * { font-family: monospace; }
+dt { float: left; clear: left; text-align: right; margin-right: 2ex; }
+dd { float: left; clear: right; color: rgba(0, 0, 0, 0.44); }
+dd:before { content: '// '; }
