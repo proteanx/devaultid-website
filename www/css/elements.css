@@ -10,7 +10,9 @@ fieldset
 {
 	background-color: transparent;
 	margin: 0.5rem;
-	padding: 0.5rem;
+	padding: 0.5rem 1rem;
+	border: 0.1rem solid white;
+	border-radius: 0.33rem;
 }
 
 legend
@@ -19,9 +21,29 @@ legend
 	padding: 0 0.5rem;
 }
 
-input, select
+label
 {
+	display: inline-block;
+	width: 100%;
+	position: relative;
+	margin-bottom: 0.75rem;
+}
+
+label:last-child
+{
+	margin-bottom: 0.25rem;
+}
+
+input, select, textarea
+{
+	width: 100%;
+
+	font-family: monospace;
 	font-size: 1rem;
+	line-height: 1rem;
+	padding: 0.25rem;
+	padding-top: 0.40rem;
+
 	border-radius: 0.25rem;
 	background-color: rgba(255, 255, 255, 0.50);
 	border-color: rgba(255, 255, 255, 0.75);
@@ -46,3 +68,9 @@ dl > * { font-family: monospace; }
 dt { float: left; clear: left; text-align: right; margin-right: 2ex; }
 dd { float: left; clear: right; color: rgba(0, 0, 0, 0.44); }
 dd:before { content: '// '; }
+
+nav
+{
+	padding: 1rem;
+	text-align: center;
+}

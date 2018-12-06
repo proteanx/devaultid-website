@@ -33,6 +33,9 @@
 						</tr>
 					</thead>
 					<tbody>
+						<tr>
+							<td colspan='4'>No alias matched</td>
+						</tr>
 					</tbody>
 				</table>
 			</fieldset>
@@ -41,24 +44,27 @@
 		<form id='register'>
 			<!-- Step 1: You choose a name and BIP-47 payment code -->
 			<fieldset>
-				<legend>You choose your name</legend>
+				<legend align="center">You choose your name</legend>
 
 				<label>
 					<span>Choose a name for you Cash Address:</span>
-					<input id='alias_name' name='' type='' autocomplete='off'><span id='alias_expected_height'>#height;</span>
+					<input id='alias_name' name='' type='' autocomplete='off'>
+					<span id='alias_expected_height'>#567890;</span>
 				</label>
 				<label>
-					<input id='alias_paycode' name='' type=''>
+					<span>Paste your BIP-47 payment code here:</span>
+					<textarea id='alias_paycode' name='' type=''>
+					</textarea>
 				</label>
 
 				<label>
-					<button>Create Cash Address</button>
+					<button>Create Register Transaction</button>
 				</label>
 			</fieldset>
 
 			<!-- Step 2: We create an on-chain transaction -->
 			<fieldset>
-				<legend>We create the transaction</legend>
+				<legend align="center">We create the transaction</legend>
 
 				<p>
 					<span>Full transaction in hex encoding:</span>
@@ -74,11 +80,14 @@
 						<dt>[alias]</dt><dd>Alias Name</dd>
 					</dl>
 				</p>
+				<label>
+					<button>Broadcast Register Transaction</button>
+				</label>
 			</fieldset>
 
 			<!-- Step 3: When a block is mined, define the alias -->
 			<fieldset>
-				<legend>This is your Cash Address</legend>
+				<legend align="center">This is your Cash Address</legend>
 
 				link to TX
 				<label>
@@ -86,5 +95,10 @@
 				</label>
 			</fieldset>
 		</form>
+
+		<hr />
+		<nav>
+			<a href='https://gitlab.com/cash-address/specification'>Cash Address Specification</a> | <a href='https://github.com/OpenBitcoinPrivacyProject/bips/blob/master/bip-0047.mediawiki'>BIP-47 Specification</a> | <a href='https://gitlab.com/cash-address/website'>Source Code</a> | <a href='https://discord.gg/9kACN9t'>Discord Chat Server</a>
+		</nav>
 	</body>
 </html>

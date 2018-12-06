@@ -12,5 +12,71 @@ form#lookup> fieldset
 
 form#register > fieldset
 {
+	display: flex;
+	position: relative;
+	flex-direction: column;
+	align-content: space-around;
+	justify-content: space-around;
+
 	width: 33.3%;
+	margin: 1rem;
+}
+
+form#register button
+{
+	width: 100%;
+}
+form#register > fieldset:nth-child(1) > legend:before { content: '1'; }
+form#register > fieldset:nth-child(2) > legend:before { content: '2'; }
+form#register > fieldset:nth-child(3) > legend:before { content: '3'; }
+
+form#register > fieldset > legend:before
+{
+	position: absolute;
+	top: -1.66rem;
+	left: -1.1rem;
+
+	display: inline-block;
+	box-sizing: border-box;
+
+	width: 2.0rem;
+	height: 2.0rem;
+	line-height: 1.75rem;
+	text-align: center;
+	border: 0.15rem solid rgba(255, 255, 255, 1);
+	box-shadow: 0.05rem 0.15rem 0.25rem rgba(0, 0, 0, 0.31);
+	border-radius: 999rem;
+	background-color: blue;
+	font-weight: bold;
+	color: white;
+}
+
+form#register > fieldset > label:last-child { align-self: flex-start; }
+
+input#alias_name
+{
+	text-align: right;
+	padding-right: 10.66ex;
+}
+span#alias_expected_height
+{
+	position: absolute;
+	bottom: 0;
+	right: 0;
+
+	width: 11ex;
+	color: rgba(0, 0, 0, 0.50);
+	font-family: monospace;
+	font-size: 1rem;
+	line-height: 1rem;
+	padding: 0.25rem;
+	padding-top: 0.40rem;
+}
+
+textarea#alias_paycode
+{
+	padding: 0.5rem;
+	font-size: 0.95rem;
+	height: 5.25em;
+	overflow: hidden;
 }
