@@ -11,20 +11,24 @@
 		<link type='text/css' rel='stylesheet' href='css/elements.css'>
 		<link type='text/css' rel='stylesheet' href='css/index.css'>
 
+		<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet">
 		<script type='text/javascript' src='js/index.js'></script>
 	</head>
 	<body>
-		<section id='introduction' style='height: 20rem; margin-bottom: 2rem;'>
-			<header>Cash Address</header>
-			<p>Bitcoin was supposed to be for everyone, even the non-technical people. It is time we build an addressing system that actually works the way people expect it to - with account names you can share over a phonecall.</p>
-			<p style='font-style: italic;'>Jonathan Silverblood, 2018</p>
+		<section id='introduction'>
+			<div>
+				<header>Cash Accounts</header>
+				<p>Cash accounts is an aliasing system that was designed to meet the expectations of normal users.</p>
+				<p>It allows for human readable account names that are easy to share over a phonecall or in conversation.</p>
+				<p style='font-style: italic;'>by <b>Jonathan#586621;</b> and <b>Robbot#586621;</b></p>
+			</div>
 		</section>
 
 		<section>
 			<form id='register'>
 				<!-- Step 1: You choose a name and BIP-47 payment code -->
 				<fieldset>
-					<legend align="center">You choose your name</legend>
+					<legend align="center">Choose account name</legend>
 
 					<label>
 						<span>Enter your name:</span>
@@ -44,7 +48,7 @@
 
 				<!-- Step 2: We create an on-chain transaction -->
 				<fieldset>
-					<legend align="center">We create the transaction</legend>
+					<legend align="center">Broadcast transaction</legend>
 
 					<p>
 						<!--
@@ -71,7 +75,7 @@
 
 				<!-- Step 3: When a block is mined, define the alias -->
 				<fieldset>
-					<legend align="center">This is your Cash Address</legend>
+					<legend align="center">Wait for block inclusion</legend>
 
 					<label>
 						<output>Status: Pending</output>
@@ -121,8 +125,6 @@
 				</fieldset>
 			</form>
 		</section>
-
-		<hr />
 
 		<nav>
 			<a href='https://gitlab.com/cash-address/specification'>Cash Address Specification</a> | <a href='https://github.com/OpenBitcoinPrivacyProject/bips/blob/master/bip-0047.mediawiki'>BIP-47 Specification</a> | <a href='https://gitlab.com/cash-address/website'>Source Code</a> | <a href='https://discord.gg/9kACN9t'>Discord Chat Server</a>
