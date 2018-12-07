@@ -13,19 +13,82 @@
 
 		<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet">
 		<script type='text/javascript' src='js/index.js'></script>
+		<script type="text/javascript">
+			window.onscroll = function()
+			{
+				var scroll_position = Math.max(document.body.scrollTop, document.documentElement.scrollTop);
+				if(scroll_position > 16)
+				{
+					document.body.className = 'scrolled';
+				}
+				else if(document.body.className = 'scrolled')
+				{
+					document.body.className = 'not_scrolled';
+				}
+
+				if(typeof window['scroll_ready'] !== 'undefined')
+				{
+					var temp_y = window.scrollY + 0.15 * window.innerHeight - 15;
+
+					if(temp_y < window['scrolling_prev'] || temp_y > window['scrolling_next'])
+					{
+						for(index in window['navigation_nodes'])
+						{
+							if(temp_y > window['navigation_nodes'][index]['starts_at'] && temp_y < window['navigation_nodes'][index]['ends_at'])
+							{
+								document.getElementById('nav_' + window['nav_current']).className = '';
+								document.getElementById('nav_' + window['navigation_nodes'][index].id).className = 'shown';
+
+								window['scrolling_prev'] = window['navigation_nodes'][index]['starts_at'];
+								window['scrolling_next'] = window['navigation_nodes'][index]['ends_at'];
+								window['nav_current'] = window['navigation_nodes'][index].id;
+							}
+						}
+					}
+				}
+			}
+		</script>
 	</head>
 	<body>
+		<nav id="navigation">
+			<div id="navigation_list">
+				<a href="#introduction" id="nav_introduction" class="shown">
+					<img src="img/introduction.png" alt="">
+					<span>Introduction</span>
+				</a>
+				<a href="#registration" id="nav_registration">
+					<img src="img/registration.png" alt="">
+					<span>Registration</span>
+				</a>
+				<a href="#lookup" id="nav_lookup">
+					<img src="img/lookup.png" alt="">
+					<span>Lookup</span>
+				</a>
+				<a href="#wallets" id="nav_wallets">
+					<img src="img/wallets.png" alt="">
+					<span>Wallets</span>
+				</a>
+				<a href="#testimonies" id="nav_testimonies">
+					<img src="img/testimonies.png" alt="">
+					<span>Testimonies</span>
+				</a>
+				<a href="#links" id="nav_links">
+					<img src="img/links.png" alt="">
+					<span>Links</span>
+				</a>
+			</div>
+		</nav>
 		<section id='introduction'>
 			<div>
-				<header>Cash Accounts</header>
-				<p>Cash accounts is an aliasing system that was designed to meet the expectations of normal users.</p>
-				<p>It allows for human readable account names that are easy to share over a phonecall or in conversation.</p>
+				<header>&raquo;&nbsp;Cash Accounts</header>
+				<p>Bitcoin Cash needs an alias/address system that is designed to meet the expectations of normal users.</p>
+				<p>Cash Accounts allows for human readable account names that are easy to share in conversation.</p>
 				<p style='font-style: italic;'>by <b>Jonathan#586621;</b> and <b>Robbot#586621;</b></p>
 			</div>
 		</section>
 
-		<section>
-			<form id='register'>
+		<section id='registration'>
+			<form>
 				<!-- Step 1: You choose a name and BIP-47 payment code -->
 				<fieldset>
 					<legend align="center">Choose account name</legend>
@@ -96,9 +159,8 @@
 				</fieldset>
 			</form>
 		</section>
-
-		<section>
-			<form id='lookup'>
+		<section id='lookup'>
+			<form>
 				<fieldset>
 					<legend>Look up Cash Address</legend>
 					<table>
@@ -126,8 +188,48 @@
 			</form>
 		</section>
 
+		<section id='wallets'>
+		</section>
+		<section id='testimonies'>
+		</section>
+		<section id='links'>
+		</section>
+
 		<nav>
 			<a href='https://gitlab.com/cash-address/specification'>Cash Address Specification</a> | <a href='https://github.com/OpenBitcoinPrivacyProject/bips/blob/master/bip-0047.mediawiki'>BIP-47 Specification</a> | <a href='https://gitlab.com/cash-address/website'>Source Code</a> | <a href='https://discord.gg/9kACN9t'>Discord Chat Server</a>
 		</nav>
+
+		<script type="text/javascript">
+			window.onload = function()
+			{
+				var temp_navigation_nodes = document.getElementById('navigation_list').childNodes;
+
+				window['navigation_nodes'] = {};
+
+				for(var index = 0, count = temp_navigation_nodes.length; index < count; index += 1)
+				{
+					if(typeof temp_navigation_nodes[index].href !== 'undefined')
+					{
+						var id = temp_navigation_nodes[index].href.split('#')[1];
+						var element = document.getElementById(id);
+						if(element !== null && typeof element.getBoundingClientRect === 'function')
+						{
+							window['navigation_nodes'][id] = 
+							{
+								id: id,
+								starts_at: element.getBoundingClientRect().top + window.scrollY,
+								ends_at: element.getBoundingClientRect().bottom + window.scrollY
+							};
+						}
+					}
+				}
+				
+				window['scrolling_prev'] = 0;
+				window['scrolling_next'] = 0;
+				window['nav_current'] = 'introduction';
+				
+				window['scroll_ready'] = true;
+			}
+		</script>
 	</body>
 </html>

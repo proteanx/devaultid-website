@@ -29,9 +29,9 @@ section#introduction > div
 	background: url(../img/logo.png);
 	background-size: 22rem;
 	background-repeat: no-repeat;
-	background-position: right;
+	background-position: 95%;
 	padding-left: 1rem;
-	padding-right: 23rem;
+	padding-right: 25rem;
 }
 
 section#introduction
@@ -42,10 +42,11 @@ section#introduction
 	justify-content: space-around;
 
 	width: 100% !important;
-	height: 20rem;
-	background: linear-gradient(-208deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0) 50%, rgba(255, 255, 255, 0.2) 51%, rgba(255, 255, 255, 0.0) 100%);
+	height: 25rem;
+	background-image: linear-gradient(-208deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3) 51%, rgba(255, 255, 255, 0.1) 100%);
 
 	padding: 3rem 2rem;
+	padding-top: 6rem;
 }
 
 section#introduction > div > header
@@ -53,7 +54,7 @@ section#introduction > div > header
 	font-weight: bold;
 	text-align: left;
 	font-size: 4rem;
-	text-decoration: underline;
+	text-shadow: 0.05rem 0.05rem 0.1rem white;
 }
 
 section#introduction > div > p
@@ -62,25 +63,113 @@ section#introduction > div > p
 	font-size: 1.37rem;
 	padding-right: 1rem;
 	margin-top: 0.5rem;
+	color: rgba(0, 0, 0, 0.77);
+}
+
+section#introduction > div > p:last-child
+{
+	margin-top: 1rem;
 }
 
 section#introduction > div > p > b
 {
-	font-size: 1.67rem;
+	font-size: 1.5rem;
 	border-bottom: 0.1rem dashed rgba(0, 0, 0, 0.35);
 }
 
 
 /**************************************/
+/**            Navigation            **/
+/**************************************/
+
+nav#navigation
+{
+	position: fixed;
+
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 5rem;
+	padding: 0;
+
+	transition: height 0.30s;
+
+	background: rgb(255, 153, 0);
+	background: rgb(32, 64, 48);
+	border-bottom: 0.10rem solid rgba(0, 0, 0, 1.00);
+	box-shadow: 0 0.10rem 0.5rem rgba(0, 0, 0, 0.21);
+	text-align: center;
+	z-index: 9;
+}
+
+nav#navigation > div
+{
+	display: flex;
+	align-content: space-around;
+	justify-content: space-between;
+	width: 150ex;
+	height: 100%;
+	margin: auto;
+}
+
+nav#navigation > div > a.shown
+{
+	text-shadow: 0 0 1rem white;
+}
+
+nav#navigation > div > a
+{
+	display: inline-block;
+	color: white;
+	text-decoration: none;
+	font-weight: normal;
+	padding: 0.5rem 1.5rem;
+}
+
+nav#navigation > div > a > span
+{
+	font-size: 1.25rem;
+}
+
+nav#navigation > div > a:hover
+{
+	color: rgba(255, 153, 0, 1);
+	text-shadow: 0px 0px 2px black, 0px 0px 3px green, 0px 0px 2px green;
+}
+
+nav#navigation > div > a > img
+{
+	display: block;
+
+	width: 2.5rem;
+	height: 2.5rem;
+
+	transition: width 0.30s, height 0.30s;
+
+	clear: left;
+	margin: auto;
+}
+
+body.scrolled > nav#navigation
+{
+	height: 2.5rem !important;
+}
+body.scrolled > nav#navigation > div > a > img
+{
+	height: 0 !important;
+	width: 0 !important;
+}
+
+/**************************************/
 /**            Register              **/
 /**************************************/
 
-form#register
+section#registration > form
 {
 	display: flex;
 }
 
-form#register > fieldset
+section#registration > form > fieldset
 {
 	display: flex;
 	position: relative;
@@ -88,19 +177,19 @@ form#register > fieldset
 	align-content: space-around;
 	justify-content: space-around;
 
-	width: 33.3%;
+	flex: 1;
 	margin: 1rem;
 }
 
-form#register button
+section#registration > form button
 {
 	width: 100%;
 }
-form#register > fieldset:nth-child(1) > legend:before { content: '1'; }
-form#register > fieldset:nth-child(2) > legend:before { content: '2'; }
-form#register > fieldset:nth-child(3) > legend:before { content: '3'; }
+section#registration > form > fieldset:nth-child(1) > legend:before { content: '1'; }
+section#registration > form > fieldset:nth-child(2) > legend:before { content: '2'; }
+section#registration > form > fieldset:nth-child(3) > legend:before { content: '3'; }
 
-form#register > fieldset > legend:before
+section#registration > form > fieldset > legend:before
 {
 	position: absolute;
 	top: -1.70rem;
@@ -121,9 +210,9 @@ form#register > fieldset > legend:before
 	color: white;
 }
 
-form#register > fieldset > label:last-child { align-self: flex-start; }
+section#registration > form > fieldset > label:last-child { align-self: flex-start; }
 
-form#register > fieldset > label > span:first-child
+section#registration > form > fieldset > label > span:first-child
 {
 	font-style: italic;
 	font-size: 0.75rem;
@@ -208,18 +297,18 @@ li:nth-child(4)
 /**            Lookup                **/
 /**************************************/
 
-form#lookup > fieldset
+section#lookup > form > fieldset
 {
-	width: 100%;
+	flex: 1;
 	margin: 1rem;
 }
 
-form#lookup > fieldset > table
+section#lookup > form > fieldset > table
 {
 	width: 100%;
 }
 
-form#lookup > fieldset > table > thead > tr > th
+section#lookup > form > fieldset > table > thead > tr > th
 {
 	text-align: left;
 	border-bottom: 0.05rem solid white;
@@ -231,3 +320,15 @@ form#lookup > fieldset > table > thead > tr > th
 	text-align: center;
 	padding: 2rem;
 }
+
+/**************************************/
+/**            ??? **/
+/**************************************/
+
+section#wallets,
+section#testimonies,
+section#links
+{
+	height: 50rem;
+}
+
