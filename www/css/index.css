@@ -31,7 +31,7 @@ section#introduction > div
 	background-repeat: no-repeat;
 	background-position: 95%;
 	padding-left: 1rem;
-	padding-right: 25rem;
+	padding-right: 24rem;
 }
 
 section#introduction
@@ -42,7 +42,7 @@ section#introduction
 	justify-content: space-around;
 
 	width: 100% !important;
-	height: 25rem;
+	height: 26rem;
 	background-image: linear-gradient(-208deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3) 51%, rgba(255, 255, 255, 0.1) 100%);
 
 	padding: 3rem 2rem;
@@ -112,18 +112,20 @@ nav#navigation > div
 	margin: auto;
 }
 
-nav#navigation > div > a.shown
-{
-	text-shadow: 0 0 1rem white;
-}
-
 nav#navigation > div > a
 {
-	display: inline-block;
-	color: white;
+	display: flex;
+	flex-direction: column;
+	color: rgb(160, 224, 160);
 	text-decoration: none;
 	font-weight: normal;
 	padding: 0.5rem 1.5rem;
+}
+
+nav#navigation > div > a.shown
+{
+	color: white;
+	text-shadow: 0 0 0.25rem rgb(75, 200, 70), 0 0 0.75rem rgba(255, 255, 255, 0.50);
 }
 
 nav#navigation > div > a > span
@@ -137,16 +139,16 @@ nav#navigation > div > a:hover
 	text-shadow: 0px 0px 2px black, 0px 0px 3px green, 0px 0px 2px green;
 }
 
-nav#navigation > div > a > img
+nav#navigation > div > a > i
 {
-	display: block;
+	display: inline-block;
 
-	width: 2.5rem;
+	font-size: 1.5rem;
+	padding: 0.5rem;
+	width: 100%;
 	height: 2.5rem;
 
 	transition: width 0.30s, height 0.30s;
-
-	clear: left;
 	margin: auto;
 }
 
@@ -154,10 +156,17 @@ body.scrolled > nav#navigation
 {
 	height: 2.5rem !important;
 }
-body.scrolled > nav#navigation > div > a > img
+body.scrolled > nav#navigation > div > a
 {
-	height: 0 !important;
-	width: 0 !important;
+	flex-direction: row;
+}
+body.scrolled > nav#navigation > div > a > i
+{
+	padding: 0 !important;
+	text-align: left;
+	font-size: 1.25rem;
+	line-height: 1.5rem;
+	margin-right: 0.5rem;
 }
 
 /**************************************/
@@ -319,6 +328,117 @@ section#lookup > form > fieldset > table > thead > tr > th
 	font-style: italic;
 	text-align: center;
 	padding: 2rem;
+}
+
+/**************************************/
+/**            Testimonies           **/
+/**************************************/
+
+section#testimonies > div
+{
+	padding: 1rem;
+}
+
+section#testimonies > div > ul > li
+{
+	width: calc(50% - 0.5rem);
+	margin-right: 1rem;
+	background-color: white;
+	border-radius: 2rem;
+	border: 0.05rem solid rgba(0, 0, 0, 0.25);
+	box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.21);
+	padding: 1rem;
+	margin-bottom: 1rem;
+}
+
+section#testimonies > div > ul > li:nth-child(odd)
+{
+	margin-right: 0;
+}
+
+section#testimonies > div > ul > li:nth-child(1),
+section#testimonies > div > ul > li:nth-child(2),
+section#testimonies > div > ul > li:nth-child(3)
+{
+	width: calc(33% - 0.5rem);
+	margin-right: 1rem;
+	display: inline-block;
+	background-color: white;
+	border-radius: 2rem;
+	border-bottom-left-radius: 0.5rem;
+	border-bottom-right-radius: 0.5rem;
+}
+section#testimonies > div > ul > li:nth-child(4)
+{
+	border-radius: 0.5rem;
+}
+section#testimonies > div > ul > li:nth-child(5)
+{
+	border-radius: 0.5rem;
+}
+section#testimonies > div > ul > li:nth-child(6)
+{
+	border-radius: 0.5rem;
+	border-bottom-left-radius: 2rem;
+}
+section#testimonies > div > ul > li:nth-child(7)
+{
+	border-radius: 0.5rem;
+	border-bottom-right-radius: 2rem;
+}
+section#testimonies > div > ul > li:nth-child(3)
+{
+	margin-right: 0;
+}
+section#testimonies > div > ul > li > div
+{
+	display: inline-block;
+	vertical-align: middle;
+	margin: 0;
+}
+
+section#testimonies > div > ul > li > img
+{
+	display: inline-block;
+	vertical-align: middle;
+	width: 7rem;
+	border-radius: 1rem;
+}
+section#testimonies > div > ul > li:nth-child(1) > img,
+section#testimonies > div > ul > li:nth-child(2) > img,
+section#testimonies > div > ul > li:nth-child(3) > img
+{
+	width: 100%;
+	border-radius: 1rem;
+}
+section#testimonies > div > ul > li > div > span:nth-child(1)
+{
+	text-align: center;
+	margin-top: 0.5rem;
+	font-size: 1.33rem;
+	color: black;
+}
+
+section#testimonies > div > ul > li > div > span:nth-child(2)
+{
+	text-align: left;
+	font-size: 0.80rem;
+	font-weight: bold;
+	font-style: italic;
+	color: rgba(0, 0, 0, 0.65);
+	margin-bottom: 1rem;
+}
+section#testimonies > div > ul > li:nth-child(1) > div > span:nth-child(2),
+section#testimonies > div > ul > li:nth-child(2) > div > span:nth-child(2),
+section#testimonies > div > ul > li:nth-child(3) > div > span:nth-child(2)
+{
+	text-align: center;
+}
+
+section#testimonies > div > ul > li > div > span:nth-child(3):before,
+section#testimonies > div > ul > li > div > span:nth-child(3):after
+{
+	content: '"';
 }
 
 /**************************************/
