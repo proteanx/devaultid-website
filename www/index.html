@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang='en'>
 	<head>
-		<title>Cash Address Utilities</title>
-
+		<meta charset="utf-8">
 		<meta name='Description' content=''>
-		<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+
+		<title>Cash Address Utilities</title>
 
 		<link rel='icon' type='image/png' href='data:;base64,iVBORw0KGgo='>
 		<link type='text/css' rel='stylesheet' href='css/default.css'>
@@ -97,12 +97,11 @@
 
 					<label>
 						<span>Enter your name:</span>
-						<input id='alias_name' type='text' placeholder='SatoshiNakamoto' autocomplete='off'>
-						<span id='alias_expected_height'>#567890;</span>
+						<input id='alias_name' onchange='update_name();' onkeyup='update_name();' type='text' placeholder='SatoshiNakamoto' autocomplete='off'>
 					</label>
 					<label>
-						<span>Enter your BIP-47 payment code:</span>
-						<textarea id='alias_paycode' name='' type=''>
+						<span>Enter your address or payment code:</span>
+						<textarea id='alias_payload' placeholder='qqgekzvw96vq5g57zwdfa5q6g609rrn0ycp33uc325' name='' type=''>
 						</textarea>
 					</label>
 
@@ -115,26 +114,13 @@
 				<fieldset>
 					<legend align="center">Broadcast transaction</legend>
 
-					<p>
-						<!--
-						<span>Full transaction in hex encoding:</span>
-						<pre>0x6a010101010101[code][alias]</pre>
-						<hr />
-						<span>Breakdown of transaction by part:</span>
-						-->
-						<ul>
-							<li><span>OP_RETURN</span><span>6a</span></li>
-							<li><span>Protocol</span><span>01010101</span></li>
-							<li><span>Version</span><span>01</span></li>
-							<li><span>Action</span><span>01</span></li>
-
-							<!--li><span>Payment Code</span><span>f4fb9da4 ae9b6f0b 84d6278e c0e34205 406a3e3c 857a1a63 745719fa 6caa998a 4400d568 b4c7518a 151bf616 95439e3a 89ea65c9 e2cf245f 26d5dcc9 cab36889 3e952601 e164b6cc 10aff7d6 50256b42</span></li-->
-							<li><span>Payment Code</span><span style='opacity: 0.25;'>00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000</span></li>
-							<li><span>Alias Name</span><span style='opacity: 0.25;'>00</span></li>
-						</ul>
-					</p>
+					<ul>
+						<li><span>Protocol</span><i title='OP_RETURN'>6A</i>&nbsp;<i title='OP_PUSH'>04</i>&nbsp;<i title='Cash Account'>01010101</i></span></li>
+						<li><span>Account Name</span><span><i title='OP_PUSH'>4C</i>&nbsp;<i id='alias_name_length' title='15 bytes'>0F</i>&nbsp;<b id='alias_name_hex' title='UTF-8 encoded name from: SatoshiNakamoto'>5361746F7368694E616B616D6F746F</b></span></li>
+						<li><span>Payment Data</span><span><i title='OP_PUSH'>4C</i>&nbsp;<i title='21 bytes'>15</i>&nbsp;<i title='Type: Key Hash'>01</i>&nbsp;<b title='Decoded Key Hash from: qqgekzvw96vq5g57zwdfa5q6g609rrn0ycp33uc325'>119B098E2E980A229E139A9ED01A469E518E6F26</b></span></li>
+					</ul>
 					<label>
-						<button>Broadcast Register Transaction</button>
+						<button disabled>Broadcast Register Transaction</button>
 					</label>
 				</fieldset>
 
@@ -142,21 +128,13 @@
 				<fieldset>
 					<legend align="center">Wait for block inclusion</legend>
 
+					<ul>
+						<li><span>Expected Identifier</span><i id='alias_name_predication' title='Name'>SatoshiNakamoto</i>#<i title='Blockheight'>567890;</i></li>
+						<li><span>Transaction Hash</span><span><i title='Transaction Hash'>7e5a1bda26244042d03d679b38f90cb83fd8a3507de3123da66ffdf934a1b241</i></span></span></li>
+						<li><span>Status</span><span><i title='Waiting for block inclusion'>Pending</i>, <i title='Only one registration with this name is in the mempool.'>Collision-Free</i></span></li>
+					</ul>
 					<label>
-						<output>Status: Pending</output>
-					</label>
-					<label>
-						<output>Full identifier: ???</output>
-					</label>
-					<label>
-						<output>Shortest identifier: ???</output>
-					</label>
-					<label>
-						<output>final alias name</output>
-					</label>
-					<p>Feel free to search for your name in the lookup below to confirm that it has the correct payment code attached to it.</p>
-					<label>
-						<button>Lookup Cash Address</button>
+						<button disabled>Lookup: SatoshiNakamoto#567890;</button>
 					</label>
 				</fieldset>
 			</form>
@@ -206,15 +184,15 @@
 			<div>
 				<ul>
 					<li>
-						<img src='img/testimony_jonathan_silverblood.png' />
+						<img src='img/testimony_matias_alejo_garcia.jpg' />
 						<div>
-							<span>Matias?</span>
+							<span>Matias Alejo Garcia?</span>
 							<span>Programmer, BitPay?</span>
 							<span>This is where I say something stupid?</span>
 						</div>
 					</li>
 					<li>
-						<img src='img/testimony_jonathan_silverblood.png' />
+						<img src='img/testimony_peter_rizun.jpg' />
 						<div>
 							<span>Peter Rizun?</span>
 							<span>Chief Scientist, Bitcoin Unlimited?</span>
@@ -222,15 +200,15 @@
 						</div>
 					</li>
 					<li>
-						<img src='img/testimony_jonathan_silverblood.png' />
+						<img src='img/testimony_josh_ellithorpe.jpg' />
 						<div>
-							<span>Josh Ellithorpe?</span>
-							<span>Technician, Coinbase?</span>
-							<span>This is where I say something stupid?</span>
+							<span>Josh Ellithorpe</span>
+							<span>Senior Engineer, Coinbase</span>
+							<span>Will leave a qoute closer to release.</span>
 						</div>
 					</li>
 					<li>
-						<img src='img/testimony_jonathan_silverblood.png' />
+						<img src='img/testimony_vin_armani.jpg' />
 						<div>
 							<span>Vin Armani?</span>
 							<span>CEO, CoinText?</span>
@@ -246,11 +224,12 @@
 						</div>
 					</li>
 					<li>
-						<img src='img/testimony_jonathan_silverblood.png' />
+						<img src='img/testimony_mark_lundeberg.jpg' />
 						<div>
-							<span>Mark Lundeberg?</span>
-							<span>Works with SLP tokens?</span>
-							<span>This is where I say something stupid?</span>
+							<span>Mark Lundeberg</span>
+							<span>Simple Ledger Protocol</span>
+							<br/>
+							<span>Solves the squatter problem by appending a short integer which is an inconvenience, but vastly better than memorizing 160-bit addresses.</span>
 						</div>
 					</li>
 					<li>

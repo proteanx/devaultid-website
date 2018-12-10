@@ -42,7 +42,7 @@ section#introduction
 	justify-content: space-around;
 
 	width: 100% !important;
-	height: 26rem;
+	height: 27rem;
 	background-image: linear-gradient(-208deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3) 51%, rgba(255, 255, 255, 0.1) 100%);
 
 	padding: 3rem 2rem;
@@ -184,8 +184,9 @@ section#registration > form > fieldset
 	display: flex;
 	position: relative;
 	flex-direction: column;
-	align-content: space-around;
-	justify-content: space-around;
+	align-content: stretch;
+	align-items: stretch;
+	justify-content: space-between;
 
 	flex: 1;
 	margin: 1rem;
@@ -220,37 +221,25 @@ section#registration > form > fieldset > legend:before
 	color: white;
 }
 
-section#registration > form > fieldset > label:last-child { align-self: flex-start; }
+section#registration > form > fieldset > label:last-child
+{
+	align-self: flex-end;
+}
 
 section#registration > form > fieldset > label > span:first-child
 {
 	font-style: italic;
 	font-size: 0.75rem;
-	color: rgba(0, 0, 0, 0.65);
-	padding-left: 0.66rem;
+	color: rgba(0, 0, 0, 0.75);
+	padding-left: 0.30rem;
 }
 
-input#alias_name
+section#registration > form > fieldset > label > input#alias_name
 {
-	text-align: right;
-	padding-right: 10.66ex;
-}
-span#alias_expected_height
-{
-	position: absolute;
-	bottom: 0.025rem;
-	right: 0;
-
-	width: 11ex;
-	color: rgba(0, 0, 0, 0.50);
-	font-family: 'Roboto mono';
-	font-size: 1rem;
-	line-height: 1rem;
-	padding: 0.25rem;
-	padding-top: 0.40rem;
+	text-align: left;
 }
 
-textarea#alias_paycode
+section#registration > form > fieldset > label > textarea#alias_paycode
 {
 	padding: 0.5rem;
 	font-size: 0.95rem;
@@ -258,7 +247,7 @@ textarea#alias_paycode
 	overflow: hidden;
 }
 
-ul
+section#registration > form > fieldset > ul
 {
 	display: flex;
 	flex-wrap: wrap;
@@ -267,41 +256,35 @@ ul
 	list-style-type: none;
 }
 
-li
+section#registration > form > fieldset > ul > li
 {
-	padding-right: 1ex;
-	border-right: 0.05rem solid rgba(0, 0, 0, 0.15);
+	width: 100%;
+	padding-bottom: 0.5rem;
 }
 
-li span
+section#registration > form > fieldset > ul > li > span
 {
 	display: block;
 	word-break: break-all;
+}
+
+section#registration > form > fieldset > ul > li > span > i,
+section#registration > form > fieldset > ul > li > span > b
+{
+	font-style: normal;
 	font-family: monospace;
 }
 
-li span:first-child
+section#registration > form > fieldset > ul > li > span:first-child
 {
 	color: rgba(0, 0, 0, 0.44);
 }
 
-li:nth-child(5) > span:last-child { width: calc(30em * 0.73); }
-
-li:nth-child(4),
-li:nth-child(5),
-li:nth-child(6)
+section#registration > form > fieldset > ul > li > span:first-child:after
 {
-	width: 100%;
-	padding-top: 0.40rem;
-	padding-right: 0;
-	border-right: 0;
+	content: ':';
 }
 
-li:nth-child(4)
-{
-	width: auto;
-	padding-top: 0;
-}
 
 /**************************************/
 /**            Lookup                **/
@@ -338,6 +321,15 @@ section#lookup > form > fieldset > table > thead > tr > th
 section#testimonies > div
 {
 	padding: 1rem;
+}
+
+section#testimonies > div > ul
+{
+	display: flex;
+	flex-wrap: wrap;
+	align-content: space-around;
+	justify-content: space-between;
+	list-style-type: none;
 }
 
 section#testimonies > div > ul > li
@@ -395,7 +387,8 @@ section#testimonies > div > ul > li > div
 {
 	display: inline-block;
 	vertical-align: middle;
-	margin: 0;
+	margin-left: 0.25rem;
+	width: calc(100% - 8rem);
 }
 
 section#testimonies > div > ul > li > img
@@ -404,6 +397,7 @@ section#testimonies > div > ul > li > img
 	vertical-align: middle;
 	width: 7rem;
 	border-radius: 1rem;
+	margin-right: 0.5rem;
 }
 section#testimonies > div > ul > li:nth-child(1) > img,
 section#testimonies > div > ul > li:nth-child(2) > img,
@@ -414,32 +408,57 @@ section#testimonies > div > ul > li:nth-child(3) > img
 }
 section#testimonies > div > ul > li > div > span:nth-child(1)
 {
-	text-align: center;
-	margin-top: 0.5rem;
+	display: inline-block;
+	text-align: left;
+	margin-top: 0.25rem;
 	font-size: 1.33rem;
+	line-height: 1.33rem;
 	color: black;
+	width: 100%;
+	border-right: 0.05rem solid rgba(0, 0, 0, 0.17);
 }
 
 section#testimonies > div > ul > li > div > span:nth-child(2)
 {
+	position: relative;
+	display: inline-block;
+	width: 100%;
 	text-align: left;
 	font-size: 0.80rem;
 	font-weight: bold;
 	font-style: italic;
+	padding-bottom: 0.25rem;
 	color: rgba(0, 0, 0, 0.65);
-	margin-bottom: 1rem;
 }
-section#testimonies > div > ul > li:nth-child(1) > div > span:nth-child(2),
-section#testimonies > div > ul > li:nth-child(2) > div > span:nth-child(2),
-section#testimonies > div > ul > li:nth-child(3) > div > span:nth-child(2)
+section#testimonies > div > ul > li > div > span:nth-child(2):before
+{
+	content: '- ';
+}
+
+section#testimonies > div > ul > li:nth-child(1) > div > span:nth-child(2):before,
+section#testimonies > div > ul > li:nth-child(2) > div > span:nth-child(2):before,
+section#testimonies > div > ul > li:nth-child(3) > div > span:nth-child(2):before
+{
+	content: '';
+}
+
+section#testimonies > div > ul > li:nth-child(1) > div,
+section#testimonies > div > ul > li:nth-child(2) > div,
+section#testimonies > div > ul > li:nth-child(3) > div
+{
+	width: 100%;
+}
+
+section#testimonies > div > ul > li:nth-child(1) > div > span,
+section#testimonies > div > ul > li:nth-child(2) > div > span,
+section#testimonies > div > ul > li:nth-child(3) > div > span
 {
 	text-align: center;
 }
 
-section#testimonies > div > ul > li > div > span:nth-child(3):before,
-section#testimonies > div > ul > li > div > span:nth-child(3):after
+section#testimonies > div > ul > li > div > span:nth-child(3):before
 {
-	content: '"';
+	content: '~ ';
 }
 
 /**************************************/
