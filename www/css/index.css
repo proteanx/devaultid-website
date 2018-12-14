@@ -328,21 +328,25 @@ section#testimonies > div > ul
 {
 	display: flex;
 	flex-wrap: wrap;
+
 	align-content: space-around;
 	justify-content: space-between;
 	list-style-type: none;
+
+	background-color: white;
+	box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.21);
+	border: 0.05rem solid rgba(0, 0, 0, 0.25);
+	border-radius: 2rem;
 }
 
 section#testimonies > div > ul > li
 {
-	width: calc(50% - 0.5rem);
-	margin-right: 1rem;
-	background-color: white;
-	border-radius: 2rem;
-	border: 0.05rem solid rgba(0, 0, 0, 0.25);
-	box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.21);
+	flex-basis: 50%;
 	padding: 1rem;
-	margin-bottom: 1rem;
+	margin: 0;
+	border-radius: 0;
+	border-right: 0.1rem solid rgba(0, 0, 0, 0.19);
+	border-bottom: 0.1rem solid rgba(0, 0, 0, 0.19);
 }
 
 section#testimonies > div > ul > li:nth-child(odd)
@@ -354,36 +358,23 @@ section#testimonies > div > ul > li:nth-child(1),
 section#testimonies > div > ul > li:nth-child(2),
 section#testimonies > div > ul > li:nth-child(3)
 {
-	width: calc(33% - 0.5rem);
-	margin-right: 1rem;
+	flex-basis: 33.33%;
 	display: inline-block;
-	background-color: white;
-	border-radius: 2rem;
-	border-bottom-left-radius: 0.5rem;
-	border-bottom-right-radius: 0.5rem;
 }
-section#testimonies > div > ul > li:nth-child(4)
-{
-	border-radius: 0.5rem;
-}
-section#testimonies > div > ul > li:nth-child(5)
-{
-	border-radius: 0.5rem;
-}
-section#testimonies > div > ul > li:nth-child(6)
-{
-	border-radius: 0.5rem;
-	border-bottom-left-radius: 2rem;
-}
+
+section#testimonies > div > ul > li:nth-child(3),
+section#testimonies > div > ul > li:nth-child(5),
 section#testimonies > div > ul > li:nth-child(7)
 {
-	border-radius: 0.5rem;
-	border-bottom-right-radius: 2rem;
+	border-right: 0;
 }
-section#testimonies > div > ul > li:nth-child(3)
+
+section#testimonies > div > ul > li:nth-child(6),
+section#testimonies > div > ul > li:nth-child(7)
 {
-	margin-right: 0;
+	border-bottom: 0;
 }
+
 section#testimonies > div > ul > li > div
 {
 	display: inline-block;
@@ -417,7 +408,6 @@ section#testimonies > div > ul > li > div > span:nth-child(1)
 	line-height: 1.33rem;
 	color: black;
 	width: 100%;
-	border-right: 0.05rem solid rgba(0, 0, 0, 0.17);
 }
 
 section#testimonies > div > ul > li > div > span:nth-child(2)
