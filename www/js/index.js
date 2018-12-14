@@ -36,6 +36,9 @@ let update_name = function()
 
 		// Update the predicted identifiers name part.
 		document.getElementById('alias_name_predication').innerHTML = document.getElementById('alias_name').value;
+
+		// alias_name_lookup_button
+		document.getElementById('alias_name_lookup_button').innerHTML = document.getElementById('alias_name_lookup_button').innerHTML.replace(/(Lookup: )(\w+)#(\d+)/, '$1' + document.getElementById('alias_name').value + '#$3');
 	};
 
 	// Load the name blob.

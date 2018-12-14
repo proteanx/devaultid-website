@@ -464,8 +464,77 @@ section#testimonies > div > ul > li > div > span:nth-child(3):before
 /**************************************/
 /**            ??? **/
 /**************************************/
+section#wallets > div > ul
+{
+	display: flex;
+	flex-wrap: wrap;
+	list-style-type: none;
+}
+section#wallets > div > ul > li
+{
+	width: calc(25% - 2rem);
+	margin: 1rem;
+	background-color: white;
+	box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.21);
+	border: 0.1rem solid rgba(0, 0, 0, 0.25);
+}
+section#wallets > div > ul > li.positive { border: 0.1rem solid rgba(0, 255, 0, 0.5); }
+section#wallets > div > ul > li.pending { border: 0.1rem solid rgba(192, 192, 0, 0.5); }
+section#wallets > div > ul > li.negative { border: 0.1rem solid rgba(255, 0, 0, 0.5); }
 
-section#wallets,
+section#wallets > div > ul > li > a.wallet
+{
+	display: inline-block;
+	width: calc(100% - 4rem);
+	height: 4rem;
+	margin: 2rem;
+	margin-bottom: 1.25rem;
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+section#wallets > div > ul > li > a.status
+{
+	display: inline-block;
+	width: 100%;
+	height: 2rem;
+	line-height: 2rem;
+	background-color: gray;
+	font-weight: bold;
+	text-align: center;
+	color: white;
+}
+section#wallets > div > ul > li.positive > a.status { background-color: rgb(64, 160, 48); }
+section#wallets > div > ul > li.pending > a.status { background-color: rgb(224, 128, 0); }
+section#wallets > div > ul > li.negative > a.status { background-color: rgb(242, 32, 32); }
+
+section#wallets > div > ul > li > a.bitcoincash { background-image: url('../img/wallet_bitcoincash.png'); }
+section#wallets > div > ul > li > a.bitcoindotcom { background-image: url('../img/wallet_bitcoindotcom.png'); }
+section#wallets > div > ul > li > a.bitpay { background-image: url('../img/wallet_bitpay.png'); }
+section#wallets > div > ul > li > a.bread { background-image: url('../img/wallet_bread.png'); }
+section#wallets > div > ul > li > a.btcdotcom { background-image: url('../img/wallet_btcdotcom.png'); }
+section#wallets > div > ul > li > a.coinbase { background-image: url('../img/wallet_coinbase.png'); }
+section#wallets > div > ul > li > a.coinomi { background-image: url('../img/wallet_coinomi.png'); }
+section#wallets > div > ul > li > a.coinspace { background-image: url('../img/wallet_coinspace.png'); }
+section#wallets > div > ul > li > a.coldlar { background-image: url('../img/wallet_coldlar.png'); }
+section#wallets > div > ul > li > a.copay { background-image: url('../img/wallet_copay.png'); }
+section#wallets > div > ul > li > a.edge { background-image: url('../img/wallet_edge.png'); }
+section#wallets > div > ul > li > a.electroncash { background-image: url('../img/wallet_electroncash.png'); }
+section#wallets > div > ul > li > a.exodus { background-image: url('../img/wallet_exodus.png'); }
+section#wallets > div > ul > li > a.guarda { background-image: url('../img/wallet_guarda.png'); }
+section#wallets > div > ul > li > a.ipayyou { background-image: url('../img/wallet_ipayyou.png'); }
+section#wallets > div > ul > li > a.jaxx { background-image: url('../img/wallet_jaxx.png'); }
+section#wallets > div > ul > li > a.keepkey { background-image: url('../img/wallet_keepkey.png'); }
+section#wallets > div > ul > li > a.ledger { background-image: url('../img/wallet_ledger.png'); }
+section#wallets > div > ul > li > a.meliso { background-image: url('../img/wallet_meliso.png'); }
+section#wallets > div > ul > li > a.mobi { background-image: url('../img/wallet_mobi.png'); }
+section#wallets > div > ul > li > a.stash { background-image: url('../img/wallet_stashwallet.png'); }
+section#wallets > div > ul > li > a.strongcoin { background-image: url('../img/wallet_strongcoin.png'); }
+section#wallets > div > ul > li > a.trezor { background-image: url('../img/wallet_trezor.png'); }
+section#wallets > div > ul > li > a.webwallet { background-image: url('../img/wallet_webwallet.png'); }
+
+
 section#testimonies,
 section#links
 {

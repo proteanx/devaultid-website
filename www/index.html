@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name='Description' content=''>
 
-		<title>Cash Address Utilities</title>
+		<title>Cash Accounts</title>
 
 		<link rel='icon' type='image/png' href='data:;base64,iVBORw0KGgo='>
 		<link type='text/css' rel='stylesheet' href='css/default.css'>
@@ -97,10 +97,10 @@
 
 					<label>
 						<span>Enter your name:</span>
-						<input id='alias_name' onchange='update_name();' onkeyup='update_name();' type='text' placeholder='SatoshiNakamoto' autocomplete='off'>
+						<input id='alias_name' onchange='update_name();' onkeyup='update_name();' type='text' placeholder='SatoshiNakamoto' pattern='\w{1,99}' required autocomplete='off'>
 					</label>
 					<label>
-						<span>Enter your address or payment code:</span>
+						<span>Enter your payment information:</span>
 						<textarea id='alias_payload' placeholder='qqgekzvw96vq5g57zwdfa5q6g609rrn0ycp33uc325' name='' type=''>
 						</textarea>
 					</label>
@@ -134,7 +134,7 @@
 						<li><span>Status</span><span><i title='Waiting for block inclusion'>Pending</i>, <i title='Only one registration with this name is in the mempool.'>Collision-Free</i></span></li>
 					</ul>
 					<label>
-						<button disabled>Lookup: SatoshiNakamoto#567890;</button>
+						<button id='alias_name_lookup_button' disabled>Lookup: SatoshiNakamoto#567890;</button>
 					</label>
 				</fieldset>
 			</form>
@@ -142,7 +142,7 @@
 		<section id='lookup'>
 			<form>
 				<fieldset>
-					<legend>Look up Cash Address</legend>
+					<legend>Look up Cash Account</legend>
 					<table>
 						<thead>
 							<tr>
@@ -172,10 +172,52 @@
 			<div>
 				<ul>
 					<li>
-						<img />
-						<span>Name<span>
-						<span>Features</span>
-						<a>Website</a>
+						<a href='' class='wallet bitcoindotcom'></a>
+						<a href='https://github.com/Bitcoin-com/Wallet/issues/452' class='status'>Request pending</a>
+					</li>
+					<li class=''>
+						<a href='' class='wallet bitpay'></a>
+						<a href='' class='status'>?</a>
+					</li>
+					<li class=''>
+						<a href='' class='wallet bread'></a>
+						<a href='https://github.com/breadwallet/breadwallet-core/issues/34' class='status'>Request pending</a>
+					</li>
+					<li class=''>
+						<a href='' class='wallet coinbase'></a>
+						<a href='' class='status'>?</a>
+					</li>
+					<li class=''>
+						<a href='' class='wallet coinomi'></a>
+						<a href='' class='status'>?</a>
+					</li>
+					<li class=''>
+						<a href='' class='wallet copay'></a>
+						<a href='https://github.com/bitpay/copay/issues/9401' class='status'>Request pending</a>
+					</li>
+					<li class=''>
+						<a href='' class='wallet edge'></a>
+						<a href='https://github.com/EdgeApp/edge-core-js/issues/180' class='status'>Request pending</a>
+					</li>
+					<li class='pending'>
+						<a href='positive' class='wallet electroncash'></a>
+						<a href='https://github.com/Electron-Cash/Electron-Cash/issues/1035' class='status'>Pending implementation</a>
+					</li>
+					<li class=''>
+						<a href='' class='wallet ledger'></a>
+						<a href='https://github.com/LedgerHQ/ledger-live-common/issues/118' class='status'>Request pending</a>
+					</li>
+					<li class=''>
+						<a href='' class='wallet mobi'></a>
+						<a href='' class='status'>?</a>
+					</li>
+					<li class='pending'>
+						<a href='' class='wallet stash'></a>
+						<a href='' class='status'>Accepted, but low priority</a>
+					</li>
+					<li class='negative'>
+						<a href='' class='wallet trezor'></a>
+						<a href='https://github.com/trezor/trezord-go/issues/131' class='status'>Requires BIP</a>
 					</li>
 				</ul>
 			</div>
@@ -249,7 +291,7 @@
 		</section>
 
 		<nav>
-			<a href='https://gitlab.com/cash-address/specification'>Cash Address Specification</a> | <a href='https://github.com/OpenBitcoinPrivacyProject/bips/blob/master/bip-0047.mediawiki'>BIP-47 Specification</a> | <a href='https://gitlab.com/cash-address/website'>Source Code</a> | <a href='https://discord.gg/9kACN9t'>Discord Chat Server</a>
+			<a href='https://gitlab.com/cash-accounts/specification'>Cash Accounts Specification</a> | <a href='https://github.com/OpenBitcoinPrivacyProject/bips/blob/master/bip-0047.mediawiki'>BIP-47 Specification</a> | <a href='https://gitlab.com/cash-accounts/website'>Source Code</a> | <a href='https://discord.gg/9kACN9t'>Discord Chat Server</a>
 		</nav>
 
 		<script type="text/javascript">
