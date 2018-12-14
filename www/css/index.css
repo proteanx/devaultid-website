@@ -321,6 +321,7 @@ section#lookup > form > fieldset > table > thead > tr > th
 section#testimonies > div
 {
 	padding: 1rem;
+	padding-bottom: 0;
 }
 
 section#testimonies > div > ul
@@ -405,6 +406,7 @@ section#testimonies > div > ul > li:nth-child(3) > img
 {
 	width: 100%;
 	border-radius: 1rem;
+	margin-bottom: 0.5rem;
 }
 section#testimonies > div > ul > li > div > span:nth-child(1)
 {
@@ -462,7 +464,7 @@ section#testimonies > div > ul > li > div > span:nth-child(3):before
 }
 
 /**************************************/
-/**            ??? **/
+/**            Wallets               **/
 /**************************************/
 section#wallets > div > ul
 {
@@ -494,7 +496,8 @@ section#wallets > div > ul > li > a.wallet
 	background-repeat: no-repeat;
 }
 
-section#wallets > div > ul > li > a.status
+section#wallets > div > ul > li > a.status,
+section#wallets > div > ul > li > span.status
 {
 	display: inline-block;
 	width: 100%;
@@ -505,9 +508,9 @@ section#wallets > div > ul > li > a.status
 	text-align: center;
 	color: white;
 }
-section#wallets > div > ul > li.positive > a.status { background-color: rgb(64, 160, 48); }
-section#wallets > div > ul > li.pending > a.status { background-color: rgb(224, 128, 0); }
-section#wallets > div > ul > li.negative > a.status { background-color: rgb(242, 32, 32); }
+section#wallets > div > ul > li.positive > .status { background-color: rgb(64, 160, 48); }
+section#wallets > div > ul > li.pending > .status { background-color: rgb(224, 128, 0); }
+section#wallets > div > ul > li.negative > .status { background-color: rgb(242, 32, 32); }
 
 section#wallets > div > ul > li > a.bitcoincash { background-image: url('../img/wallet_bitcoincash.png'); }
 section#wallets > div > ul > li > a.bitcoindotcom { background-image: url('../img/wallet_bitcoindotcom.png'); }
@@ -535,9 +538,12 @@ section#wallets > div > ul > li > a.trezor { background-image: url('../img/walle
 section#wallets > div > ul > li > a.webwallet { background-image: url('../img/wallet_webwallet.png'); }
 
 
-section#testimonies,
-section#links
+/**************************************/
+/**             Misc                 **/
+/**************************************/
+nav#links > a
 {
-	height: 50rem;
+	color: black;
+	font-weight: bold;
+	padding: 1rem;
 }
-
