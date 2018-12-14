@@ -15,6 +15,10 @@
 		<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet">
 
 		<script type='text/javascript' src='js/index.js'></script>
+		<script src="js/bitcore-lib-cash-0.19.0.js" /></script>
+		<script src="https://cdn.jsdelivr.net/gh/emn178/js-sha256/build/sha256.min.js"></script>
+		<script src="https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.3.2.min.js"></script>
+
 		<script type="text/javascript">
 			window.onscroll = function()
 			{
@@ -139,22 +143,21 @@
 			<form>
 				<fieldset>
 					<legend>Look up Cash Account</legend>
+					<input id='alias_lookup' name='' type='text' onclick='lookup_identifier(this.value);' placeholder='Search...' />
+
 					<table>
 						<thead>
 							<tr>
-								<th>
-									<b>Alias</b><b style='opacity: 0.66;'>#Blockheight</b><i style='opacity: 0.40;'>:Transaction;</i>
-								</th>
-								<th>Link</th>
-								<th>Payment Code</th>
-							</tr>
-							<tr>
-								<td colspan='3' class='search_field'>
-									<input id='alias_lookup' name='' type='text' placeholder='Search...' />
-								</td>
+								<th>Account Name</th>
+								<th>Account Number</th>
+								<th>Account Hash</th>
+								<th>Transaction</th>
+								<th>Block</th>
+								<th>Payment Type</th>
+								<th>Payment Data</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id='result_list'>
 							<tr>
 								<td colspan='3' class='no_result'>No alias matched</td>
 							</tr>
@@ -191,9 +194,9 @@
 						<a href='' class='wallet copay'></a>
 						<a href='https://github.com/bitpay/copay/issues/9401' class='status'>Requested on Github</a>
 					</li>
-					<li class=''>
+					<li class='pending'>
 						<a href='' class='wallet edge'></a>
-						<a href='https://github.com/EdgeApp/edge-core-js/issues/180' class='status'>Requested on Github</a>
+						<a href='https://github.com/EdgeApp/edge-core-js/issues/180' class='status'>Evaluating compatibility with FIO</a>
 					</li>
 					<li class='pending'>
 						<a href='positive' class='wallet electroncash'></a>
