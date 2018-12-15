@@ -64,6 +64,36 @@ let update_name = function()
 	fileReader.readAsArrayBuffer(name);
 }
 
+let calculate_collision_hash = function(blockhash, transactionhash)
+{
+//console.log(blockhhash);
+//console.log(transactionhash);
+
+	// Calculate the account hash:
+	// Step 1: Concatenate the block hash with the transaction hash
+	let account_hash_step1 = blockhash + transactionhash;
+//console.log(account_hash_step1);
+
+	// Step 2: Hash the results of the concatenation with sha256
+	let account_hash_step2 = sha256(Uint8ArrayfromHexString(account_hash_step1));
+//console.log(account_hash_step2);
+
+	// Step 3: Take the first four bytes and discard the rest
+	let account_hash_step3 = account_hash_step2.substring(0, 8);
+//console.log(account_hash_step3);
+
+	// Step 4: Convert to decimal notation and store as a string
+	let account_hash_step4 = parseInt(account_hash_step3, 16);
+//console.log(account_hash_step4);
+
+	// Step 5: Reverse the the string so the last number is first
+	let account_hash_step5 = account_hash_step4.toString().split("").reverse().join("").padEnd(10, '0');
+//console.log(account_hash_step5);
+
+	// Return the final collision hash.
+	return account_hash_step5;
+}
+
 let lookup_identifier = function()
 {
 	let identifier = document.getElementById('lookup_search_string').value;
@@ -85,7 +115,7 @@ let lookup_identifier = function()
 		let account_number = parseInt(account_parts[3]) + cash_account_height_modifier;
 		let account_hash = account_parts[4];
 
-		let query = { "v": 3,"q": { "find": {}, "limit": 9 }, "r": { "f": "[ .[] | { blockheight: .blk.i?, blockhash: .blk.h?, transactionhash: .tx.h?, name: .out[0].s2, data: .out[0].h3} ]" } };
+		let query = { "v": 3,"q": { "find": {}, "limit": 19 }, "r": { "f": "[ .[] | { blockheight: .blk.i?, blockhash: .blk.h?, transactionhash: .tx.h?, name: .out[0].s2, data: .out[0].h3} ]" } };
 
 		if(typeof account_parts[3] !== 'undefined')
 		{
@@ -145,6 +175,73 @@ let lookup_identifier = function()
 
 				//console.log(results);
 
+				// Set up a collision table.
+				let collision_table = {};
+console.log('collision_start');
+				// Populate the collision table.
+				for(index in results['c'])
+				{
+					let collision_hash = calculate_collision_hash(results['c'][index]['blockhash'], results['c'][index]['transactionhash']);
+
+					if(typeof collision_table[results['c'][index]['blockheight']] == 'undefined')
+					{
+						collision_table[results['c'][index]['blockheight']] = {};
+					}
+
+					if(typeof collision_table[results['c'][index]['blockheight']][results['c'][index]['name']] == 'undefined')
+					{
+						collision_table[results['c'][index]['blockheight']][results['c'][index]['name']] = {};
+					}
+
+					if(typeof collision_table[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions'] == 'undefined')
+					{
+						collision_table[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions'] = {};
+					}
+
+					collision_table[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions'][collision_hash] = collision_hash;
+				}
+console.log('collision_mid');
+
+				// Calculate the shortest identifiers.
+				for(index in results['c'])
+				{
+					let collision_hash = calculate_collision_hash(results['c'][index]['blockhash'], results['c'][index]['transactionhash']);
+					for(collision in collision_table[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions'])
+					{
+						let current_collision = collision_table[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions'][collision];
+						let length = 10;
+						while(length > 0)
+						{
+							if(collision_hash != current_collision)
+							{
+//console.log(results['c'][index]['name'] + "#" + results['c'][index]['blockheight']+ ", hash="+collision_hash+", collision=" + current_collision);
+								if(collision_hash.substring(0, length) == current_collision.substring(0, length))
+								{
+									console.log('compared ' + collision_hash.substring(0, length) + " with " + current_collision.substring(0, length));
+									break;
+								}
+								else
+								{
+								}
+							}
+							length -= 1;
+//console.log('d, length=' + length);
+						}
+
+						if(Object.keys(collision_table[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions']).length > 1)
+						{
+							collision_table[results['c'][index]['transactionhash']] = 1;
+						}
+						else
+						{
+							collision_table[results['c'][index]['transactionhash']] = length;
+						}
+					}
+				}
+console.log('collision_end');
+
+console.log(collision_table);
+
 				for(type in transaction_types)
 				{
 					//console.log('Parsing TYPE: ' + transaction_types[type]);
@@ -156,35 +253,41 @@ let lookup_identifier = function()
 						//console.log(parseInt(results[transaction_types[type]][index]['data'].substring(0,2)));
 						if(parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) != 0 && parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) <= 4)
 						{
-							//console.log('B');
 							let account_name = results[transaction_types[type]][index]['name'];
-							let account_number = results[transaction_types[type]][index]['blockheight'] - cash_account_height_modifier;
-							let block_height = results[transaction_types[type]][index]['blockheight'];
-							let block_hash = results[transaction_types[type]][index]['blockhash'];
 							let transaction_id = results[transaction_types[type]][index]['transactionhash'];
+							let account_number = '';
+							let block_height = '';
+							let block_hash = '';
+							let account_hash = '';
+
+							if(results[transaction_types[type]][index]['blockheight'] === null)
+							{
+								account_number = '0000';
+								block_height = 'Pending';
+								block_hash = 'Pending';
+								account_hash = '0000000000';
+							}
+							else
+							{
+								account_number = results[transaction_types[type]][index]['blockheight'] - cash_account_height_modifier;
+								block_height = results[transaction_types[type]][index]['blockheight'];
+								block_hash = results[transaction_types[type]][index]['blockhash'];
+
+								account_hash = calculate_collision_hash(block_hash, transaction_id);
+							}
 
 							let payment_type = payment_types[results[transaction_types[type]][index]['data'].substring(0,2)];
 							let payment_data = results[transaction_types[type]][index]['data'].substring(2);
 
-							// Calculate the account hash:
-							// Step 1: Concatenate the block hash with the transaction hash
-							let account_hash_step1 = block_hash + transaction_id;
-//console.log(account_hash_step1);
-							// Step 2: Hash the results of the concatenation with sha256
-							let account_hash_step2 = sha256(Uint8ArrayfromHexString(account_hash_step1));
-//console.log(account_hash_step2);
-							// Step 3: Take the first four bytes and discard the rest
-							let account_hash_step3 = account_hash_step2.substring(0, 8);
-//console.log(account_hash_step3);
-							// Step 4: Convert to decimal notation and store as a string
-							let account_hash_step4 = parseInt(account_hash_step3, 16);
-//console.log(account_hash_step4);
-
-							// Step 5: Reverse the the string so the last number is first
-							let account_hash_step5 = account_hash_step4.toString().split("").reverse().join("").padEnd(10, '0');
-//console.log(account_hash_step5);
-
-							let account_identifier = "<span>" + account_name + "</span><b>#" + account_number + "</b><i>." + account_hash_step5 + "</i>";
+							let account_identifier = "<span>" + account_name + "</span><b>#" + account_number;
+							if(typeof collision_table[transaction_id] !== 'undefined' && collision_table[transaction_id] > 0)
+							{
+								account_identifier += "<i>." + account_hash.substring(0, collision_table[transaction_id]) + "</i>;</b>";
+							}
+							else
+							{
+								account_identifier += ";</b>";
+							}
 
 							// Calculate the address:
 							/*
@@ -197,7 +300,7 @@ let lookup_identifier = function()
 
 							let account_address_type = payment_data_types[results[transaction_types[type]][index]['data'].substring(0,2)];
 							let account_address = cashaddr.encode('bitcoincash', account_address_type, Uint8ArrayfromHexString(payment_data));
-							
+
 							document.getElementById('result_list').innerHTML += "<tr><td>" + account_identifier + "</td><td><a href='https://blockchair.com/bitcoin-cash/block/" + block_height + "'>" + block_height + "</a></td><td><a href='https://blockchair.com/bitcoin-cash/transaction/" + transaction_id + "' title='" + transaction_id + "'>" + transaction_id.substring(0,4) + "..." + transaction_id.substring(transaction_id.length - 4) + "</a></td><td>" + payment_type + "</td><td><a href='https://blockchair.com/bitcoin-cash/address/" + account_address.substring(12) + "'>" + account_address + "</a></td></tr>";
 						}
 						//console.log('C');
