@@ -32,9 +32,9 @@ router.post('/', async function (req, res) {
         payment_data: payment_data
     });
 
-    const s = build_script(alias);
+    const s = s2h(build_script(alias));
 
-    return res.status(200).json({ alias: alias, script: s.toString() });
+    return res.status(200).json({ alias: alias, script: s });
 });
 
 /**
@@ -114,7 +114,7 @@ function build_script(alias) {
             let pd = new Uint8Array(data.length+1);
             pd[0] = 0x01;
             pd.set(data, 1);
-            s.add(pd);
+            s.add(Buffer.from(pd));
         } else {
             s.add(Buffer.from(data_map[key] + value), "utf8");
         }
@@ -122,6 +122,22 @@ function build_script(alias) {
 
     console.log(s);
     return s;
+}
+
+function s2h(script) {
+    let parts = script.toString().replace("OP_RETURN", '0x6a').split(' ');
+    let string = "";
+    for (let p of parts) {
+        if (p.indexOf('0x') === 0) {
+            string += p.substring(2);
+        } else {
+            let hc = (p).toString(16);
+            if (hc.length % 2) hc = '0' + hc;
+            string += hc;
+        }
+    }
+
+    return string;
 }
 
 module.exports = router;
