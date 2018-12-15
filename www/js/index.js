@@ -64,26 +64,42 @@ let update_name = function()
 	fileReader.readAsArrayBuffer(name);
 }
 
-let lookup_identifier = function(identifier)
+let lookup_identifier = function()
 {
-	let parser = /^([a-zA-Z0-9_]+)#([0-9]+)(\.([0-9]+))?;$/;
+	let identifier = document.getElementById('lookup_search_string').value;
+	
+	let parser = /^([a-zA-Z0-9_]+)(#([0-9]+)(\.([0-9]+))?)?/;
 	let account_parts = parser.exec(identifier.trim());
+
+	//console.log(identifier);
+	//console.log(account_parts);
+
+	if(identifier === '' || identifier === null)
+	{
+		account_parts = [null];
+	}
 
 	if(account_parts)
 	{
 		let account_name = account_parts[1];
-		let account_number = parseInt(account_parts[2]) + cash_account_height_modifier;
+		let account_number = parseInt(account_parts[3]) + cash_account_height_modifier;
 		let account_hash = account_parts[4];
 
-		let query =
+		let query = { "v": 3,"q": { "find": {}, "limit": 9 }, "r": { "f": "[ .[] | { blockheight: .blk.i?, blockhash: .blk.h?, transactionhash: .tx.h?, name: .out[0].s2, data: .out[0].h3} ]" } };
+
+		if(typeof account_parts[3] !== 'undefined')
 		{
-			"v": 3,
-			"q": {
-				"find": { "out.h1": "01010101", "out.s2": { "$regex": "^" + account_name, "$options": "i" }, "blk.i": parseInt(account_number) },
-				"limit": 5
-			},
-			"r": {
-				"f": "[ .[] | { blockheight: .blk.i?, blockhash: .blk.h?, transactionhash: .tx.h?, name: .out[0].s2, data: .out[0].h3} ]"
+			query.q.find = { "out.h1": "01010101", "out.s2": { "$regex": "^" + account_name, "$options": "i" }, "blk.i": parseInt(account_number) };
+		}
+		else
+		{
+			if(typeof account_parts[1] !== 'undefined')
+			{
+				query.q.find = { "out.h1": "01010101", "out.s2": { "$regex": "^" + account_name, "$options": "i" } };
+			}
+			else
+			{
+				query.q.find = { "out.h1": "01010101" };
 			}
 		}
 
@@ -136,50 +152,69 @@ let lookup_identifier = function(identifier)
 
 					for(index in results[transaction_types[type]])
 					{
-						let account_name = results[transaction_types[type]][index]['name'];
-						let account_number = results[transaction_types[type]][index]['blockheight'] - cash_account_height_modifier;
-						let account_hash = "unknown";
-						let block_height = results[transaction_types[type]][index]['blockheight'];
-						let block_hash = results[transaction_types[type]][index]['blockhash'];
-						let transaction_id = results[transaction_types[type]][index]['transactionhash'];
+						//console.log('A');
+						//console.log(parseInt(results[transaction_types[type]][index]['data'].substring(0,2)));
+						if(parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) != 0 && parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) <= 4)
+						{
+							//console.log('B');
+							let account_name = results[transaction_types[type]][index]['name'];
+							let account_number = results[transaction_types[type]][index]['blockheight'] - cash_account_height_modifier;
+							let block_height = results[transaction_types[type]][index]['blockheight'];
+							let block_hash = results[transaction_types[type]][index]['blockhash'];
+							let transaction_id = results[transaction_types[type]][index]['transactionhash'];
 
-						let payment_type = payment_types[results[transaction_types[type]][index]['data'].substring(0,2)];
-						let payment_data = results[transaction_types[type]][index]['data'].substring(2);
+							let payment_type = payment_types[results[transaction_types[type]][index]['data'].substring(0,2)];
+							let payment_data = results[transaction_types[type]][index]['data'].substring(2);
 
-						// Calculate the account hash:
-						// Step 1: Concatenate the block hash with the transaction hash
-						let account_hash_step1 = block_hash + transaction_id;
+							// Calculate the account hash:
+							// Step 1: Concatenate the block hash with the transaction hash
+							let account_hash_step1 = block_hash + transaction_id;
 //console.log(account_hash_step1);
-						// Step 2: Hash the results of the concatenation with sha256
-						let account_hash_step2 = sha256(window.parseHexString(account_hash_step1));
+							// Step 2: Hash the results of the concatenation with sha256
+							let account_hash_step2 = sha256(Uint8ArrayfromHexString(account_hash_step1));
 //console.log(account_hash_step2);
-						// Step 3: Take the first four bytes and discard the rest
-						let account_hash_step3 = account_hash_step2.substring(0, 8);
+							// Step 3: Take the first four bytes and discard the rest
+							let account_hash_step3 = account_hash_step2.substring(0, 8);
 //console.log(account_hash_step3);
-						// Step 4: Convert to decimal notation and store as a string
-						let account_hash_step4 = parseInt(account_hash_step3, 16);
+							// Step 4: Convert to decimal notation and store as a string
+							let account_hash_step4 = parseInt(account_hash_step3, 16);
 //console.log(account_hash_step4);
-						// Step 5: Reverse the the string so the last number is first
-						let account_hash_step5 = account_hash_step4.toString().split("").reverse().join("");
+
+							// Step 5: Reverse the the string so the last number is first
+							let account_hash_step5 = account_hash_step4.toString().split("").reverse().join("").padEnd(10, '0');
 //console.log(account_hash_step5);
 
-						// Calculate the address:
-						/*
-						let temp = cashaddr.decode('bitcoincash:qr4aadjrpu73d2wxwkxkcrt6gqxgu6a7usxfm96fst');
-						console.log(temp);
-						console.log('decode_hash: ' + Uint8ArraytoHexString(temp.hash));
-						console.log('payment_data: ' + payment_data);
-						console.log(cashaddr.encode('bitcoincash', 'P2PKH', Uint8ArrayfromHexString(payment_data)));
-						*/
+							let account_identifier = "<span>" + account_name + "</span><b>#" + account_number + "</b><i>." + account_hash_step5 + "</i>";
 
-						let account_address_type = payment_data_types[results[transaction_types[type]][index]['data'].substring(0,2)];
-						let account_address = cashaddr.encode('bitcoincash', account_address_type, Uint8ArrayfromHexString(payment_data));
-						
-						document.getElementById('result_list').innerHTML = "<tr><td>" + account_name + "</td><td>#" + account_number + "</td><td>." + account_hash_step5 + "</td><td><a href='https://blockchair.com/bitcoin-cash/transaction/" + transaction_id + "' title='" + transaction_id + "'>" + transaction_id.substring(0,4) + "..." + transaction_id.substring(transaction_id.length - 4) + "</a></td><td><a href='https://blockchair.com/bitcoin-cash/block/" + block_height + "'>" + block_height + "</a></td><td>" + payment_type + "</td><td><a href='https://blockchair.com/bitcoin-cash/address/" + account_address.substring(12) + "'>" + account_address + "</a></td></tr>";
-						console.log(results[types[type]][index]);
+							// Calculate the address:
+							/*
+							let temp = cashaddr.decode('bitcoincash:qr4aadjrpu73d2wxwkxkcrt6gqxgu6a7usxfm96fst');
+							console.log(temp);
+							console.log('decode_hash: ' + Uint8ArraytoHexString(temp.hash));
+							console.log('payment_data: ' + payment_data);
+							console.log(cashaddr.encode('bitcoincash', 'P2PKH', Uint8ArrayfromHexString(payment_data)));
+							*/
+
+							let account_address_type = payment_data_types[results[transaction_types[type]][index]['data'].substring(0,2)];
+							let account_address = cashaddr.encode('bitcoincash', account_address_type, Uint8ArrayfromHexString(payment_data));
+							
+							document.getElementById('result_list').innerHTML += "<tr><td>" + account_identifier + "</td><td><a href='https://blockchair.com/bitcoin-cash/block/" + block_height + "'>" + block_height + "</a></td><td><a href='https://blockchair.com/bitcoin-cash/transaction/" + transaction_id + "' title='" + transaction_id + "'>" + transaction_id.substring(0,4) + "..." + transaction_id.substring(transaction_id.length - 4) + "</a></td><td>" + payment_type + "</td><td><a href='https://blockchair.com/bitcoin-cash/address/" + account_address.substring(12) + "'>" + account_address + "</a></td></tr>";
+						}
+						//console.log('C');
+						//console.log(results[types[type]][index]);
 					}
 				}
 			}
 		);
 	}
 }
+
+// Make a default lookup for the latest registered accounts.
+window.addEventListener
+(
+	"load", 
+	function()
+	{
+		lookup_identifier();
+	}
+);

@@ -16,6 +16,28 @@ body > section
 				inset 0 -0.10rem 0 0 rgba(0, 0, 0, 0.217);
 }
 
+section#registration
+{
+	padding-bottom: 0;
+	border-bottom: 0;
+	box-shadow: inset 0 0.25rem 0.5rem rgba(0, 0, 0, 0.13);
+}
+section#lookup
+{
+	margin-top: 0;
+	box-shadow: inset 0 -0.10rem 0 0 rgba(0, 0, 0, 0.217);
+}
+
+section#wallets
+{
+	background-image: linear-gradient(0deg, rgba(255, 255, 255, 0.20) 0%, rgba(0, 0, 0, 0.10) 100%);
+}
+
+section#testimonies
+{
+	background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.10) 100%);
+}
+
 section > div,
 section > form
 {
@@ -290,17 +312,40 @@ section#registration > form > fieldset > ul > li > span:first-child:after
 /**            Lookup                **/
 /**************************************/
 
+section#lookup > form
+{
+	margin-top: -1rem;
+	padding-top: 1rem;
+	border-top: 0.10rem solid rgba(0, 0, 0, 0.23);
+}
+
 section#lookup > form > fieldset
 {
 	flex: 1;
+	flex-wrap: wrap;
+
 	margin: 1rem;
 }
+
+section#lookup > form > fieldset > input
+{
+	margin: 0;
+}
+
+section#lookup > form > fieldset > input:nth-child(2) { width: calc(99.5% - 12ex); }
+section#lookup > form > fieldset > input:nth-child(3) { width: 12ex; }
 
 section#lookup > form > fieldset > table
 {
 	width: 100%;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
 }
-
+section#lookup > form > fieldset > table > thead > tr > th,
+section#lookup > form > fieldset > table > tbody > tr > td
+{
+	padding: 0.25rem;
+}
 section#lookup > form > fieldset > table > thead > tr > th
 {
 	text-align: left;
@@ -309,9 +354,10 @@ section#lookup > form > fieldset > table > thead > tr > th
 
 .no_result
 {
+	
 	font-style: italic;
 	text-align: center;
-	padding: 2rem;
+	padding: 2rem !important;
 }
 
 /**************************************/

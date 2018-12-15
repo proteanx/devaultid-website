@@ -15,7 +15,6 @@
 		<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet">
 
 		<script type='text/javascript' src='js/index.js'></script>
-		<script src="js/bitcore-lib-cash-0.19.0.js" /></script>
 		<script src="https://cdn.jsdelivr.net/gh/emn178/js-sha256/build/sha256.min.js"></script>
 		<script src="https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.3.2.min.js"></script>
 
@@ -140,26 +139,25 @@
 			</form>
 		</section>
 		<section id='lookup'>
-			<form>
+			<form onsubmit='lookup_identifier(); return false;'>
 				<fieldset>
 					<legend>Look up Cash Account</legend>
-					<input id='alias_lookup' name='' type='text' onclick='lookup_identifier(this.value);' placeholder='Search...' />
+					<input id='lookup_search_string' name='' type='text' placeholder='Search for account...' />
+					<input type='submit' value='search' />
 
 					<table>
 						<thead>
 							<tr>
-								<th>Account Name</th>
-								<th>Account Number</th>
-								<th>Account Hash</th>
+								<th>Account Identifier</th>
+								<th>Blockheight</th>
 								<th>Transaction</th>
-								<th>Block</th>
 								<th>Payment Type</th>
 								<th>Payment Data</th>
 							</tr>
 						</thead>
 						<tbody id='result_list'>
 							<tr>
-								<td colspan='3' class='no_result'>No alias matched</td>
+								<td colspan='5' class='no_result'>No alias matched</td>
 							</tr>
 						</tbody>
 					</table>
@@ -171,51 +169,51 @@
 			<div>
 				<ul>
 					<li>
-						<a href='' class='wallet bitcoindotcom'></a>
+						<a href='https://www.bitcoin.com/choose-your-wallet/bitcoin-com-wallet' class='wallet bitcoindotcom'></a>
 						<a href='https://github.com/Bitcoin-com/Wallet/issues/452' class='status'>Requested on Github</a>
 					</li>
 					<li class=''>
-						<a href='' class='wallet bitpay'></a>
+						<a href='https://bitpay.com/wallet' class='wallet bitpay'></a>
 						<a href='https://github.com/bitpay/copay/issues/9401' class='status'>Requested on Github</a>
 					</li>
 					<li class=''>
-						<a href='' class='wallet bread'></a>
+						<a href='https://breadapp.com/' class='wallet bread'></a>
 						<a href='https://github.com/breadwallet/breadwallet-core/issues/34' class='status'>Requested on Github</a>
 					</li>
 					<li class=''>
-						<a href='' class='wallet coinbase'></a>
+						<a href='https://www.coinbase.com/' class='wallet coinbase'></a>
 						<a href='' class='status'>?</a>
 					</li>
 					<li class=''>
-						<a href='' class='wallet coinomi'></a>
+						<a href='https://coinomi.com/' class='wallet coinomi'></a>
 						<span class='status'>Requested via E-mail</a>
 					</li>
 					<li class=''>
-						<a href='' class='wallet copay'></a>
+						<a href='https://copay.io/' class='wallet copay'></a>
 						<a href='https://github.com/bitpay/copay/issues/9401' class='status'>Requested on Github</a>
 					</li>
 					<li class='pending'>
-						<a href='' class='wallet edge'></a>
+						<a href='https://edgesecure.co/' class='wallet edge'></a>
 						<a href='https://github.com/EdgeApp/edge-core-js/issues/180' class='status'>Evaluating compatibility with FIO</a>
 					</li>
-					<li class='pending'>
-						<a href='positive' class='wallet electroncash'></a>
-						<a href='https://github.com/Electron-Cash/Electron-Cash/issues/1035' class='status'>Accepted on Github</a>
+					<li class='positive'>
+						<a href='https://electroncash.org/' class='wallet electroncash'></a>
+						<a href='https://github.com/Electron-Cash/Electron-Cash/issues/1035' class='status'>Building implementation</a>
 					</li>
 					<li class=''>
-						<a href='' class='wallet ledger'></a>
+						<a href='http://www.ledgerwallet.com/' class='wallet ledger'></a>
 						<a href='https://github.com/LedgerHQ/ledger-live-common/issues/118' class='status'>Requested on Github</a>
 					</li>
 					<li class=''>
-						<a href='' class='wallet mobi'></a>
+						<a href='https://www.mobi.me/' class='wallet mobi'></a>
 						<span class='status'>Requested via E-mail</a>
 					</li>
 					<li class='pending'>
-						<a href='' class='wallet stash'></a>
+						<a href='https://stashcrypto.com/' class='wallet stash'></a>
 						<span class='status'>Accepted in chat, but low priority</a>
 					</li>
 					<li class='negative'>
-						<a href='' class='wallet trezor'></a>
+						<a href='https://wallet.trezor.io/' class='wallet trezor'></a>
 						<a href='https://github.com/trezor/trezord-go/issues/131' class='status'>Denied on Github, requires BIP</a>
 					</li>
 				</ul>
