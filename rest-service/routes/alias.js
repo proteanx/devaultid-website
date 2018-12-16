@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const rpc = require('node-bitcoin-rpc');
 const bch = require('bitcore-lib-cash');
 const cashaddr = require('cashaddrjs');
+const bchaddr = require('bchaddrjs');
 
 mongoose.connect(process.env.MONGO_CONNECTION, { useNewUrlParser: true });
 const Alias = require('../models/alias');
@@ -13,7 +14,7 @@ const Alias = require('../models/alias');
  * @apiName Create new alias
  * 
  * @apiParam {String} [requested_alias] The requested alias
- * @apiParam {Object} [payment_data] Object containing payment data
+ * @apiParam {String} [payment_data] A bitcoin cash address
  * 
  * @apiSuccess (200) {Object} `Alias` object
  */
@@ -23,18 +24,17 @@ router.post('/', async function (req, res) {
         return res.status(400).json({ err: 'invalid-alias' })
     }
 
-    if (!payment_data) {
-        return res.status(400).json({ err: 'no-payment-data-specified' })
-    }
+    const pd = id_payment_data(payment_data);
+    if (!pd) return res.status(400).json({ err: 'unrecognized-payment-data' })
 
     const alias = await Alias.create({
         alias: requested_alias,
-        payment_data: payment_data
+        payment_data: { [pd.type]: pd.hash }
     });
 
-    const s = build_script(alias);
+    const s = s2h(build_script(alias));
 
-    return res.status(200).json({ alias: alias, script: s.toString() });
+    return res.status(200).json({ alias: alias, script: s });
 });
 
 /**
@@ -86,8 +86,7 @@ router.post('/:id/broadcast', async function (req, res) {
                         return res.status(500).json({ err: err });
                     }
 
-                    console.log(r);
-                    return res.status(200).json({});
+                    return res.status(200).json({ txid: r.result });
                 })
             })
         });
@@ -107,21 +106,42 @@ function build_script(alias) {
     s.add(Buffer.from("01010101", "hex"));
     s.add(Buffer.from(alias.alias, "utf8"));
 
-    let data;
     for (let [key, value] of alias.payment_data.entries()) {
-        if (key === 'p2pkh') {
-            data = cashaddr.decode(value).hash;
-            let pd = new Uint8Array(data.length+1);
-            pd[0] = 0x01;
-            pd.set(data, 1);
-            s.add(pd);
-        } else {
-            s.add(Buffer.from(data_map[key] + value), "utf8");
-        }
+        s.add(Buffer.from(data_map[key] + value, "hex"));
     }
 
     console.log(s);
     return s;
+}
+
+function s2h(script) {
+    let parts = script.toString().replace("OP_RETURN", '0x6a').split(' ');
+    let string = "";
+    for (let p of parts) {
+        if (p.indexOf('0x') === 0) {
+            string += p.substring(2);
+        } else {
+            let hc = (p).toString(16);
+            if (hc.length % 2) hc = '0' + hc;
+            string += hc;
+        }
+    }
+
+    return string;
+}
+
+function id_payment_data(pd) {
+    pd = pd.toLowerCase();
+    try {
+        const type = bchaddr.detectAddressType(pd)
+        return {
+            type: type,
+            hash: Buffer.from(cashaddr.decode(bchaddr.toCashAddress(pd)).hash).toString('hex')
+        }
+    } catch (err) { }
+
+    // failed to detect an address
+    return false;
 }
 
 module.exports = router;
