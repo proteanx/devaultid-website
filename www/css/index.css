@@ -340,6 +340,11 @@ section#lookup > form > fieldset > table
 	width: 100%;
 	margin-top: 1rem;
 	margin-bottom: 1rem;
+	border-collapse: collapse;
+}
+section#lookup > form > fieldset > table > thead > tr > th
+{
+	font-size: 1.1rem;
 }
 section#lookup > form > fieldset > table > thead > tr > th,
 section#lookup > form > fieldset > table > tbody > tr > td
@@ -352,9 +357,61 @@ section#lookup > form > fieldset > table > thead > tr > th
 	border-bottom: 0.05rem solid white;
 }
 
+section#lookup > form > fieldset > table > tbody > tr:nth-child(odd) > td
+{
+	background-color: rgba(255, 255, 255, 0.10);
+}
+section#lookup > form > fieldset > table > tbody > tr:nth-child(even) > td
+{
+	background-color: rgba(0, 0, 0, 0.10);
+}
+
+section#lookup > form > fieldset > table > thead > tr > th:first-child,
+section#lookup > form > fieldset > table > tbody > tr > td:first-child
+{
+	text-align: center;
+}
+section#lookup > form > fieldset > table > tbody > tr > td:nth-child(2) > *,
+section#lookup > form > fieldset > table > tbody > tr > td:nth-child(3)
+{
+	font-weight: normal;
+	padding: 0.25rem 0.5rem;
+	padding-right: 0;
+	font-size: 1.75rem;
+}
+section#lookup > form > fieldset > table > tbody > tr > td:nth-child(3) > *
+{
+	font-weight: bold;
+	font-size: 1rem;
+	border-bottom: 0.10rem dotted red;
+}
+section#lookup > form > fieldset > table > tbody > tr > td:nth-child(3)
+{
+	text-align: right;
+}
+
+section#lookup > form > fieldset > table > tbody > tr > td.visual_checksum
+{
+}
+section#lookup > form > fieldset > table > tbody > tr > td > span.visual_checksum
+{
+	display: block;
+	vertical-align: middle;
+
+	padding-top: 0.25rem;
+	font-size: 1.75rem;
+	text-shadow: 0 0.05rem 0.10rem black;
+}
+section#lookup > form > fieldset > table > tbody > tr > td > span.visual_checksum_name
+{
+	display: inline-block;
+	font-size: 0.75rem;
+	padding-bottom: 0.25rem;
+}
+
 .no_result
 {
-	
+	display: block;
 	font-style: italic;
 	text-align: center;
 	padding: 2rem !important;

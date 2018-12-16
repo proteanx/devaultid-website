@@ -94,6 +94,43 @@ let calculate_collision_hash = function(blockhash, transactionhash)
 	return account_hash_step5;
 }
 
+let calculate_checksum_character = function(blockheight, blockhash, transactionhash)
+{
+//console.log(blockhash);
+// 	// Fruit, animals
+	let topics = [127813, 128007];
+
+//console.log(transactionhash);
+	// Calculate topic:
+	let account_topic = topics[blockheight % topics.length];
+
+//console.log('---');
+	// Calculate the account item:
+	// Step 1: Concatenate the block item with the transaction item
+	let account_item_step1 = blockhash + transactionhash;
+//console.log(account_item_step1);
+
+	// Step 2: Hash the results of the concatenation with sha256
+	let account_item_step2 = sha256(Uint8ArrayfromHexString(account_item_step1));
+//console.log(account_item_step2);
+
+	// Step 3: Take the last four bytes and discard the rest
+	let account_item_step3 = account_item_step2.substring(-8);
+//console.log(account_item_step3);
+
+	// Step 4: Convert to decimal notation and store as a string
+	let account_item_step4 = parseInt(account_item_step3, 16);
+//console.log(account_item_step4);
+
+	// Step 5: 
+	// Reduce to a mappable number.
+	let account_item_step5 = account_item_step4 % 9;
+//console.log(account_item_step5);
+
+	// Return the final collision item.
+	return (account_topic + account_item_step5);
+}
+
 let lookup_identifier = function()
 {
 	let identifier = document.getElementById('lookup_search_string').value;
@@ -257,6 +294,7 @@ let lookup_identifier = function()
 						let block_height = '';
 						let block_hash = '';
 						let account_hash = '';
+						let account_emoji = '';
 
 						if(results[transaction_types[type]][index]['blockheight'] === null)
 						{
@@ -272,16 +310,17 @@ let lookup_identifier = function()
 							block_hash = results[transaction_types[type]][index]['blockhash'];
 
 							account_hash = calculate_collision_hash(block_hash, transaction_id);
+							account_emoji = calculate_checksum_character(block_height, block_hash, transaction_id);
 						}
 
-						let account_identifier = "<span>" + account_name + "</span><b>#" + account_number;
+						let account_identifier = "<td><span>" + account_name + "</span></td><td>#" + account_number;
 						if(typeof collision_table[transaction_id] !== 'undefined' && collision_table[transaction_id] > 0)
 						{
-							account_identifier += "<i>." + account_hash.substring(0, collision_table[transaction_id]) + "</i>;</b>";
+							account_identifier += "<i title='Due to a naming collision the account number has been extended by " + collision_table[transaction_id] + " digits.'>." + account_hash.substring(0, collision_table[transaction_id]) + "</i><i style='opacity: 0.33; border: 0;' title='The remaining numbers are also part of the account but is not needed to uniquely identify the account.'>" + account_hash.substring( collision_table[transaction_id]) + "</i></td>";
 						}
 						else
 						{
-							account_identifier += ";</b>";
+							account_identifier += "<i></i><i style='opacity: 0.33; border: 0;' title='These number are part of the account but is not needed to uniquely identify the account.'>." + account_hash.substring( collision_table[transaction_id]) + "</i></td>";
 						}
 
 						// Calculate the address:
@@ -304,10 +343,9 @@ let lookup_identifier = function()
 							payment_data = results[transaction_types[type]][index]['data'].substring(2);
 
 							account_address_type = payment_data_types[results[transaction_types[type]][index]['data'].substring(0,2)];
-							account_address = cashaddr.encode('bitcoincash', account_address_type, Uint8ArrayfromHexString(payment_data));
+							account_address = cashaddr.encode('bitcoincash', account_address_type, Uint8ArrayfromHexString(payment_data)).substring(12);
 						}
-
-						document.getElementById('result_list').innerHTML += "<tr><td>" + account_identifier + "</td><td><a href='https://blockchair.com/bitcoin-cash/block/" + block_height + "'>" + block_height + "</a></td><td><a href='https://blockchair.com/bitcoin-cash/transaction/" + transaction_id + "' title='" + transaction_id + "'>" + transaction_id.substring(0,4) + "..." + transaction_id.substring(transaction_id.length - 4) + "</a></td><td>" + payment_type + "</td><td><a href='https://blockchair.com/bitcoin-cash/address/" + account_address.substring(12) + "'>" + account_address + "</a></td></tr>";
+						document.getElementById('result_list').innerHTML += "<tr><td class='visual_checksum'><span class='visual_checksum' title='" + unicode_emoji_names[String.fromCodePoint(account_emoji)] + "'>&#" + account_emoji + ";</span><span class='visual_checksum_name'>" + unicode_emoji_names[String.fromCodePoint(account_emoji)] + "</span></td>" + account_identifier + "<td>Transaction:<br /><a href='https://blockchair.com/bitcoin-cash/transaction/" + transaction_id + "' title='" + transaction_id + "'>" + transaction_id.substring(0,4) + "...." + transaction_id.substring(transaction_id.length - 4) + "</a></td><td>" + payment_type + "<br /><a href='https://blockchair.com/bitcoin-cash/address/" + account_address + "'>" + account_address + "</a></td></tr>";
 					}
 				}
 			}
