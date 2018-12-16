@@ -26,7 +26,6 @@ router.post('/', async function (req, res) {
 
     const pd = id_payment_data(payment_data);
     if (!pd) return res.status(400).json({ err: 'unrecognized-payment-data' })
-    console.log(pd);
 
     const alias = await Alias.create({
         alias: requested_alias,
