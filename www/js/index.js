@@ -19,7 +19,7 @@ const postData = function(url = ``, data = {})
 	// Default options are marked with *
 	return fetch(url, {
 		method: "POST", // *GET, POST, PUT, DELETE, etc.
-		mode: "cors", // no-cors, cors, *same-origin
+		mode: "same-origin", // no-cors, cors, *same-origin
 		cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
 		credentials: "same-origin", // include, *same-origin, omit
 		headers: {
@@ -66,8 +66,8 @@ let register_account = function()
 		"payment_data": document.getElementById('alias_payload').value
 	};
 
-	console.log('Registering ' + account.requested_alias + " [" + account.payment_data + "] by posting to cashaccount.info:3000/alias"); 
-	alert(postData('localhost:3000/alias', account));
+	console.log('Registering ' + account.requested_alias + " [" + account.payment_data + "] by posting to https://cashaccount.info:3000/alias"); 
+	alert(postData('https://cashaccount.info:3000/alias', account));
 }
 
 /* Triggered when typing in a new account name for registration */
