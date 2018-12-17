@@ -67,7 +67,7 @@ let register_account = function()
 	};
 
 	console.log('Registering ' + account.requested_alias + " [" + account.payment_data + "] by posting to https://www.cashaccount.info/alias"); 
-	alert(postData('https://www.cashaccount.info/alias', JSON.stringify(account)));
+	alert(postData('https://www.cashaccount.info/alias', account));
 }
 
 /* Triggered when typing in a new account name for registration */
