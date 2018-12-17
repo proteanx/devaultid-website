@@ -92,7 +92,7 @@
 		</section>
 
 		<section id='registration'>
-			<form>
+			<form onsubmit='return false;'>
 				<!-- Step 1: You choose a name and BIP-47 payment code -->
 				<fieldset>
 					<legend align="center">Choose account name</legend>
@@ -103,12 +103,12 @@
 					</label>
 					<label>
 						<span>Enter your payment information:</span>
-						<textarea id='alias_payload' placeholder='qqgekzvw96vq5g57zwdfa5q6g609rrn0ycp33uc325' name='' type=''>
+						<textarea id='alias_payload' onchange='update_payload();' onkeyup='update_payload();' placeholder='qqgekzvw96vq5g57zwdfa5q6g609rrn0ycp33uc325' name='' type=''>
 						</textarea>
 					</label>
 
 					<label>
-						<button>Create Register Transaction</button>
+						<button onclick="register_account();">Create Register Transaction</button>
 					</label>
 				</fieldset>
 
@@ -117,9 +117,9 @@
 					<legend align="center">Broadcast transaction</legend>
 
 					<ul>
-						<li><span>Protocol</span><i title='OP_RETURN'>6A</i>&nbsp;<i title='OP_PUSH'>04</i>&nbsp;<i title='Cash Account'>01010101</i></span></li>
-						<li><span>Account Name</span><span><i title='OP_PUSH'>4C</i>&nbsp;<i id='alias_name_length' title='15 bytes'>0F</i>&nbsp;<b id='alias_name_hex' title='UTF-8 encoded name from: SatoshiNakamoto'>5361746F7368694E616B616D6F746F</b></span></li>
-						<li><span>Payment Data</span><span><i title='OP_PUSH'>4C</i>&nbsp;<i title='21 bytes'>15</i>&nbsp;<i title='Type: Key Hash'>01</i>&nbsp;<b title='Decoded Key Hash from: qqgekzvw96vq5g57zwdfa5q6g609rrn0ycp33uc325'>119B098E2E980A229E139A9ED01A469E518E6F26</b></span></li>
+						<li><span>Protocol</span><i title='OP_RETURN'>6A</i>&nbsp;<i title='push 4 bytes'>04</i>&nbsp;<i title='Cash Account'>01010101</i></span></li>
+						<li><span>Account Name</span><span><i id='alias_name_length' title='push 15 bytes'>0F</i>&nbsp;<b id='alias_name_hex' title='UTF-8 encoded name from: SatoshiNakamoto'>5361746F7368694E616B616D6F746F</b></span></li>
+						<li><span>Payment Data</span><span><i id='alias_payload_length' title='Push 21 bytes'>15</i>&nbsp;<i id='alias_payload_type' title='Type: Key Hash'>01</i>&nbsp;<b id='alias_payload_hex' title='Decoded Key Hash from: qqgekzvw96vq5g57zwdfa5q6g609rrn0ycp33uc325'>119B098E2E980A229E139A9ED01A469E518E6F26</b></span></li>
 					</ul>
 					<label>
 						<button disabled>Broadcast Register Transaction</button>

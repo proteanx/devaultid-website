@@ -1,6 +1,38 @@
 const Uint8ArrayfromHexString = hexString => new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
 const Uint8ArraytoHexString = bytes => bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
 
+// Set up a function that can convert a byte array to a hex-encoded string.
+const byteArrayToHexString = function(byteArray)
+{
+	return Array.prototype.map.call
+	(
+		byteArray, 
+		function(byte)
+		{
+			return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+		}
+	).join('');
+}
+
+const postData = function(url = ``, data = {})
+{
+	// Default options are marked with *
+	return fetch(url, {
+		method: "POST", // *GET, POST, PUT, DELETE, etc.
+		mode: "cors", // no-cors, cors, *same-origin
+		cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+		credentials: "same-origin", // include, *same-origin, omit
+		headers: {
+			"Content-Type": "application/json; charset=utf-8",
+			// "Content-Type": "application/x-www-form-urlencoded",
+		},
+		redirect: "follow", // manual, *follow, error
+		referrer: "no-referrer", // no-referrer, *client
+		body: JSON.stringify(data), // body data type must match "Content-Type" header
+	})
+	.then(response => response.json()); // parses response to JSON
+}
+
 const cash_account_height_modifier = 560000;
 
 window.parseHexString = function(str)
@@ -17,6 +49,27 @@ window.parseHexString = function(str)
 	return result;
 }
 
+let pushcode = function(length)
+{
+	if(length == 0) { return false; }
+	if(length <= 75) { return length.toString(16).padStart(2, '0').toUpperCase(); }
+	if(length <= 256) { return "4c" + length.toString(16).padStart(4, '0').toUpperCase(); }
+	if(length <= 256*256) { return "4d" + length.toString(16).padStart(6, '0').toUpperCase(); }
+	if(length <= 256*256*256*256) { return "4e" + length.toString(16).padStart(10, '0').toUpperCase(); }
+}
+
+let register_account = function()
+{
+	let account =
+	{
+		"requested_alias": document.getElementById('alias_name').value,
+		"payment_data": document.getElementById('alias_payload').value
+	};
+
+	console.log('Registering ' + account.requested_alias + " [" + account.payment_data + "] by posting to cashaccount.info:3000/alias"); 
+	alert(postData('localhost:3000/alias', account));
+}
+
 /* Triggered when typing in a new account name for registration */
 let update_name = function()
 {
@@ -26,19 +79,6 @@ let update_name = function()
 	// Create a file reader to get data from the blob.
 	let fileReader = new FileReader();
 
-	// Set up a function that can convert a byte array to a hex-encoded string.
-	let byteArrayToHexString = function(byteArray)
-	{
-		return Array.prototype.map.call
-		(
-			byteArray, 
-			function(byte)
-			{
-				return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-			}
-		).join('');
-	}
-
 	// When the file reader has loaded the blob data..
 	fileReader.onload = function()
 	{
@@ -46,12 +86,12 @@ let update_name = function()
 		let nameBytes = new Uint8Array(fileReader.result);
 
 		// Update the OP_PUSH byte length indicator.
-		document.getElementById('alias_name_length').setAttribute('title', fileReader.result.byteLength + ' bytes');
-		document.getElementById('alias_name_length').innerHTML = (fileReader.result.byteLength).toString(16).padStart(2, '0');
+		document.getElementById('alias_name_length').setAttribute('title', 'Push ' + fileReader.result.byteLength + ' bytes');
+		document.getElementById('alias_name_length').innerHTML = pushcode(fileReader.result.byteLength);
 
 		// Update the OP_PUSH byte data for the name string.
 		document.getElementById('alias_name_hex').setAttribute('title', 'UTF-8 encoded name from: ' + document.getElementById('alias_name').value);
-		document.getElementById('alias_name_hex').innerHTML = byteArrayToHexString(nameBytes);
+		document.getElementById('alias_name_hex').innerHTML = byteArrayToHexString(nameBytes).toUpperCase();
 
 		// Update the predicted identifiers name part.
 		document.getElementById('alias_name_predication').innerHTML = document.getElementById('alias_name').value;
@@ -62,6 +102,34 @@ let update_name = function()
 
 	// Load the name blob.
 	fileReader.readAsArrayBuffer(name);
+}
+
+let update_payload = function()
+{
+	let address = cashaddr.decode('bitcoincash:' + document.getElementById('alias_payload').value);
+	let address_types =
+	{
+		"P2PKH": "Key Hash",
+		"P2SH": "Script Hash"
+	}
+	let address_codes =
+	{
+		"P2PKH": "01",
+		"P2SH": "02"
+	}
+	
+	console.log(address);
+	// Update the OP_PUSH byte length indicator.
+	document.getElementById('alias_payload_length').setAttribute('title', 'Push ' + (1 + address.hash.length) + ' bytes');
+	document.getElementById('alias_payload_length').innerHTML = pushcode((1 + address.hash.length));
+
+	// Update the OP_PUSH byte data for the name string.
+	document.getElementById('alias_payload_type').setAttribute('title', 'Type: ' + address_types[address.type]);
+	document.getElementById('alias_payload_type').innerHTML = address_codes[address.type];
+
+	// Update the OP_PUSH byte data for the name string.
+	document.getElementById('alias_payload_hex').setAttribute('title', 'UTF-8 encoded name from: ' + address.hash.length);
+	document.getElementById('alias_payload_hex').innerHTML = byteArrayToHexString(address.hash).toUpperCase();
 }
 
 let calculate_collision_hash = function(blockhash, transactionhash)
