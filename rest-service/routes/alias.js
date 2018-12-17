@@ -21,7 +21,7 @@ const Alias = require('../models/alias');
 router.post('/', async function (req, res) {
     const { requested_alias, payment_data } = req.body;
     if (!requested_alias || !/^\w{1,99}$/.test(requested_alias)) {
-        return res.status(400).json({ err: 'invalid-alias' })
+        return res.status(400).json({ err: 'invalid-alias', alias: requested_alias })
     }
 
     const pd = id_payment_data(payment_data);
