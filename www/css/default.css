@@ -28,6 +28,15 @@
 	src: local('Roboto Bold Italic'), local('Roboto-BoldItalic'), url('../fonts/Roboto-BoldItalic.ttf');
 }
 
+/* Include a reference to the Noto Emoji (Color) set. */
+@font-face
+{
+	font-family: 'Noto Color Emoji';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Noto Color Emoji'), url('../fonts/NotoColorEmoji.ttf');
+}
+
 /* Collapse all whitespace. */
 *
 {
