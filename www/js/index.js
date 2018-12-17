@@ -67,7 +67,7 @@ let register_account = function()
 	};
 
 	console.log('Registering ' + account.requested_alias + " [" + account.payment_data + "] by posting to http://cashaccount.info:3000/alias"); 
-	alert(postData('http://cashaccount.info:3000/alias', JSON.encode(account)));
+	alert(postData('http://cashaccount.info:3000/alias', JSON.stringify(account)));
 }
 
 /* Triggered when typing in a new account name for registration */
