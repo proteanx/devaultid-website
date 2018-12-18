@@ -87,8 +87,12 @@ let create_registration = function()
 				// Store the registration id on the broadcast button.
 				document.getElementById('alias_broadcast_transaction').setAttribute('data-registration-id', data['alias']['_id']);
 			}
+			else
+			{
+				alert(data.err);
+			}
 		}
-	).catch(data => alert(data.err));
+	);
 }
 
 let broadcast_registration = function()
