@@ -178,7 +178,7 @@ let update_payload = function()
 	document.getElementById('alias_payload_type').innerHTML = address_codes[address.type];
 
 	// Update the OP_PUSH byte data for the name string.
-	document.getElementById('alias_payload_hex').setAttribute('title', 'UTF-8 encoded name from: ' + address.hash.length);
+	document.getElementById('alias_payload_hex').setAttribute('title', 'UTF-8 encoded name from: ' + address.hash);
 	document.getElementById('alias_payload_hex').innerHTML = byteArrayToHexString(address.hash).toUpperCase();
 }
 
