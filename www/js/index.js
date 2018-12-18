@@ -72,6 +72,11 @@ let create_registration = function()
 		{
 			console.log(data);
 
+			if(typeof data.err !== 'undefined')
+			{
+				alert(data.err);
+			}
+
 			if(typeof data['alias']['_id'] !== 'undefined')
 			{
 				// Mark fieldsets as active/inactive.
@@ -86,11 +91,6 @@ let create_registration = function()
 
 				// Store the registration id on the broadcast button.
 				document.getElementById('alias_broadcast_transaction').setAttribute('data-registration-id', data['alias']['_id']);
-			}
-
-			if(typeof data.err !== 'undefined')
-			{
-				alert(data.err);
 			}
 		}
 	);
