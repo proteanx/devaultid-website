@@ -66,9 +66,10 @@ let create_registration = function()
 		"payment_data": document.getElementById('alias_payload').value
 	};
 
-	let registration = JSON.parse(postData('https://www.cashaccount.info/alias', post_data));
+	let registration = postData('https://www.cashaccount.info/alias', post_data);
 console.log(registration);
-	if(typeof registration['alias']['id'] !== 'undefined')
+registration = JSON.parse(registration);
+	if(typeof registration['alias']['_id'] !== 'undefined')
 	{
 		// Mark fieldsets as active/inactive.
 		document.getElementById('fieldset_create_transaction').className = 'complete';
@@ -81,7 +82,7 @@ console.log(registration);
 		document.getElementById('alias_create_transaction').disabled = true;
 
 		// Store the registration id on the broadcast button.
-		document.getElementById('alias_broadcast_transaction').setAttribute('data-registration-id', registration['alias']['id']);
+		document.getElementById('alias_broadcast_transaction').setAttribute('data-registration-id', registration['alias']['_id']);
 	}
 }
 
@@ -137,7 +138,7 @@ let update_name = function()
 		document.getElementById('alias_name_predication').innerHTML = document.getElementById('alias_name').value;
 
 		// alias_name_lookup_button
-		document.getElementById('alias_name_lookup_button').innerHTML = document.getElementById('alias_name_lookup_button').innerHTML.replace(/(Lookup: )(\w+)#(\d+)/, '$1' + document.getElementById('alias_name').value + '#$3');
+		document.getElementById('alias_name_lookup_button').innerHTML = document.getElementById('alias_lookup_transaction').innerHTML.replace(/(Lookup: )(\w+)#(\d+)/, '$1' + document.getElementById('alias_name').value + '#$3');
 	};
 
 	// Load the name blob.
