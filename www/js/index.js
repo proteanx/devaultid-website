@@ -417,7 +417,7 @@ let lookup_identifier = function()
 
 							account_hash = calculate_collision_hash(block_hash, transaction_id);
 							account_emoji_hex = calculate_checksum_character(block_height, block_hash, transaction_id);
-							account_emoji = "<span class='emoji' title='" + unicode_emoji_names[String.fromCodePoint(account_emoji)] + "'>&#" + account_emoji_hex + ";</span>";
+							account_emoji = "<span class='emoji' title='" + unicode_emoji_names[String.fromCodePoint(account_emoji_hex)] + "'>&#" + account_emoji_hex + ";</span>";
 						}
 
 						if(typeof account_collision === 'undefined' || account_hash.startsWith(account_collision.substring(1)))
