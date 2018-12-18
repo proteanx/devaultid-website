@@ -88,7 +88,7 @@ let create_registration = function()
 				document.getElementById('alias_broadcast_transaction').setAttribute('data-registration-id', data['alias']['_id']);
 			}
 		}
-	);
+	).catch(data => alert(data.err));
 }
 
 let broadcast_registration = function()
