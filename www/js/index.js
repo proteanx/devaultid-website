@@ -128,6 +128,9 @@ let broadcast_registration = function()
 /* Triggered when typing in a new account name for registration */
 let update_name = function()
 {
+	// Remove whitespace.
+	document.getElementById('alias_name').value = document.getElementById('alias_name').value.trim();
+
 	// Get the name string as a blob for further processing.
 	let name = new Blob([document.getElementById('alias_name').value]);
 
@@ -161,6 +164,9 @@ let update_name = function()
 
 let update_payload = function()
 {
+	// Remove whitespace.
+	document.getElementById('alias_payload').value = document.getElementById('alias_payload').value.trim();
+
 	let address = cashaddr.decode('bitcoincash:' + document.getElementById('alias_payload').value);
 	let address_types =
 	{
