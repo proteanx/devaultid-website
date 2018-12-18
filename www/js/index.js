@@ -66,8 +66,8 @@ let create_registration = function()
 		"payment_data": document.getElementById('alias_payload').value
 	};
 
-	let registration = postData('https://www.cashaccount.info/alias', post_data);
-
+	let registration = JSON.parse(postData('https://www.cashaccount.info/alias', post_data));
+console.log(registration);
 	if(typeof registration['alias']['id'] !== 'undefined')
 	{
 		// Mark fieldsets as active/inactive.
