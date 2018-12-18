@@ -66,24 +66,29 @@ let create_registration = function()
 		"payment_data": document.getElementById('alias_payload').value
 	};
 
-	let registration = postData('https://www.cashaccount.info/alias', post_data);
-console.log(registration);
-registration = JSON.parse(registration);
-	if(typeof registration['alias']['_id'] !== 'undefined')
-	{
-		// Mark fieldsets as active/inactive.
-		document.getElementById('fieldset_create_transaction').className = 'complete';
-		document.getElementById('fieldset_broadcast_transaction').className = 'active';
+	postData('https://www.cashaccount.info/alias', post_data).then
+	(
+		function(data)
+		{
+			let response_object = JSON.parse(data);
 
-		// Mark form elements as enabled/disabled.
-		document.getElementById('alias_broadcast_transaction').disabled = false;
-		document.getElementById('alias_name').disabled = true;
-		document.getElementById('alias_payload').disabled = true;
-		document.getElementById('alias_create_transaction').disabled = true;
+			if(typeof response_object['alias']['_id'] !== 'undefined')
+			{
+				// Mark fieldsets as active/inactive.
+				document.getElementById('fieldset_create_transaction').className = 'complete';
+				document.getElementById('fieldset_broadcast_transaction').className = 'active';
 
-		// Store the registration id on the broadcast button.
-		document.getElementById('alias_broadcast_transaction').setAttribute('data-registration-id', registration['alias']['_id']);
-	}
+				// Mark form elements as enabled/disabled.
+				document.getElementById('alias_broadcast_transaction').disabled = false;
+				document.getElementById('alias_name').disabled = true;
+				document.getElementById('alias_payload').disabled = true;
+				document.getElementById('alias_create_transaction').disabled = true;
+
+				// Store the registration id on the broadcast button.
+				document.getElementById('alias_broadcast_transaction').setAttribute('data-registration-id', response_object['alias']['_id']);
+			}
+		}
+	);
 }
 
 let broadcast_registration = function()
@@ -138,7 +143,7 @@ let update_name = function()
 		document.getElementById('alias_name_predication').innerHTML = document.getElementById('alias_name').value;
 
 		// alias_name_lookup_button
-		document.getElementById('alias_name_lookup_button').innerHTML = document.getElementById('alias_lookup_transaction').innerHTML.replace(/(Lookup: )(\w+)#(\d+)/, '$1' + document.getElementById('alias_name').value + '#$3');
+		document.getElementById('alias_name_lookup_button').innerHTML = document.getElementById('alias_name_lookup_button').innerHTML.replace(/(Lookup: )(\w+)#(\d+)/, '$1' + document.getElementById('alias_name').value + '#$3');
 	};
 
 	// Load the name blob.
