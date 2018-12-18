@@ -70,6 +70,7 @@ let create_registration = function()
 	(
 		function(data)
 		{
+			console.log(data);
 			let response_object = JSON.parse(data);
 
 			if(typeof response_object['alias']['_id'] !== 'undefined')
@@ -143,7 +144,7 @@ let update_name = function()
 		document.getElementById('alias_name_predication').innerHTML = document.getElementById('alias_name').value;
 
 		// alias_name_lookup_button
-		document.getElementById('alias_name_lookup_button').innerHTML = document.getElementById('alias_name_lookup_button').innerHTML.replace(/(Lookup: )(\w+)#(\d+)/, '$1' + document.getElementById('alias_name').value + '#$3');
+		document.getElementById('alias_lookup_transaction').innerHTML = document.getElementById('alias_lookup_transaction').innerHTML.replace(/(Lookup: )(\w+)#(\d+)/, '$1' + document.getElementById('alias_name').value + '#$3');
 	};
 
 	// Load the name blob.
