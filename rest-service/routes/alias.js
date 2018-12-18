@@ -49,12 +49,12 @@ router.post('/:id/broadcast', async function (req, res) {
 
     const alias = await Alias.findById(alias_id);
 
-    rpc.init(process.env.ABC_RPC_ADDR, 8333, process.env.ABC_RPC_USER, process.env.ABC_RPC_PASS);
+    rpc.init(process.env.ABC_RPC_ADDR, 8332, process.env.ABC_RPC_USER, process.env.ABC_RPC_PASS);
 
     rpc.call('listunspent', [0], (err, r) => {
         if (err) {
             console.log(err);
-            return res.status(500).json({ err: err });
+            return res.status(500).json({ err: 'listunspent: ' + err });
         }
 
         const utxos = r.result;
@@ -67,7 +67,7 @@ router.post('/:id/broadcast', async function (req, res) {
         rpc.call('getrawchangeaddress', [], (err, r) => {
             if (err) {
                 console.log(err);
-                return res.status(500).json({ err: err });
+                return res.status(500).json({ err: 'getrawchangeaddress: ' + err });
             }
 
             tx.change(r.result);
@@ -75,7 +75,7 @@ router.post('/:id/broadcast', async function (req, res) {
             rpc.call('signrawtransaction', [tx.toString()], (err, r) => {
                 if (err) {
                     console.log(err);
-                    return res.status(500).json({ err: err });
+                    return res.status(500).json({ err: 'signrawtransaction: ' + err });
                 }
 
                 console.log(r);
@@ -83,7 +83,7 @@ router.post('/:id/broadcast', async function (req, res) {
                 rpc.call('sendrawtransaction', [r.result.hex], (err, r) => {
                     if (err) {
                         console.log(err);
-                        return res.status(500).json({ err: err });
+                        return res.status(500).json({ err: 'sendrawtransaction: ' + err });
                     }
 
                     return res.status(200).json({ txid: r.result });
