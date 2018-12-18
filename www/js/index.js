@@ -71,9 +71,8 @@ let create_registration = function()
 		function(data)
 		{
 			console.log(data);
-			let response_object = JSON.parse(data);
 
-			if(typeof response_object['alias']['_id'] !== 'undefined')
+			if(typeof data['alias']['_id'] !== 'undefined')
 			{
 				// Mark fieldsets as active/inactive.
 				document.getElementById('fieldset_create_transaction').className = 'complete';
@@ -86,7 +85,7 @@ let create_registration = function()
 				document.getElementById('alias_create_transaction').disabled = true;
 
 				// Store the registration id on the broadcast button.
-				document.getElementById('alias_broadcast_transaction').setAttribute('data-registration-id', response_object['alias']['_id']);
+				document.getElementById('alias_broadcast_transaction').setAttribute('data-registration-id', data['alias']['_id']);
 			}
 		}
 	);
@@ -101,20 +100,24 @@ let broadcast_registration = function()
 	};
 
 	// Broadcast the transaction
-	let registration = postData('https://www.cashaccount.info/alias/' + registration_id + '/broadcast', post_data)
-	
-	console.log(registration);
+	postData('https://www.cashaccount.info/alias/' + registration_id + '/broadcast', post_data).then
+	(
+		function(data)
+		{
+			console.log(data);
 
-	if(true)
-	{
-		// Mark fieldsets as active/inactive.
-		document.getElementById('fieldset_broadcast_transaction').className = 'complete';
-		document.getElementById('fieldset_confirm_transaction').className = 'active';
+			if(true)
+			{
+				// Mark fieldsets as active/inactive.
+				document.getElementById('fieldset_broadcast_transaction').className = 'complete';
+				document.getElementById('fieldset_confirm_transaction').className = 'active';
 
-		// Mark form elements as enabled/disabled.
-		document.getElementById('alias_lookup_transaction').disabled = false;
-		document.getElementById('alias_broadcast_transaction').disabled = true;
-	}
+				// Mark form elements as enabled/disabled.
+				document.getElementById('alias_lookup_transaction').disabled = false;
+				document.getElementById('alias_broadcast_transaction').disabled = true;
+			}
+		}
+	);
 }
 
 /* Triggered when typing in a new account name for registration */
