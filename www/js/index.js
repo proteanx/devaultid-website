@@ -400,14 +400,14 @@ let lookup_identifier = function()
 						let block_height = '';
 						let block_hash = '';
 						let account_hash = '';
-						let account_emoji = '';
+						let account_emoji = "<span class='emoji'>&nbsp;</span>";
 
 						if(results[transaction_types[type]][index]['blockheight'] === null)
 						{
 							account_number = '????';
 							block_height = 'Pending';
 							block_hash = 'Pending';
-							account_hash = '0000000000';
+							account_hash = '??????????';
 						}
 						else
 						{
@@ -416,7 +416,8 @@ let lookup_identifier = function()
 							block_hash = results[transaction_types[type]][index]['blockhash'];
 
 							account_hash = calculate_collision_hash(block_hash, transaction_id);
-							account_emoji = calculate_checksum_character(block_height, block_hash, transaction_id);
+							account_emoji_hex = calculate_checksum_character(block_height, block_hash, transaction_id);
+							account_emoji = "<span class='emoji' title='" + unicode_emoji_names[String.fromCodePoint(account_emoji)] + "'>&#" + account_emoji_hex + ";</span>";
 						}
 
 						if(typeof account_collision === 'undefined' || account_hash.startsWith(account_collision.substring(1)))
@@ -454,7 +455,7 @@ let lookup_identifier = function()
 								account_address = cashaddr.encode('bitcoincash', account_address_type, Uint8ArrayfromHexString(payment_data)).substring(12);
 							}
 
-							document.getElementById('result_list').innerHTML += "<li id='" + transaction_id + "'><span class='account_identifier'>" + account_identifier + "</span><span class='emoji' title='" + unicode_emoji_names[String.fromCodePoint(account_emoji)] + "'>&#" + account_emoji + ";</span><span class='account_payment_link'><a href='https://blockchair.com/bitcoin-cash/address/" + account_address + "'>	" + account_address + "</a></span>";
+							document.getElementById('result_list').innerHTML += "<li id='" + transaction_id + "'><span class='account_identifier'>" + account_identifier + "</span>" + account_emoji + "<span class='account_payment_link'><a href='https://blockchair.com/bitcoin-cash/address/" + account_address + "'>	" + account_address + "</a></span>";
 
 							setTimeout
 							(
