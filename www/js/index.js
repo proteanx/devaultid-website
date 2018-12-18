@@ -58,16 +58,56 @@ let pushcode = function(length)
 	if(length <= 256*256*256*256) { return "4e" + length.toString(16).padStart(10, '0').toUpperCase(); }
 }
 
-let register_account = function()
+let create_registration = function()
 {
-	let account =
+	let post_data =
 	{
 		"requested_alias": document.getElementById('alias_name').value,
 		"payment_data": document.getElementById('alias_payload').value
 	};
 
-	console.log('Registering ' + account.requested_alias + " [" + account.payment_data + "] by posting '" + JSON.stringify(account) + "' to https://www.cashaccount.info/alias"); 
-	alert(postData('https://www.cashaccount.info/alias', account));
+	let registration = postData('https://www.cashaccount.info/alias', post_data);
+
+	if(typeof registration['alias']['id'] !== 'undefined')
+	{
+		// Mark fieldsets as active/inactive.
+		document.getElementById('fieldset_create_transaction').className = 'complete';
+		document.getElementById('fieldset_broadcast_transaction').className = 'active';
+
+		// Mark form elements as enabled/disabled.
+		document.getElementById('alias_broadcast_transaction').disabled = false;
+		document.getElementById('alias_name').disabled = true;
+		document.getElementById('alias_payload').disabled = true;
+		document.getElementById('alias_create_transaction').disabled = true;
+
+		// Store the registration id on the broadcast button.
+		document.getElementById('alias_broadcast_transaction').setAttribute('data-registration-id', registration['alias']['id']);
+	}
+}
+
+let broadcast_registration = function()
+{
+	let registration_id = document.getElementById('alias_broadcast_transaction').getAttribute('data-registration-id');
+	let post_data =
+	{
+		'id': registration_id
+	};
+
+	// Broadcast the transaction
+	let registration = postData('https://www.cashaccount.info/alias/' + registration_id + '/broadcast', post_data)
+	
+	console.log(registration);
+
+	if(true)
+	{
+		// Mark fieldsets as active/inactive.
+		document.getElementById('fieldset_broadcast_transaction').className = 'complete';
+		document.getElementById('fieldset_confirm_transaction').className = 'active';
+
+		// Mark form elements as enabled/disabled.
+		document.getElementById('alias_lookup_transaction').disabled = false;
+		document.getElementById('alias_broadcast_transaction').disabled = true;
+	}
 }
 
 /* Triggered when typing in a new account name for registration */

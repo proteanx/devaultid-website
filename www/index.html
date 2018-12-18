@@ -94,7 +94,7 @@
 		<section id='registration'>
 			<form onsubmit='return false;'>
 				<!-- Step 1: You choose a name and BIP-47 payment code -->
-				<fieldset>
+				<fieldset id='fieldset_create_transaction' class='active'>
 					<legend align="center">Choose account name</legend>
 
 					<label>
@@ -108,12 +108,12 @@
 					</label>
 
 					<label>
-						<button onclick="register_account();">Create Register Transaction</button>
+						<button id='alias_create_transaction' onclick="create_registration();">Create Register Transaction</button>
 					</label>
 				</fieldset>
 
 				<!-- Step 2: We create an on-chain transaction -->
-				<fieldset>
+				<fieldset id='fieldset_broadcast_transaction' class='inactive'>
 					<legend align="center">Broadcast transaction</legend>
 
 					<ul>
@@ -122,12 +122,12 @@
 						<li><span>Payment Data</span><span><i id='alias_payload_length' title='Push 21 bytes'>15</i>&nbsp;<i id='alias_payload_type' title='Type: Key Hash'>01</i>&nbsp;<b id='alias_payload_hex' title='Decoded Key Hash from: qqgekzvw96vq5g57zwdfa5q6g609rrn0ycp33uc325'>119B098E2E980A229E139A9ED01A469E518E6F26</b></span></li>
 					</ul>
 					<label>
-						<button disabled>Broadcast Register Transaction</button>
+						<button id='alias_broadcast_transaction' onclick="broadcast_registration();" disabled>Broadcast Register Transaction</button>
 					</label>
 				</fieldset>
 
 				<!-- Step 3: When a block is mined, define the alias -->
-				<fieldset>
+				<fieldset id='fieldset_confirm_transaction' class='inactive'>
 					<legend align="center">Wait for block inclusion</legend>
 
 					<ul>
@@ -136,7 +136,7 @@
 						<li><span>Status</span><span><i title='Waiting for block inclusion'>Pending</i>, <i title='Only one registration with this name is in the mempool.'>Collision-Free</i></span></li>
 					</ul>
 					<label>
-						<button id='alias_name_lookup_button' disabled>Lookup: SatoshiNakamoto#567890;</button>
+						<button id='alias_lookup_transaction' disabled>Lookup: SatoshiNakamoto#567890;</button>
 					</label>
 				</fieldset>
 			</form>

@@ -238,9 +238,17 @@ section#registration > form > fieldset > legend:before
 	border: 0.15rem solid rgba(255, 255, 255, 1);
 	box-shadow: 0.05rem 0.15rem 0.25rem rgba(0, 0, 0, 0.31);
 	border-radius: 999rem;
-	background-color: rgb(255, 153, 0);
+	background-color: rgb(50, 150, 45);
 	font-weight: bold;
 	color: white;
+}
+section#registration > form > fieldset.inactive > legend:before
+{
+	background-color: rgb(160, 160, 160);
+}
+section#registration > form > fieldset.active > legend:before
+{
+	background-color: rgb(255, 153, 0);
 }
 
 section#registration > form > fieldset > label:last-child
@@ -267,6 +275,14 @@ section#registration > form > fieldset > label > textarea#alias_paycode
 	font-size: 0.95rem;
 	height: 5.25em;
 	overflow: hidden;
+}
+
+section#registration > form > fieldset.inactive > ul,
+section#registration > form > fieldset.inactive > ul *
+{
+	opacity: 0.67;
+	color: transparent;
+	text-shadow: 0 0 0.10rem rgba(0, 0, 0, 0.77);
 }
 
 section#registration > form > fieldset > ul
