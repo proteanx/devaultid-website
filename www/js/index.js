@@ -183,7 +183,7 @@ let update_payload = function()
 	document.getElementById('alias_payload_type').innerHTML = address_codes[address.type];
 
 	// Update the OP_PUSH byte data for the name string.
-	document.getElementById('alias_payload_hex').setAttribute('title', 'UTF-8 encoded name from: ' + document.getElementById('alias_payload').value);
+	document.getElementById('alias_payload_hex').setAttribute('title', 'Hex encoded payment data from: ' + document.getElementById('alias_payload').value);
 	document.getElementById('alias_payload_hex').innerHTML = byteArrayToHexString(address.hash).toUpperCase();
 }
 
@@ -227,8 +227,8 @@ let calculate_checksum_character = function(blockheight, blockhash, transactionh
 	// Step 2: Hash the results of the concatenation with sha256
 	let account_emoji_step2 = sha256(Uint8ArrayfromHexString(account_emoji_step1));
 
-	// Step 3: Take the last byte and discard the rest
-	let account_emoji_step3 = account_emoji_step2.substring(-2);
+	// Step 3: Take the last 4 bytes and discard the rest
+	let account_emoji_step3 = account_emoji_step2.substring(-8);
 
 	// Step 4: Select an emoji from the emoji_hex_list
 	let emoji_index = parseInt(account_emoji_step3, 16) % emoji_hex_list.length;
@@ -399,6 +399,7 @@ let lookup_identifier = function()
 						let account_number = '';
 						let block_height = '';
 						let block_hash = '';
+						let account_class='unconfirmed';
 						let account_hash = '';
 						let account_emoji = "<span class='emoji'>&nbsp;</span>";
 
@@ -415,6 +416,7 @@ let lookup_identifier = function()
 							block_height = results[transaction_types[type]][index]['blockheight'];
 							block_hash = results[transaction_types[type]][index]['blockhash'];
 
+							account_class='confirmed';
 							account_hash = calculate_collision_hash(block_hash, transaction_id);
 							account_emoji_hex = calculate_checksum_character(block_height, block_hash, transaction_id);
 							account_emoji = "<span class='emoji' title='" + unicode_emoji_names[String.fromCodePoint(account_emoji_hex)] + "'>&#" + account_emoji_hex + ";</span>";
@@ -455,7 +457,7 @@ let lookup_identifier = function()
 								account_address = cashaddr.encode('bitcoincash', account_address_type, Uint8ArrayfromHexString(payment_data)).substring(12);
 							}
 
-							document.getElementById('result_list').innerHTML += "<li id='" + transaction_id + "'><span class='account_identifier'>" + account_identifier + "</span>" + account_emoji + "<span class='account_payment_link'><a href='https://blockchair.com/bitcoin-cash/address/" + account_address + "'>	" + account_address + "</a></span>";
+							document.getElementById('result_list').innerHTML += "<li id='" + transaction_id + "' class='" + account_class + "'><span class='account_identifier'>" + account_identifier + "</span>" + account_emoji + "<span class='account_payment_link'><a href='https://blockchair.com/bitcoin-cash/address/" + account_address + "'>	" + account_address + "</a></span>";
 
 							setTimeout
 							(

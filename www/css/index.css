@@ -378,7 +378,7 @@ section#lookup > form > fieldset > ul#result_list > li
 	border-radius: 0.33rem;
 	background-color: white;
 	padding-bottom: 2rem;
-	border: 0.10rem solid rgba(256, 153, 0, 1);
+	border: 0.10rem solid rgb(256, 153, 0);
 	box-shadow: 0 0.10rem 0.25rem rgba(0, 0, 0, 0.21);
 }
 section#lookup > form > fieldset > ul#result_list > li:nth-child(3n)
@@ -393,10 +393,20 @@ section#lookup > form > fieldset > ul#result_list > li > *
 
 section#lookup > form > fieldset > ul#result_list > li > span.account_identifier
 {
-	background-color: rgba(255, 153, 0, 1);
+	background-color: rgb(255, 153, 0);
 	border-top-left-radius: 0.15rem;
 	border-top-right-radius: 0.15rem;
 }
+
+section#lookup > form > fieldset > ul#result_list > li.unconfirmed
+{
+	border: 0.10rem solid rgb(160, 160, 160);
+}
+section#lookup > form > fieldset > ul#result_list > li.unconfirmed > span.account_identifier
+{
+	background-color: rgb(160, 160, 160);
+}
+
 section#lookup > form > fieldset > ul#result_list > li > span.account_identifier
 {
 	padding-left: 4.5rem;
