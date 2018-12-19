@@ -89,6 +89,10 @@ let create_registration = function()
 				document.getElementById('alias_payload').disabled = true;
 				document.getElementById('alias_create_transaction').disabled = true;
 
+				// Update the registration status
+				document.getElementById('alias_registration_status').innerHTML = 'Created';
+				document.getElementById('alias_registration_status').setAttribute('title', 'Waiting to be broadcast to the network.');
+
 				// Store the registration id on the broadcast button.
 				document.getElementById('alias_broadcast_transaction').setAttribute('data-registration-id', data['alias']['_id']);
 			}
@@ -120,6 +124,13 @@ let broadcast_registration = function()
 				// Mark form elements as enabled/disabled.
 				document.getElementById('alias_lookup_transaction').disabled = false;
 				document.getElementById('alias_broadcast_transaction').disabled = true;
+
+				// Update the registration status
+				document.getElementById('alias_registration_status').innerHTML = 'Broadcasted';
+				document.getElementById('alias_registration_status').setAttribute('title', 'Waiting for inclusion in a block.');
+
+				// Update the TXID
+				document.getElementById('alias_transaction_hash').innerHTML = data.txid.toUpperCase();
 			}
 		}
 	);
@@ -155,7 +166,7 @@ let update_name = function()
 		document.getElementById('alias_name_predication').innerHTML = document.getElementById('alias_name').value;
 
 		// alias_name_lookup_button
-		document.getElementById('alias_lookup_transaction').innerHTML = document.getElementById('alias_lookup_transaction').innerHTML.replace(/(Lookup: )(\w+)#(\d+)/, '$1' + document.getElementById('alias_name').value + '#$3');
+		document.getElementById('alias_lookup_transaction').innerHTML = document.getElementById('alias_name').value;
 	};
 
 	// Load the name blob.
