@@ -166,7 +166,7 @@ let update_name = function()
 		document.getElementById('alias_name_predication').innerHTML = document.getElementById('alias_name').value;
 
 		// alias_name_lookup_button
-		document.getElementById('alias_lookup_transaction').innerHTML = document.getElementById('alias_name').value;
+		document.getElementById('alias_lookup_transaction').innerHTML = 'Lookup ' + document.getElementById('alias_name').value;
 	};
 
 	// Load the name blob.
