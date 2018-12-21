@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const rpc = require('node-bitcoin-rpc');
 const bch = require('bitcore-lib-cash');
+const base58check = require('base58check');
 const cashaddr = require('cashaddrjs');
 const bchaddr = require('bchaddrjs');
 
@@ -19,6 +20,7 @@ const Alias = require('../models/alias');
  * @apiSuccess (200) {Object} `Alias` object
  */
 router.post('/', async function (req, res) {
+    console.log(req.body);
     const { requested_alias, payment_data } = req.body;
     if (!requested_alias || !/^\w{1,99}$/.test(requested_alias)) {
         return res.status(400).json({ err: 'invalid-alias', alias: requested_alias })
@@ -49,12 +51,12 @@ router.post('/:id/broadcast', async function (req, res) {
 
     const alias = await Alias.findById(alias_id);
 
-    rpc.init(process.env.ABC_RPC_ADDR, 8332, process.env.ABC_RPC_USER, process.env.ABC_RPC_PASS);
-
+    rpc.init(process.env.ABC_RPC_ADDR, process.env.ABC_RPC_PORT, process.env.ABC_RPC_USER, process.env.ABC_RPC_PASS);
+    console.log('test');
     rpc.call('listunspent', [0], (err, r) => {
         if (err) {
-            console.log(err);
-            return res.status(500).json({ err: 'listunspent: ' + err });
+            console.log("listunspent", err);
+            return res.status(500).json({ err: err });
         }
 
         const utxos = r.result;
@@ -66,24 +68,24 @@ router.post('/:id/broadcast', async function (req, res) {
 
         rpc.call('getrawchangeaddress', [], (err, r) => {
             if (err) {
-                console.log(err);
-                return res.status(500).json({ err: 'getrawchangeaddress: ' + err });
+                console.log("getrawchangeaddress", err);
+                return res.status(500).json({ err: err });
             }
 
             tx.change(r.result);
 
             rpc.call('signrawtransaction', [tx.toString()], (err, r) => {
                 if (err) {
-                    console.log(err);
-                    return res.status(500).json({ err: 'signrawtransaction: ' + err });
+                    console.log("signrawtx", err);
+                    return res.status(500).json({ err: err });
                 }
 
                 console.log(r);
 
                 rpc.call('sendrawtransaction', [r.result.hex], (err, r) => {
                     if (err) {
-                        console.log(err);
-                        return res.status(500).json({ err: 'sendrawtransaction: ' + err });
+                        console.log("sendrawtx", err);
+                        return res.status(500).json({ err: err });
                     }
 
                     return res.status(200).json({ txid: r.result });
@@ -131,12 +133,23 @@ function s2h(script) {
 }
 
 function id_payment_data(pd) {
-    pd = pd.toLowerCase();
     try {
+        //p2pkh/p2sh
         const type = bchaddr.detectAddressType(pd)
         return {
             type: type,
             hash: Buffer.from(cashaddr.decode(bchaddr.toCashAddress(pd)).hash).toString('hex')
+        }
+    } catch (err) { }
+
+    try {
+        //bip47 payment code
+        const b58 = base58check.decode(pd);
+        if (b58.prefix.toString('hex') === '47' && b58.data.length == 80) {
+            return {
+                type: 'p2pc',
+                hash: b58.data.toString('hex')
+            }
         }
     } catch (err) { }
 
