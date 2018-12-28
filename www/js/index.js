@@ -1,121 +1,227 @@
-const Uint8ArrayfromHexString = hexString => new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-const Uint8ArraytoHexString = bytes => bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
+// Include support for decoding various address formats.
+cashaddr = require('cashaddrjs');
+base58check = require('base58check');
 
-// Set up a function that can convert a byte array to a hex-encoded string.
-const byteArrayToHexString = function(byteArray)
+// Helper functions to convert to/from hexstrings and bytearrays.
+arrayFromHex = hexString => new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+arrayToHex = intArray => intArray.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
+
+// Helper function that allows deep assignments without need to create intermediate empty objects.
+deepSet = (input) => 
 {
-	return Array.prototype.map.call
-	(
-		byteArray, 
-		function(byte)
-		{
-			return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+	handler = {
+		get: (obj, prop) => {
+			obj[prop] = obj[prop] || {};
+			return deepSet(obj[prop]);
 		}
-	).join('');
-}
+	};
+	return new Proxy(input, handler);
+};
 
-const postData = function(url = ``, data = {})
+//
+protocol = 
 {
-	// Default options are marked with *
-	return fetch(url, {
-		method: "POST", // *GET, POST, PUT, DELETE, etc.
+	// Configure the protocol starting point.
+	heightModifier: 560000,
+
+	// Define a list of emojis to use as identicons.
+	emojiHexList: ['1f47b', '1f412', '1f415', '1f408', '1f40e', '1f404', '1f416', '1f410', '1f42a', '1f418', '1f401', '1f407', '1f43f', '1f987', '1f413', '1f427', '1f986', '1f989', '1f422', '1f40d', '1f41f', '1f419', '1f40c', '1f98b', '1f41d', '1f41e', '1f577', '1f33b', '1f332', '1f334', '1f335', '1f341', '1f340', '1f347', '1f349', '1f34b', '1f34c', '1f34e', '1f352', '1f353', '1f95d', '1f965', '1f955', '1f33d', '1f336', '1f344', '1f9c0', '1f95a', '1f980', '1f36a', '1f382', '1f36d', '1f3e0', '1f697', '1f6b2', '26f5', '2708', '1f681', '1f680', '231a', '2600', '2b50', '1f308', '2602', '1f388', '1f380', '26bd', '2660', '2665', '2666', '2663', '1f453', '1f451', '1f3a9', '1f514', '1f3b5', '1f3a4', '1f3a7', '1f3b8', '1f3ba', '1f941', '1f50d', '1f56f', '1f4a1', '1f4d6', '2709', '1f4e6', '270f', '1f4bc', '1f4cb', '2702', '1f511', '1f512', '1f528', '1f527', '2696', '262f', '1f6a9', '1f463', '1f35e'],
+	emojiCodepoints: [128123, 128018, 128021, 128008, 128014, 128004, 128022, 128016, 128042, 128024, 128001, 128007, 128063, 129415, 128019, 128039, 129414, 129417, 128034, 128013, 128031, 128025, 128012, 129419, 128029, 128030, 128375, 127803, 127794, 127796, 127797, 127809, 127808, 127815, 127817, 127819, 127820, 127822, 127826, 127827, 129373, 129381, 129365, 127805, 127798, 127812, 129472, 129370, 129408, 127850, 127874, 127853, 127968, 128663, 128690, 9973, 9992, 128641, 128640, 8986, 9728, 11088, 127752, 9730, 127880, 127872, 9917, 9824, 9829, 9830, 9827, 128083, 128081, 127913, 128276, 127925, 127908, 127911, 127928, 127930, 129345, 128269, 128367, 128161, 128214, 9993, 128230, 9999, 128188, 128203, 9986, 128273, 128274, 128296, 128295, 9878, 9775, 128681, 128099, 127838 ],
+
+	paymentTypeNames:
+	{
+		'01': "Key Hash",
+		'02': "Script Hash",
+		'03': "Payment Code",
+		'04': "Stealth Keys"
+	},
+
+	paymentTypeCodes:
+	{
+		'01': "P2PKH",
+		'02': "P2SH",
+		'03': "P2SK",
+		'04': "P2PC"
+	},
+
+	paymentCodeNumbers:
+	{
+		"P2PKH": '01',
+		"P2SH": '02',
+		"P2SK": '03',
+		"P2PC": '04'
+	},
+
+	//
+	accountRegExp: /^([a-zA-Z0-9_]+)(#([0-9]+)(\.([0-9]+))?)?/,
+
+	//
+	queryTemplate:
+	{
+		"v": 3,
+		"q": 
+		{
+			"limit": 9,
+			"find": 
+			{
+				"out.h1": "01010101"
+			}
+		},
+		"r":
+		{
+			"f": "[ .[] | { blockheight: .blk.i?, blockhash: .blk.h?, transactionhash: .tx.h?, name: .out[0].s2, data: .out[0].h3} ]"
+		}
+	},
+
+	//
+	queryBitDB: function(accountName, accountNumber, collisionHash)
+	{
+		// Make a copy of the default query template.
+		let query = this.queryTemplate;
+
+		// If a blockheight was supplied, add it to the query.
+		if(typeof accountNumber === 'number' && accountNumber > 0)
+		{
+			query.q.find["blk.i"] = accountNumber + heightModifier;
+		}
+
+		// If an account name was supplied, add it to the query.
+		if(typeof accountName === 'string' && accountName.length > 0)
+		{
+			query.q.find["out.s2"] = { "$regex": "^" + accountName, "$options": "i" };
+		}
+
+		// Encode the query.
+		let base64_query = btoa(JSON.stringify(query));
+
+		// Set the URL of the query request.
+		let url = "https://bitdb.network/q/" + base64_query;
+
+		// Configure the bitDB API key in the request header.
+		let header = { headers: { key: "qqdd9rf6uf2l2h4uzjdkqgqqeg4rpw25e53lus6qrt" } };
+
+		// Return the result set.
+		return fetch(url, header).then(response => response.json());
+	},
+	
+	//
+	calculateAccountIdentity: function(blockhash, transactionhash)
+	{
+		// Step 1: Concatenate the block hash with the transaction hash
+		let account_hash_step1 = blockhash + transactionhash;
+
+		// Step 2: Hash the results of the concatenation with sha256
+		let account_hash_step2 = sha256(arrayFromHex(account_hash_step1));
+
+		// Step 3: Take the first and last four bytes and discard the rest
+		let account_hash_step3 = account_hash_step2.substring(0, 8);
+		let account_emoji_step3 = account_hash_step2.substring(-8);
+
+		// Step 4a: Convert to decimal notation and store as a string
+		let account_hash_step4 = parseInt(account_hash_step3, 16);
+
+		// Step 4b: Select an emoji from the emojiHexList
+		let emoji_index = parseInt(account_emoji_step3, 16) % this.emojiCodepoints.length;
+
+		// Step 5: Reverse the the string so the last number is first
+		let account_hash_step5 = account_hash_step4.toString().split("").reverse().join("").padEnd(10, '0');
+
+		// Step 5b: calculate the integer codepoint for the emoji
+		let emoji_codepoint = this.emojiCodepoints[emoji_index];
+		
+		// Return the final account identity.
+		return { collisionHash: account_hash_step5, accountEmoji: emoji_codepoint };
+	},
+
+	// Helper function to choose a suitable OP_PUSH opcode.
+	pushcode: function(length)
+	{
+		if(length == 0) { return false; }
+		if(length <= 75) { return length.toString(16).padStart(2, '0').toUpperCase(); }
+		if(length <= 256) { return "4c" + length.toString(16).padStart(4, '0').toUpperCase(); }
+		if(length <= 256*256) { return "4d" + length.toString(16).padStart(6, '0').toUpperCase(); }
+		if(length <= 256*256*256*256) { return "4e" + length.toString(16).padStart(10, '0').toUpperCase(); }
+	},
+
+	// Default request parameters.
+	callParams:
+	{
 		mode: "no-cors", // no-cors, cors, *same-origin
 		cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
 		credentials: "omit", // include, *same-origin, omit
-		headers: {
-			"Content-Type": "application/json; charset=utf-8",
-			// "Content-Type": "application/x-www-form-urlencoded",
-		},
 		redirect: "error", // manual, *follow, error
 		referrer: "no-referrer", // no-referrer, *client
-		body: JSON.stringify(data), // body data type must match "Content-Type" header
-	})
-	.then(response => response.json()); // parses response to JSON
-}
-
-const cash_account_height_modifier = 560000;
-
-window.parseHexString = function(str)
-{ 
-	var result = [];
-
-	while (str.length >= 8)
-	{ 
-		result.push(parseInt(str.substring(0, 8), 16));
-
-		str = str.substring(8, str.length);
-	}
-
-	return result;
-}
-
-let pushcode = function(length)
-{
-	if(length == 0) { return false; }
-	if(length <= 75) { return length.toString(16).padStart(2, '0').toUpperCase(); }
-	if(length <= 256) { return "4c" + length.toString(16).padStart(4, '0').toUpperCase(); }
-	if(length <= 256*256) { return "4d" + length.toString(16).padStart(6, '0').toUpperCase(); }
-	if(length <= 256*256*256*256) { return "4e" + length.toString(16).padStart(10, '0').toUpperCase(); }
-}
-
-let create_registration = function()
-{
-	let post_data =
-	{
-		"requested_alias": document.getElementById('alias_name').value,
-		"payment_data": document.getElementById('alias_payload').value
-	};
-
-	postData('https://www.cashaccount.info/alias', post_data).then
-	(
-		function(data)
+		headers:
 		{
-			console.log(data);
-
-			if(typeof data.err !== 'undefined')
-			{
-				alert(data.err);
-			}
-
-			if(typeof data['alias']['_id'] !== 'undefined')
-			{
-				// Mark fieldsets as active/inactive.
-				document.getElementById('fieldset_create_transaction').className = 'complete';
-				document.getElementById('fieldset_broadcast_transaction').className = 'active';
-
-				// Mark form elements as enabled/disabled.
-				document.getElementById('alias_broadcast_transaction').disabled = false;
-				document.getElementById('alias_name').disabled = true;
-				document.getElementById('alias_payload').disabled = true;
-				document.getElementById('alias_create_transaction').disabled = true;
-
-				// Update the registration status
-				document.getElementById('alias_registration_status').innerHTML = 'Created';
-				document.getElementById('alias_registration_status').setAttribute('title', 'Waiting to be broadcast to the network.');
-
-				// Store the registration id on the broadcast button.
-				document.getElementById('alias_broadcast_transaction').setAttribute('data-registration-id', data['alias']['_id']);
-			}
+			"Content-Type": "application/json; charset=utf-8"
 		}
-	);
-}
+	},
 
-let broadcast_registration = function()
-{
-	let registration_id = document.getElementById('alias_broadcast_transaction').getAttribute('data-registration-id');
-	let post_data =
+	// Function that makes an AJAX request.
+	requestCall: function(url, data, type)
 	{
-		'id': registration_id
-	};
+		/// Make a copy of the default call parameters.
+		let fetchParams = this.callParams;
 
-	// Broadcast the transaction
-	postData('https://www.cashaccount.info/alias/' + registration_id + '/broadcast', post_data).then
-	(
-		function(data)
+		// Set the requested type and data.
+		fetchParams.method = type;
+		fetchParams.body = JSON.stringify(data);
+
+		// Make the call and return the JSON-encoded response.
+		return fetch(url, fetchParams).then(response => response.json());
+	},
+
+	// Wrappers for convenience.
+	requestGet: function(url, data) { this.requestCall(url, data, 'GET'); },
+	requestPost: function(url, data) { this.requestCall(url, data, 'POST'); },
+
+	// Creates a registration with the backend.
+	create_registration: function(name, payload)
+	{
+		let data =
 		{
-			console.log(data);
+			"requested_alias": document.getElementById('alias_create_transaction').getAttribute('alias'), 
+			"payment_data": document.getElementById('alias_create_transaction').getAttribute('payload')
+		}
 
-			if(true)
+		protocol.requestPost('https://www.cashaccount.info/alias', data).then
+		(
+			function(data)
+			{
+				if(typeof data.err !== 'undefined')
+				{
+					alert(data.err);
+				}
+
+				if(typeof data['alias']['_id'] !== 'undefined')
+				{
+					// Mark fieldsets as active/inactive.
+					document.getElementById('fieldset_create_transaction').className = 'complete';
+					document.getElementById('fieldset_broadcast_transaction').className = 'active';
+
+					// Mark form elements as enabled/disabled.
+					document.getElementById('alias_broadcast_transaction').disabled = false;
+					document.getElementById('alias_name').disabled = true;
+					document.getElementById('alias_payload').disabled = true;
+					document.getElementById('alias_create_transaction').disabled = true;
+
+					// Update the registration status
+					document.getElementById('alias_registration_status').innerHTML = 'Created';
+					document.getElementById('alias_registration_status').setAttribute('title', 'Waiting to be broadcast to the network.');
+
+					// Store the registration id on the broadcast button.
+					document.getElementById('alias_broadcast_transaction').setAttribute('data-registration-id', data['alias']['_id']);
+				}
+			}
+		);
+	},
+	
+	broadcast_registration: function(registration_id)
+	{
+		// Broadcast the transaction
+		this.requestPost('https://www.cashaccount.info/alias/' + registration_id + '/broadcast', { 'id': registration_id }).then
+		(
+			function(data)
 			{
 				// Mark fieldsets as active/inactive.
 				document.getElementById('fieldset_broadcast_transaction').className = 'complete';
@@ -132,370 +238,298 @@ let broadcast_registration = function()
 				// Update the TXID
 				document.getElementById('alias_transaction_hash').innerHTML = data.txid.toUpperCase();
 			}
+		);
+	}
+};
+
+website = 
+{
+	/* Triggered when typing in a new account name for registration */
+	update_name: function()
+	{
+		// Remove whitespace.
+		document.getElementById('alias_name').value = document.getElementById('alias_name').value.trim();
+
+		// Get the name string as a blob for further processing.
+		let name = new Blob([document.getElementById('alias_name').value]);
+
+		// Create a file reader to get data from the blob.
+		let fileReader = new FileReader();
+
+		// When the file reader has loaded the blob data..
+		fileReader.onload = function()
+		{
+			// Store the name as a byte array.
+			let nameBytes = new Uint8Array(fileReader.result);
+
+			// Update the OP_PUSH byte length indicator.
+			document.getElementById('alias_name_length').setAttribute('title', 'Push ' + fileReader.result.byteLength + ' bytes');
+			document.getElementById('alias_name_length').innerHTML = protocol.pushcode(fileReader.result.byteLength);
+
+			// Update the OP_PUSH byte data for the name string.
+			document.getElementById('alias_name_hex').setAttribute('title', 'UTF-8 encoded name from: ' + document.getElementById('alias_name').value);
+			document.getElementById('alias_name_hex').innerHTML = arrayToHex(nameBytes).toUpperCase();
+
+			// Update the predicted identifiers name part.
+			document.getElementById('alias_name_predication').innerHTML = document.getElementById('alias_name').value;
+
+			// alias_name_lookup_button
+			document.getElementById('alias_lookup_transaction').innerHTML = 'Lookup ' + document.getElementById('alias_name').value;
+
+			// Set the alias name property on the create registration button.
+			document.getElementById('alias_create_transaction').setAttribute('alias', document.getElementById('alias_name').value);
+
+			// Calculate if both alias and payload have been properly entered.
+			let entry_status = (document.getElementById('alias_create_transaction').getAttribute('alias') && document.getElementById('alias_create_transaction').getAttribute('payload'));
+
+			// Update the create registration buttons enable/disable status.
+			document.getElementById('alias_create_transaction').disabled = !entry_status;
+		};
+
+		// Load the name blob.
+		fileReader.readAsArrayBuffer(name);
+	},
+
+
+	//
+	update_payload: function()
+	{
+		// Remove whitespace.
+		document.getElementById('alias_payload').value = document.getElementById('alias_payload').value.trim();
+
+		let address_types =
+		{
+			"P2PKH": "Key Hash",
+			"P2SH": "Script Hash",
+			"P2SK": "Stealth Keys",
+			"P2PC": "Payment Code"
 		}
-	);
-}
+		let address_codes =
+		{
+			"P2PKH": "01",
+			"P2SH": "02",
+			"P2SK": "03",
+			"P2PC": "04"
+		}
 
-/* Triggered when typing in a new account name for registration */
-let update_name = function()
-{
-	// Remove whitespace.
-	document.getElementById('alias_name').value = document.getElementById('alias_name').value.trim();
+		try
+		{
+			let payload = '';
+			try
+			{
+				console.log('Trying to decode as CashAddr');
 
-	// Get the name string as a blob for further processing.
-	let name = new Blob([document.getElementById('alias_name').value]);
+				let address = cashaddr.decode('bitcoincash:' + document.getElementById('alias_payload').value);
+				payload_hex = arrayToHex(address.hash).toUpperCase();
+				payload_type = address.type;
+			}
+			catch (e)
+			{
+				console.log('Trying to decode as Base58Check');
 
-	// Create a file reader to get data from the blob.
-	let fileReader = new FileReader();
+				let address = base58check.decode(document.getElementById('alias_payload').value);
 
-	// When the file reader has loaded the blob data..
-	fileReader.onload = function()
-	{
-		// Store the name as a byte array.
-		let nameBytes = new Uint8Array(fileReader.result);
+				if(address.prefix.toString('hex') === '47' && address.data.length == 80)
+				{
+					payload_hex = address.data.toString('hex');
+					payload_type = 'P2PC';
+				}
+			}
+			
+			// Update the OP_PUSH byte length indicator.
+			document.getElementById('alias_payload_length').setAttribute('title', 'Push ' + (1 + payload.length) + ' bytes');
+			document.getElementById('alias_payload_length').innerHTML = protocol.pushcode((1 + payload.length));
 
-		// Update the OP_PUSH byte length indicator.
-		document.getElementById('alias_name_length').setAttribute('title', 'Push ' + fileReader.result.byteLength + ' bytes');
-		document.getElementById('alias_name_length').innerHTML = pushcode(fileReader.result.byteLength);
+			// Update the OP_PUSH byte data for the name string.
+			document.getElementById('alias_payload_type').setAttribute('title', 'Type: ' + address_types[payload_type]);
+			document.getElementById('alias_payload_type').innerHTML = address_codes[payload_type];
 
-		// Update the OP_PUSH byte data for the name string.
-		document.getElementById('alias_name_hex').setAttribute('title', 'UTF-8 encoded name from: ' + document.getElementById('alias_name').value);
-		document.getElementById('alias_name_hex').innerHTML = byteArrayToHexString(nameBytes).toUpperCase();
+			// Update the OP_PUSH byte data for the name string.
+			document.getElementById('alias_payload_hex').setAttribute('title', 'Hex encoded payment data from: ' + document.getElementById('alias_payload').value);
+			document.getElementById('alias_payload_hex').innerHTML = payload_hex;
 
-		// Update the predicted identifiers name part.
-		document.getElementById('alias_name_predication').innerHTML = document.getElementById('alias_name').value;
+			// Set the payload property on the create registration button.
+			document.getElementById('alias_create_transaction').setAttribute('payload', document.getElementById('alias_payload').value);
+		}
+		catch (e)
+		{
+			// Remove the payload property on the create registration button.
+			document.getElementById('alias_create_transaction').setAttribute('payload', '');
+		}
 
-		// alias_name_lookup_button
-		document.getElementById('alias_lookup_transaction').innerHTML = 'Lookup ' + document.getElementById('alias_name').value;
-	};
+		// Calculate if both alias and payload have been properly entered.
+		let entry_status = (document.getElementById('alias_create_transaction').getAttribute('alias') && document.getElementById('alias_create_transaction').getAttribute('payload'));
 
-	// Load the name blob.
-	fileReader.readAsArrayBuffer(name);
-}
-
-let update_payload = function()
-{
-	// Remove whitespace.
-	document.getElementById('alias_payload').value = document.getElementById('alias_payload').value.trim();
-
-	let address = cashaddr.decode('bitcoincash:' + document.getElementById('alias_payload').value);
-	let address_types =
-	{
-		"P2PKH": "Key Hash",
-		"P2SH": "Script Hash"
+		// Update the create registration buttons enable/disable status.
+		document.getElementById('alias_create_transaction').disabled = !entry_status;
 	}
-	let address_codes =
-	{
-		"P2PKH": "01",
-		"P2SH": "02"
-	}
-	
-	console.log(address);
-	// Update the OP_PUSH byte length indicator.
-	document.getElementById('alias_payload_length').setAttribute('title', 'Push ' + (1 + address.hash.length) + ' bytes');
-	document.getElementById('alias_payload_length').innerHTML = pushcode((1 + address.hash.length));
+};
 
-	// Update the OP_PUSH byte data for the name string.
-	document.getElementById('alias_payload_type').setAttribute('title', 'Type: ' + address_types[address.type]);
-	document.getElementById('alias_payload_type').innerHTML = address_codes[address.type];
 
-	// Update the OP_PUSH byte data for the name string.
-	document.getElementById('alias_payload_hex').setAttribute('title', 'Hex encoded payment data from: ' + document.getElementById('alias_payload').value);
-	document.getElementById('alias_payload_hex').innerHTML = byteArrayToHexString(address.hash).toUpperCase();
-}
 
-let calculate_collision_hash = function(blockhash, transactionhash)
-{
-//console.log(blockhhash);
-//console.log(transactionhash);
-
-	// Calculate the account hash:
-	// Step 1: Concatenate the block hash with the transaction hash
-	let account_hash_step1 = blockhash + transactionhash;
-//console.log(account_hash_step1);
-
-	// Step 2: Hash the results of the concatenation with sha256
-	let account_hash_step2 = sha256(Uint8ArrayfromHexString(account_hash_step1));
-//console.log(account_hash_step2);
-
-	// Step 3: Take the first four bytes and discard the rest
-	let account_hash_step3 = account_hash_step2.substring(0, 8);
-//console.log(account_hash_step3);
-
-	// Step 4: Convert to decimal notation and store as a string
-	let account_hash_step4 = parseInt(account_hash_step3, 16);
-//console.log(account_hash_step4);
-
-	// Step 5: Reverse the the string so the last number is first
-	let account_hash_step5 = account_hash_step4.toString().split("").reverse().join("").padEnd(10, '0');
-//console.log(account_hash_step5);
-
-	// Return the final collision hash.
-	return account_hash_step5;
-}
-
-let calculate_checksum_character = function(blockheight, blockhash, transactionhash)
-{
-	let emoji_hex_list = ['1f47b', '1f412', '1f415', '1f408', '1f40e', '1f404', '1f416', '1f410', '1f42a', '1f418', '1f401', '1f407', '1f43f', '1f987', '1f413', '1f427', '1f986', '1f989', '1f422', '1f40d', '1f41f', '1f419', '1f40c', '1f98b', '1f41d', '1f41e', '1f577', '1f33b', '1f332', '1f334', '1f335', '1f341', '1f340', '1f347', '1f349', '1f34b', '1f34c', '1f34e', '1f352', '1f353', '1f95d', '1f965', '1f955', '1f33d', '1f336', '1f344', '1f9c0', '1f95a', '1f980', '1f36a', '1f382', '1f36d', '1f3e0', '1f697', '1f6b2', '26f5', '2708', '1f681', '1f680', '231a', '2600', '2b50', '1f308', '2602', '1f388', '1f380', '26bd', '2660', '2665', '2666', '2663', '1f453', '1f451', '1f3a9', '1f514', '1f3b5', '1f3a4', '1f3a7', '1f3b8', '1f3ba', '1f941', '1f50d', '1f56f', '1f4a1', '1f4d6', '2709', '1f4e6', '270f', '1f4bc', '1f4cb', '2702', '1f511', '1f512', '1f528', '1f527', '2696', '262f', '1f6a9', '1f463', '1f35e'];
-	
-	// Step 1: Concatenate the block emoji with the transaction emoji
-	let account_emoji_step1 = blockhash + transactionhash;
-
-	// Step 2: Hash the results of the concatenation with sha256
-	let account_emoji_step2 = sha256(Uint8ArrayfromHexString(account_emoji_step1));
-
-	// Step 3: Take the last 4 bytes and discard the rest
-	let account_emoji_step3 = account_emoji_step2.substring(-8);
-
-	// Step 4: Select an emoji from the emoji_hex_list
-	let emoji_index = parseInt(account_emoji_step3, 16) % emoji_hex_list.length;
-
-	// Return the final emoji in decimal notation
-	return parseInt(emoji_hex_list[emoji_index], 16);
-}
 
 let lookup_identifier = function()
 {
-	let identifier = document.getElementById('lookup_search_string').value;
-	
-	let parser = /^([a-zA-Z0-9_]+)(#([0-9]+)(\.([0-9]+))?)?/;
-	let account_parts = parser.exec(identifier.trim());
+	let accountParts = [null];
+	let identifier = document.getElementById('lookup_search_string').value.trim();
 
-	//console.log(identifier);
-	//console.log(account_parts);
-
-	if(identifier === '' || identifier === null)
+	// If an identifier was supplied, parse it.
+	if(identifier !== '')
 	{
-		account_parts = [null];
+		accountParts = protocol.accountRegExp.exec(identifier);
 	}
 
-	if(account_parts)
-	{
-		let account_name = account_parts[1];
-		let account_number = parseInt(account_parts[3]) + cash_account_height_modifier;
-		let account_collision = account_parts[4];
-
-		let query = { "v": 3,"q": { "find": {}, "limit": 9 }, "r": { "f": "[ .[] | { blockheight: .blk.i?, blockhash: .blk.h?, transactionhash: .tx.h?, name: .out[0].s2, data: .out[0].h3} ]" } };
-
-		if(typeof account_parts[3] !== 'undefined')
+	protocol.queryBitDB(accountParts[1], accountParts[3], accountParts[4]).then
+	(
+		function(results)
 		{
-			query.q.find = { "out.h1": "01010101", "out.s2": { "$regex": "^" + account_name, "$options": "i" }, "blk.i": parseInt(account_number) };
-		}
-		else
-		{
-			if(typeof account_parts[1] !== 'undefined')
+			// Clear previous result.
+			document.getElementById('result_list').innerHTML = "";
+
+			let transaction_types = ['u', 'c'];
+			let payment_types =
 			{
-				query.q.find = { "out.h1": "01010101", "out.s2": { "$regex": "^" + account_name, "$options": "i" } };
+				'01': "Key Hash",
+				'02': "Script Hash",
+				'03': "Payment Code",
+				'04': "Stealth Keys"
 			}
-			else
+
+			let payment_data_types =
 			{
-				query.q.find = { "out.h1": "01010101" };
+				'01': "P2PKH",
+				'02': "P2SH",
+				'03': "????",
+				'04': "????"
 			}
-		}
 
-		//console.log(query);
+			//console.log(results);
 
-		let base64_query = btoa(JSON.stringify(query));
-		let url = "https://bitdb.network/q/" + base64_query;
+			// Set up a collision table.
+			let collisionTable = {};
 
-		let header =
-		{
-			headers: { key: "qqdd9rf6uf2l2h4uzjdkqgqqeg4rpw25e53lus6qrt" }
-		};
-
-		fetch(url, header).then
-		(
-			function(r)
+			// Populate the collision table.
+			for(index in results['c'])
 			{
-				return r.json()
+				let collisionHash = protocol.calculateAccountIdentity(results['c'][index]['blockhash'], results['c'][index]['transactionhash']).collisionHash;
+
+				// Add this collision to the collision list for this name at this blockheight.
+				deepSet(collisionTable)[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions'][collisionHash] = collisionHash;
 			}
-		).then
-		(
-			function(results)
+
+			// Calculate the shortest identifiers.
+			for(index in results['c'])
 			{
-				// Clear previous result.
-				document.getElementById('result_list').innerHTML = "";
+				// Make temporary copies for code legibility reasons.
+				let blockHeight = results['c'][index]['blockheight'];
+				let accountName = results['c'][index]['name'];
+				let collisionHash = protocol.calculateAccountIdentity(results['c'][index]['blockhash'], results['c'][index]['transactionhash']).collisionHash;
 
-				let transaction_types = ['u', 'c'];
-				let payment_types =
+				// For each collision registered to this name and blockheight..
+				for(collision in collisionTable[blockHeight][accountName]['collisions'])
 				{
-					'01': "Key Hash",
-					'02': "Script Hash",
-					'03': "Payment Code",
-					'04': "Stealth Keys"
-				}
+					// Make a temporary copy for code legibility reasons.
+					let currentCollision = collisionTable[blockHeight][accountName]['collisions'][collision];
 
-				let payment_data_types =
-				{
-					'01': "P2PKH",
-					'02': "P2SH",
-					'03': "????",
-					'04': "????"
-				}
-
-				//console.log(results);
-
-				// Set up a collision table.
-				let collision_table = {};
-//console.log('collision_start');
-				// Populate the collision table.
-				for(index in results['c'])
-				{
-					let collision_hash = calculate_collision_hash(results['c'][index]['blockhash'], results['c'][index]['transactionhash']);
-
-					if(typeof collision_table[results['c'][index]['blockheight']] == 'undefined')
+					// Start at collision length of 10 and work backwards until we discover the shortest collision..
+					let length = 11;
+					while(--length > 0)
 					{
-						collision_table[results['c'][index]['blockheight']] = {};
-					}
-
-					if(typeof collision_table[results['c'][index]['blockheight']][results['c'][index]['name']] == 'undefined')
-					{
-						collision_table[results['c'][index]['blockheight']][results['c'][index]['name']] = {};
-					}
-
-					if(typeof collision_table[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions'] == 'undefined')
-					{
-						collision_table[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions'] = {};
-					}
-
-					collision_table[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions'][collision_hash] = collision_hash;
-				}
-//console.log('collision_mid');
-
-				// Calculate the shortest identifiers.
-				for(index in results['c'])
-				{
-					let collision_hash = calculate_collision_hash(results['c'][index]['blockhash'], results['c'][index]['transactionhash']);
-					for(collision in collision_table[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions'])
-					{
-						let current_collision = collision_table[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions'][collision];
-						let length = 10;
-						while(length > 0)
+						// .. but only compare with actual collisions, not with ourselves.
+						if(collisionHash != currentCollision)
 						{
-							if(collision_hash != current_collision)
+							// If this collision is the same from the start up to this tested collision length..
+							if(collisionHash.substring(0, length) == currentCollision.substring(0, length))
 							{
-//console.log(results['c'][index]['name'] + "#" + results['c'][index]['blockheight']+ ", hash="+collision_hash+", collision=" + current_collision);
-								if(collision_hash.substring(0, length) == current_collision.substring(0, length))
+								// .. and since this is the first full collision, break and move on with this collision length.
+								break;
+							}
+						}
+					}
+
+					// Set the collision length if there was at least one collision.
+					if(Object.keys(collisionTable[blockHeight][accountName]['collisions']).length > 1)
+					{
+						collisionTable[results['c'][index]['transactionhash']] = 1 + length;
+					}
+				}
+			}
+
+			//
+			for(type in transaction_types)
+			{
+				for(index in results[transaction_types[type]])
+				{
+					// Create an account template for an unconfirmed registration transaction.
+					let account_name = results[transaction_types[type]][index]['name'];
+					let transaction_id = results[transaction_types[type]][index]['transactionhash'];
+					let account_number = '????';
+					let block_height = 'Pending';
+					let block_hash = 'Pending';
+					let account_hash = '??????????';
+					let account_emoji = "<span class='emoji'>&nbsp;</span>";
+					let account_class = 'unconfirmed';
+
+					// Update the template based on data from the mined registration transaction.
+					if(results[transaction_types[type]][index]['blockheight'] !== null)
+					{
+						account_number = results[transaction_types[type]][index]['blockheight'] - protocol.heightModifier;
+						block_height = results[transaction_types[type]][index]['blockheight'];
+						block_hash = results[transaction_types[type]][index]['blockhash'];
+
+						account_class = 'confirmed';
+						account_hash = protocol.calculateAccountIdentity(block_hash, transaction_id).collisionHash;
+						account_emoji_code = protocol.calculateAccountIdentity(block_hash, transaction_id).accountEmoji;
+						account_emoji = "<span class='emoji' title='" + unicode_emoji_names[String.fromCodePoint(account_emoji_code)] + "'>&#" + account_emoji_code + ";</span>";
+					}
+
+					if(typeof account_collision === 'undefined' || account_hash.startsWith(account_collision.substring(1)))
+					{
+						let account_identifier = "<td><span>" + account_name + "</span></td><td><a href='https://blockchair.com/bitcoin-cash/transaction/" + transaction_id + "'>#" + account_number;
+						if(typeof collisionTable[transaction_id] !== 'undefined' && collisionTable[transaction_id] > 0)
+						{
+							account_identifier += "<i title='Due to a naming collision the account number has been extended by " + collisionTable[transaction_id] + " digits.'>." + account_hash.substring(0, collisionTable[transaction_id]) + "</i><i title='The remaining numbers are also part of the account but is not needed to uniquely identify the account.'>" + account_hash.substring( collisionTable[transaction_id]) + "</i></a></td>";
+						}
+						else
+						{
+							account_identifier += "<i></i><i title='These number are part of the account but is not needed to uniquely identify the account.'>." + account_hash.substring( collisionTable[transaction_id]) + "</i></a></td>";
+						}
+
+						let payment_type = '<i>Unknown payment type</i>';
+						let payment_data = 'Unknown';
+						let account_address_type = 'Unknown';
+						let account_address = '';
+
+						if(parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) !== 0 && parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) <= 4)
+						{
+							payment_type = payment_types[results[transaction_types[type]][index]['data'].substring(0,2)];
+							payment_data = results[transaction_types[type]][index]['data'].substring(2);
+
+							account_address_type = payment_data_types[results[transaction_types[type]][index]['data'].substring(0,2)];
+							account_address = cashaddr.encode('bitcoincash', account_address_type, arrayFromHex(payment_data)).substring(12);
+						}
+
+						document.getElementById('result_list').innerHTML += "<li id='" + transaction_id + "' class='" + account_class + "'><span class='account_identifier'>" + account_identifier + "</span>" + account_emoji + "<span class='account_payment_link'><a href='https://blockchair.com/bitcoin-cash/address/" + account_address + "'>	" + account_address + "</a></span>";
+
+						setTimeout
+						(
+							function()
+							{
+								if(account_address)
 								{
-									console.log('compared ' + collision_hash.substring(0, length) + " with " + current_collision.substring(0, length));
-									break;
+									$('#' + transaction_id).qrcode(account_address);
 								}
 								else
 								{
+									document.getElementById(transaction_id).innerHTML += "<p>Unable to parse payment information</p>";
 								}
-							}
-							length -= 1;
-//console.log('d, length=' + length);
-						}
-
-						if(Object.keys(collision_table[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions']).length > 1)
-						{
-							collision_table[results['c'][index]['transactionhash']] = 1;
-						}
-						else
-						{
-							collision_table[results['c'][index]['transactionhash']] = length;
-						}
-					}
-				}
-//console.log('collision_end');
-
-//console.log(collision_table);
-
-				for(type in transaction_types)
-				{
-					//console.log('Parsing TYPE: ' + transaction_types[type]);
-					//console.log(results[transaction_types[type]]);
-
-					for(index in results[transaction_types[type]])
-					{
-						//console.log('A');
-						//console.log(parseInt(results[transaction_types[type]][index]['data'].substring(0,2)));
-						let account_name = results[transaction_types[type]][index]['name'];
-						let transaction_id = results[transaction_types[type]][index]['transactionhash'];
-						let account_number = '';
-						let block_height = '';
-						let block_hash = '';
-						let account_class='unconfirmed';
-						let account_hash = '';
-						let account_emoji = "<span class='emoji'>&nbsp;</span>";
-
-						if(results[transaction_types[type]][index]['blockheight'] === null)
-						{
-							account_number = '????';
-							block_height = 'Pending';
-							block_hash = 'Pending';
-							account_hash = '??????????';
-						}
-						else
-						{
-							account_number = results[transaction_types[type]][index]['blockheight'] - cash_account_height_modifier;
-							block_height = results[transaction_types[type]][index]['blockheight'];
-							block_hash = results[transaction_types[type]][index]['blockhash'];
-
-							account_class='confirmed';
-							account_hash = calculate_collision_hash(block_hash, transaction_id);
-							account_emoji_hex = calculate_checksum_character(block_height, block_hash, transaction_id);
-							account_emoji = "<span class='emoji' title='" + unicode_emoji_names[String.fromCodePoint(account_emoji_hex)] + "'>&#" + account_emoji_hex + ";</span>";
-						}
-
-						if(typeof account_collision === 'undefined' || account_hash.startsWith(account_collision.substring(1)))
-						{
-							let account_identifier = "<td><span>" + account_name + "</span></td><td><a href='https://blockchair.com/bitcoin-cash/transaction/" + transaction_id + "'>#" + account_number;
-							if(typeof collision_table[transaction_id] !== 'undefined' && collision_table[transaction_id] > 0)
-							{
-								account_identifier += "<i title='Due to a naming collision the account number has been extended by " + collision_table[transaction_id] + " digits.'>." + account_hash.substring(0, collision_table[transaction_id]) + "</i><i title='The remaining numbers are also part of the account but is not needed to uniquely identify the account.'>" + account_hash.substring( collision_table[transaction_id]) + "</i></a></td>";
-							}
-							else
-							{
-								account_identifier += "<i></i><i title='These number are part of the account but is not needed to uniquely identify the account.'>." + account_hash.substring( collision_table[transaction_id]) + "</i></a></td>";
-							}
-
-							// Calculate the address:
-							/*
-							let temp = cashaddr.decode('bitcoincash:qr4aadjrpu73d2wxwkxkcrt6gqxgu6a7usxfm96fst');
-							console.log(temp);
-							console.log('decode_hash: ' + Uint8ArraytoHexString(temp.hash));
-							console.log('payment_data: ' + payment_data);
-							console.log(cashaddr.encode('bitcoincash', 'P2PKH', Uint8ArrayfromHexString(payment_data)));
-							*/
-
-							let payment_type = '<i>Unknown payment type</i>';
-							let payment_data = 'Unknown';
-							let account_address_type = 'Unknown';
-							let account_address = '';
-
-							if(parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) !== 0 && parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) <= 4)
-							{
-								payment_type = payment_types[results[transaction_types[type]][index]['data'].substring(0,2)];
-								payment_data = results[transaction_types[type]][index]['data'].substring(2);
-
-								account_address_type = payment_data_types[results[transaction_types[type]][index]['data'].substring(0,2)];
-								account_address = cashaddr.encode('bitcoincash', account_address_type, Uint8ArrayfromHexString(payment_data)).substring(12);
-							}
-
-							document.getElementById('result_list').innerHTML += "<li id='" + transaction_id + "' class='" + account_class + "'><span class='account_identifier'>" + account_identifier + "</span>" + account_emoji + "<span class='account_payment_link'><a href='https://blockchair.com/bitcoin-cash/address/" + account_address + "'>	" + account_address + "</a></span>";
-
-							setTimeout
-							(
-								function()
-								{
-									if(account_address)
-									{
-										$('#' + transaction_id).qrcode(account_address);
-									}
-									else
-									{
-										document.getElementById(transaction_id).innerHTML += "<p>Unable to parse payment information</p>";
-									}
-								}, 100
-							);
-						}
+							}, 100
+						);
 					}
 				}
 			}
-		);
-	}
+		}
+	);
 }
 
 // Make a default lookup for the latest registered accounts.
@@ -504,6 +538,22 @@ window.addEventListener
 	"load", 
 	function()
 	{
+		// Assign events to automatically react to user input for the alias.
+		document.getElementById('alias_name').addEventListener("click", website.update_name);
+		document.getElementById('alias_name').addEventListener("change", website.update_name);
+		document.getElementById('alias_name').addEventListener("paste", website.update_name);
+		document.getElementById('alias_name').addEventListener("keyup", website.update_name);
+
+		// Assign events to automatically react to user input for the alias.
+		document.getElementById('alias_payload').addEventListener("click", website.update_payload);
+		document.getElementById('alias_payload').addEventListener("change", website.update_payload);
+		document.getElementById('alias_payload').addEventListener("paste", website.update_payload);
+		document.getElementById('alias_payload').addEventListener("keyup", website.update_payload);
+
+		// Assign events to automatically react to user input for the alias.
+		document.getElementById('alias_create_transaction').addEventListener("click", protocol.create_registration);
+
+		// Make an initial identifier lookup to populate the result list.
 		lookup_identifier();
 	}
 );

@@ -14,12 +14,11 @@
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 		<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet">
 
-		<script type='text/javascript' src='js/index.js'></script>1
+		<script type='text/javascript' src='js/app.js'></script>1
 		<script type='text/javascript' src='js/unicode_emoji_names.js'></script>
 		<script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
 		<script type="text/javascript" src="lib/jquery.qrcode.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/gh/emn178/js-sha256/build/sha256.min.js"></script>
-		<script src="https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.3.2.min.js"></script>
 
 		<script type="text/javascript">
 			window.onscroll = function()
@@ -99,15 +98,15 @@
 
 					<label>
 						<span>Enter your name:</span>
-						<input id='alias_name' onchange='update_name();' onpaste='update_name();' onkeyup='update_name();' type='text' placeholder='SatoshiNakamoto' pattern='\w{1,99}' required autocomplete='off'>
+						<input id='alias_name' type='text' placeholder='SatoshiNakamoto' pattern='\w{1,99}' required autocomplete='off'>
 					</label>
 					<label>
 						<span>Enter your payment information:</span>
-						<textarea id='alias_payload' onchange='update_payload();' onpaste='update_payload();' onkeyup='update_payload();' placeholder='qqgekzvw96vq5g57zwdfa5q6g609rrn0ycp33uc325' name='' type=''></textarea>
+						<textarea id='alias_payload' placeholder='qqgekzvw96vq5g57zwdfa5q6g609rrn0ycp33uc325' rows='5' name='' type=''></textarea>
 					</label>
 
 					<label>
-						<button id='alias_create_transaction' onclick="create_registration();">Create Register Transaction</button>
+						<button id='alias_create_transaction' disabled>Create Register Transaction</button>
 					</label>
 				</fieldset>
 
@@ -121,7 +120,7 @@
 						<li><span>Payment Data</span><span><i id='alias_payload_length' title='Push 21 bytes'>15</i>&nbsp;<i id='alias_payload_type' title='Type: Key Hash'>01</i>&nbsp;<b id='alias_payload_hex' title='Decoded Key Hash from: qqgekzvw96vq5g57zwdfa5q6g609rrn0ycp33uc325'>119B098E2E980A229E139A9ED01A469E518E6F26</b></span></li>
 					</ul>
 					<label>
-						<button id='alias_broadcast_transaction' onclick="broadcast_registration();" disabled>Broadcast Register Transaction</button>
+						<button id='alias_broadcast_transaction' onclick="broadcast_registration(this.getAttribute('data-registration-id'));" disabled>Broadcast Register Transaction</button>
 					</label>
 				</fieldset>
 
