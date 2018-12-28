@@ -35,7 +35,7 @@
 
 				if(typeof window['scroll_ready'] !== 'undefined')
 				{
-					var temp_y = window.scrollY + 0.15 * window.innerHeight - 15;
+					var temp_y = window.scrollY + window.innerHeight * 0.5;
 
 					if(temp_y < window['scrolling_prev'] || temp_y > window['scrolling_next'])
 					{
@@ -208,30 +208,12 @@
 			<div>
 				<ul>
 					<li>
-						<img src='img/testimony_matias_alejo_garcia?.jpg' />
+						<img src='img/testimony_jonathan_silverblood?.png' />
 						<div>
-							<span><!--Matias Alejo Garcia?--></span>
-							<span><!--Programmer, BitPay?--></span>
+							<span>José</span>
+							<span>Founder, EatBCH</span>
 							<br/>
 							<span>-INSERTQUOUTE-</span>
-						</div>
-					</li>
-					<li>
-						<img src='img/testimony_peter_rizun?.jpg' />
-						<div>
-							<span><!--Peter Rizun?--></span>
-							<span><!--Chief Scientist, Bitcoin Unlimited?--></span>
-							<br/>
-							<span>-INSERTQUOUTE-</span>
-						</div>
-					</li>
-					<li>
-						<img src='img/testimony_josh_ellithorpe.jpg' />
-						<div>
-							<span>Josh Ellithorpe</span>
-							<span>Senior Engineer, Coinbase</span>
-							<br/>
-							<span>Will leave a qoute closer to release.</span>
 						</div>
 					</li>
 					<li>
@@ -244,12 +226,12 @@
 						</div>
 					</li>
 					<li>
-						<img src='img/testimony_jonathan_silverblood?.png' />
+						<img src='img/testimony_josh_ellithorpe.jpg' />
 						<div>
-							<span>Imaginary Username?</span>
-							<span>humm, internet?</span>
+							<span>Josh Ellithorpe</span>
+							<span>Senior Engineer, Coinbase</span>
 							<br/>
-							<span>-INSERTQUOUTE-</span>
+							<span>Will leave a qoute closer to release.</span>
 						</div>
 					</li>
 					<li>
@@ -262,14 +244,34 @@
 						</div>
 					</li>
 					<li>
+						<img src='img/testimony_jonathan_silverblood.png' />
+						<div>
+							<span>Jonathan Silverblood</span>
+							<span>Jack-of-all-trades</span>
+							<br/>
+							<span>When you use Cash Accounts with a BIP-47 payment code, you get all of privacy, convenience and security.</span>
+						</div>
+					</li>
+					<!--
+					<li>
 						<img src='img/testimony_jonathan_silverblood?.png' />
 						<div>
-							<span>José</span>
-							<span>Founder, EatBCH</span>
+							<span>Imaginary Username?</span>
+							<span>humm, internet?</span>
 							<br/>
 							<span>-INSERTQUOUTE-</span>
 						</div>
 					</li>
+					<li>
+						<img src='img/testimony_matias_alejo_garcia?.jpg' />
+						<div>
+							<span>Matias Alejo Garcia?</span>
+							<span>Programmer, BitPay?</span>
+							<br/>
+							<span>-INSERTQUOUTE-</span>
+						</div>
+					</li>
+					-->
 				</ul>
 			</div>
 		</section>
@@ -280,38 +282,5 @@
 			<a href='https://discord.gg/9kACN9t'><i class="fab fa-discord"></i>&nbsp;Public Chat</a> | 
 			<a href='https://gitlab.com/cash-accounts/specification/blob/master/LICENSE'><i class="fa fa-copyright"></i>&nbsp;Licensed with MIT</a>
 		</nav>
-
-		<script type="text/javascript">
-			window.onload = function()
-			{
-				var temp_navigation_nodes = document.getElementById('navigation_list').childNodes;
-
-				window['navigation_nodes'] = {};
-
-				for(var index = 0, count = temp_navigation_nodes.length; index < count; index += 1)
-				{
-					if(typeof temp_navigation_nodes[index].href !== 'undefined')
-					{
-						var id = temp_navigation_nodes[index].href.split('#')[1];
-						var element = document.getElementById(id);
-						if(element !== null && typeof element.getBoundingClientRect === 'function')
-						{
-							window['navigation_nodes'][id] = 
-							{
-								id: id,
-								starts_at: element.getBoundingClientRect().top + window.scrollY,
-								ends_at: element.getBoundingClientRect().bottom + window.scrollY
-							};
-						}
-					}
-				}
-				
-				window['scrolling_prev'] = 0;
-				window['scrolling_next'] = 0;
-				window['nav_current'] = 'introduction';
-				
-				window['scroll_ready'] = true;
-			}
-		</script>
 	</body>
 </html>

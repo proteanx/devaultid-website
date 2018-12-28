@@ -370,6 +370,40 @@ website =
 		document.getElementById('alias_create_transaction').disabled = !entry_status;
 	},
 
+	update_scroll_positions: function()
+	{
+		let temp_navigation_nodes = document.getElementById('navigation_list').childNodes;
+
+		window['navigation_nodes'] = {};
+
+		for(let index = 0, count = temp_navigation_nodes.length; index < count; index += 1)
+		{
+			if(typeof temp_navigation_nodes[index].href !== 'undefined')
+			{
+				let id = temp_navigation_nodes[index].href.split('#')[1];
+				let element = document.getElementById(id);
+				if(element !== null && typeof element.getBoundingClientRect === 'function')
+				{
+					window['navigation_nodes'][id] = 
+					{
+						id: id,
+						starts_at: element.getBoundingClientRect().top + window.scrollY,
+						ends_at: element.getBoundingClientRect().bottom + window.scrollY
+					};
+				}
+			}
+		}
+
+		if(!window['scroll_ready'])
+		{
+			window['scrolling_prev'] = 0;
+			window['scrolling_next'] = 0;
+			window['nav_current'] = 'introduction';
+
+			window['scroll_ready'] = true;
+		}
+	},
+	
 	lookup_identifier: function()
 	{
 		let accountParts = [null];
@@ -574,6 +608,9 @@ window.addEventListener
 		// Assign events to handle button functions.
 		document.getElementById('alias_create_transaction').addEventListener("click", protocol.create_registration);
 		document.getElementById('alias_broadcast_transaction').addEventListener("click", protocol.broadcast_registration);
+
+		// Update the scroll position regulary.
+		setInterval(website.update_scroll_positions, 0.667);
 
 		// Make an initial identifier lookup to populate the result list.
 		website.lookup_identifier();
