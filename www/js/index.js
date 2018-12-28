@@ -176,7 +176,7 @@ protocol =
 	requestPost: function(url, data) { return this.requestCall(url, data, 'POST'); },
 
 	// Creates a registration with the backend.
-	create_registration: function(name, payload)
+	create_registration: function()
 	{
 		let data =
 		{
@@ -216,8 +216,10 @@ protocol =
 		);
 	},
 	
-	broadcast_registration: function(registration_id)
+	broadcast_registration: function()
 	{
+		let registration_id = document.getElementById('alias_broadcast_transaction').getAttribute('data-registration-id');
+
 		// Broadcast the transaction
 		this.requestPost('https://www.cashaccount.info/alias/' + registration_id + '/broadcast', { 'id': registration_id }).then
 		(
@@ -544,14 +546,15 @@ window.addEventListener
 		document.getElementById('alias_name').addEventListener("paste", website.update_name);
 		document.getElementById('alias_name').addEventListener("keyup", website.update_name);
 
-		// Assign events to automatically react to user input for the alias.
+		// Assign events to automatically react to user input for the payload.
 		document.getElementById('alias_payload').addEventListener("click", website.update_payload);
 		document.getElementById('alias_payload').addEventListener("change", website.update_payload);
 		document.getElementById('alias_payload').addEventListener("paste", website.update_payload);
 		document.getElementById('alias_payload').addEventListener("keyup", website.update_payload);
 
-		// Assign events to automatically react to user input for the alias.
+		// Assign events to handle button functions.
 		document.getElementById('alias_create_transaction').addEventListener("click", protocol.create_registration);
+		document.getElementById('alias_broadcast_transaction').addEventListener("click", protocol.broadcast_registration);
 
 		// Make an initial identifier lookup to populate the result list.
 		lookup_identifier();
