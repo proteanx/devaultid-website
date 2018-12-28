@@ -502,13 +502,20 @@ let lookup_identifier = function()
 						let account_address_type = 'Unknown';
 						let account_address = '';
 
-						if(parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) !== 0 && parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) <= 4)
+						try
 						{
-							payment_type = payment_types[results[transaction_types[type]][index]['data'].substring(0,2)];
-							payment_data = results[transaction_types[type]][index]['data'].substring(2);
+							if(parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) !== 0 && parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) <= 4)
+							{
+								payment_type = payment_types[results[transaction_types[type]][index]['data'].substring(0,2)];
+								payment_data = results[transaction_types[type]][index]['data'].substring(2);
 
-							account_address_type = payment_data_types[results[transaction_types[type]][index]['data'].substring(0,2)];
-							account_address = cashaddr.encode('bitcoincash', account_address_type, arrayFromHex(payment_data)).substring(12);
+								account_address_type = payment_data_types[results[transaction_types[type]][index]['data'].substring(0,2)];
+								account_address = cashaddr.encode('bitcoincash', account_address_type, arrayFromHex(payment_data)).substring(12);
+							}
+						}
+						catch (e)
+						{
+							
 						}
 
 						document.getElementById('result_list').innerHTML += "<li id='" + transaction_id + "' class='" + account_class + "'><span class='account_identifier'>" + account_identifier + "</span>" + account_emoji + "<span class='account_payment_link'><a href='https://blockchair.com/bitcoin-cash/address/" + account_address + "'>	" + account_address + "</a></span>";
