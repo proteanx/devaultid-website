@@ -377,7 +377,7 @@ section#lookup > form > fieldset > ul#result_list > li
 	margin-bottom: 1rem;
 	border-radius: 0.33rem;
 	background-color: white;
-	padding-bottom: 2rem;
+	padding-bottom: 1rem;
 	border: 0.10rem solid rgb(256, 153, 0);
 	box-shadow: 0 0.10rem 0.25rem rgba(0, 0, 0, 0.21);
 }
@@ -444,7 +444,10 @@ section#lookup > form > fieldset > ul#result_list > li > span.account_payment_li
 	position: absolute;
 	bottom: 0.5rem;
 	padding: 0rem 0.75rem;
-	word-break: break-all;
+
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 section#lookup > form > fieldset > ul#result_list > li > p
 {
