@@ -83,13 +83,17 @@ protocol =
 		// If a blockheight was supplied, add it to the query.
 		if(typeof accountNumber === 'number' && accountNumber > 0)
 		{
-			query.q.find["blk.i"] = accountNumber + heightModifier;
+			query.q.find["blk.i"] = accountNumber + protocol.heightModifier;
 		}
 
 		// If an account name was supplied, add it to the query.
 		if(typeof accountName === 'string' && accountName.length > 0)
 		{
 			query.q.find["out.s2"] = { "$regex": "^" + accountName, "$options": "i" };
+		}
+		else
+		{
+			query.q.find["out.s2"] = { "$regex": "^.", "$options": "i" };
 		}
 
 		// Encode the query.
@@ -378,7 +382,7 @@ website =
 			accountParts = protocol.accountRegExp.exec(identifier);
 		}
 
-		protocol.queryBitDB(accountParts[1], accountParts[3], accountParts[4]).then
+		protocol.queryBitDB(accountParts[1], parseInt(accountParts[3]), accountParts[4]).then
 		(
 			function(results)
 			{
