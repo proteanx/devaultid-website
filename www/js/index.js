@@ -221,7 +221,7 @@ protocol =
 		let registration_id = document.getElementById('alias_broadcast_transaction').getAttribute('data-registration-id');
 
 		// Broadcast the transaction
-		this.requestPost('https://www.cashaccount.info/alias/' + registration_id + '/broadcast', { 'id': registration_id }).then
+		protocol.requestPost('https://www.cashaccount.info/alias/' + registration_id + '/broadcast', { 'id': registration_id }).then
 		(
 			function(data)
 			{
@@ -319,7 +319,7 @@ website =
 			let payload = '';
 			try
 			{
-				console.log('Trying to decode as CashAddr');
+				//console.log('Trying to decode as CashAddr');
 
 				let address = cashaddr.decode('bitcoincash:' + document.getElementById('alias_payload').value);
 				payload_hex = arrayToHex(address.hash).toUpperCase();
@@ -327,7 +327,7 @@ website =
 			}
 			catch (e)
 			{
-				console.log('Trying to decode as Base58Check');
+				//console.log('Trying to decode as Base58Check');
 
 				let address = base58check.decode(document.getElementById('alias_payload').value);
 
