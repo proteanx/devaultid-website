@@ -590,6 +590,12 @@ section#testimonies > div > ul > li > div > span:nth-child(2)
 	padding-bottom: 0.25rem;
 	color: rgba(0, 0, 0, 0.65);
 }
+
+section#testimonies > div > ul > li > div > span:nth-child(4)
+{
+	display: inline-block;
+	width: 95%;
+}
 section#testimonies > div > ul > li > div > span:nth-child(2):before
 {
 	content: '- ';
