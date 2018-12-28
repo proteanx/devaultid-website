@@ -1,16 +1,16 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 // Include support for decoding various address formats.
-const cashaddr = require('cashaddrjs');
-const base58check = require('base58check');
+cashaddr = require('cashaddrjs');
+base58check = require('base58check');
 
 // Helper functions to convert to/from hexstrings and bytearrays.
-const arrayFromHex = hexString => new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-const arrayToHex = intArray => intArray.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
+arrayFromHex = hexString => new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+arrayToHex = intArray => intArray.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
 
 // Helper function that allows deep assignments without need to create intermediate empty objects.
-const deepSet = (input) => 
+deepSet = (input) => 
 {
-	const handler = {
+	handler = {
 		get: (obj, prop) => {
 			obj[prop] = obj[prop] || {};
 			return deepSet(obj[prop]);
@@ -173,8 +173,8 @@ protocol =
 	},
 
 	// Wrappers for convenience.
-	requestGet: function(url, data) { this.requestCall(url, data, 'GET'); },
-	requestPost: function(url, data) { this.requestCall(url, data, 'POST'); },
+	requestGet: function(url, data) { return this.requestCall(url, data, 'GET'); },
+	requestPost: function(url, data) { return this.requestCall(url, data, 'POST'); },
 
 	// Creates a registration with the backend.
 	create_registration: function(name, payload)
@@ -243,7 +243,7 @@ protocol =
 	}
 };
 
-const website = 
+website = 
 {
 	/* Triggered when typing in a new account name for registration */
 	update_name: function()

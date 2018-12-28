@@ -172,8 +172,8 @@ protocol =
 	},
 
 	// Wrappers for convenience.
-	requestGet: function(url, data) { this.requestCall(url, data, 'GET'); },
-	requestPost: function(url, data) { this.requestCall(url, data, 'POST'); },
+	requestGet: function(url, data) { return this.requestCall(url, data, 'GET'); },
+	requestPost: function(url, data) { return this.requestCall(url, data, 'POST'); },
 
 	// Creates a registration with the backend.
 	create_registration: function(name, payload)
