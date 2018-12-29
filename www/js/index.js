@@ -667,5 +667,7 @@ window.addEventListener
 
 		// Make an initial identifier lookup to populate the result list.
 		website.lookup_identifier();
+
+		alert("Cash Accounts are currently in beta.\nFeel free to mess around and report bugs.\n\nAll accounts created during this beta period will be \ninvalid when the system is finalized at the 10-year \nanniversary of the Bitcoin Genesis block.");
 	}
 );
