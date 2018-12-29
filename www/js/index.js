@@ -2,6 +2,32 @@
 cashaddr = require('cashaddrjs');
 base58check = require('base58check');
 
+// Polyfill padStart when needed.
+if (!String.prototype.padStart)
+{
+	String.prototype.padStart = function padStart(targetLength, padString)
+	{
+		targetLength = targetLength >> 0; //truncate if number, or convert non-number to 0;
+		padString = String(typeof padString !== 'undefined' ? padString : ' ');
+	
+		if(this.length >= targetLength)
+		{
+			return String(this);
+		}
+		else
+		{
+			targetLength = targetLength - this.length;
+
+			if(targetLength > padString.length)
+			{
+				padString += padString.repeat(targetLength / padString.length);
+			}
+
+			return padString.slice(0, targetLength) + String(this);
+		}
+	};
+}
+
 // Helper functions to convert to/from hexstrings and bytearrays.
 arrayFromHex = hexString => new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
 arrayToHex = intArray => intArray.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
