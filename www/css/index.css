@@ -214,8 +214,8 @@ section#registration > form > fieldset
 	flex-grow: 1;
 	flex-basis: 33.32%;
 
-	min-width: 33.32%;
-	width: 33.32%;
+	min-width: calc(50ex - 2rem);
+	width: calc(50ex - 2rem);
 	margin: 1rem;
 }
 
