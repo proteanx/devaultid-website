@@ -211,6 +211,11 @@ section#registration > form > fieldset
 	justify-content: space-between;
 
 	flex: 1;
+	flex-grow: 1;
+	flex-basis: 33.32%;
+
+	min-width: 33.32%;
+	width: 33.32%;
 	margin: 1rem;
 }
 
@@ -311,6 +316,11 @@ section#registration > form > fieldset > ul > li > span > b
 {
 	font-style: normal;
 	font-family: monospace;
+}
+section#registration > form > fieldset > ul > li > i#alias_name_predication
+{
+	display: inline-block;
+	word-break: break-all;
 }
 
 section#registration > form > fieldset > ul > li > span:first-child
