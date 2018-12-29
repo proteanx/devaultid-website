@@ -377,7 +377,7 @@ section#lookup > form > fieldset > ul#result_list > li
 	margin-bottom: 1rem;
 	border-radius: 0.33rem;
 	background-color: white;
-	padding-bottom: 1rem;
+	padding-bottom: 2rem;
 	border: 0.10rem solid rgb(256, 153, 0);
 	box-shadow: 0 0.10rem 0.25rem rgba(0, 0, 0, 0.21);
 }
@@ -409,7 +409,7 @@ section#lookup > form > fieldset > ul#result_list > li.unconfirmed > span.accoun
 
 section#lookup > form > fieldset > ul#result_list > li > span.account_identifier
 {
-	padding-left: 4.5rem;
+	padding-left: 5.0rem;
 	font-size: 0.75rem;
 }
 section#lookup > form > fieldset > ul#result_list > li > span.account_identifier > span
@@ -444,10 +444,7 @@ section#lookup > form > fieldset > ul#result_list > li > span.account_payment_li
 	position: absolute;
 	bottom: 0.5rem;
 	padding: 0rem 0.75rem;
-
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+	word-break: break-all;
 }
 section#lookup > form > fieldset > ul#result_list > li > p
 {
@@ -471,7 +468,7 @@ section#lookup > form > fieldset > ul#result_list > li > span.emoji
 	font-size: 2.25rem;
 	line-height: 3.5rem;
 	text-align: center;
-	width: 3.5rem;
+	width: 4.0rem;
 	height: 3.5rem;
 	background-color: white;
 	border-radius: 0.25rem;
@@ -589,12 +586,6 @@ section#testimonies > div > ul > li > div > span:nth-child(2)
 	font-style: italic;
 	padding-bottom: 0.25rem;
 	color: rgba(0, 0, 0, 0.65);
-}
-
-section#testimonies > div > ul > li > div > span:nth-child(4)
-{
-	display: inline-block;
-	width: 95%;
 }
 section#testimonies > div > ul > li > div > span:nth-child(2):before
 {
