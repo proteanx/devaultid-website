@@ -4,11 +4,11 @@ cashaddr = require('cashaddrjs');
 base58check = require('base58check');
 
 // Polyfill padStart when needed.
-if (!String.prototype.padStart)
+if(!String.prototype.padStart)
 {
 	String.prototype.padStart = function padStart(targetLength, padString)
 	{
-		targetLength = targetLength >> 0; //truncate if number, or convert non-number to 0;
+		targetLength = targetLength >> 0;
 		padString = String(typeof padString !== 'undefined' ? padString : ' ');
 	
 		if(this.length >= targetLength)
@@ -25,6 +25,33 @@ if (!String.prototype.padStart)
 			}
 
 			return padString.slice(0, targetLength) + String(this);
+		}
+	};
+}
+
+// Polyfill padEnd when needed.
+if(!String.prototype.padEnd)
+{
+	String.prototype.padEnd = function padEnd(targetLength,padString)
+	{
+		targetLength = targetLength >> 0;
+
+		padString = String((typeof padString !== 'undefined' ? padString : ' '));
+
+		if(this.length > targetLength)
+		{
+			return String(this);
+		}
+		else
+		{
+			targetLength = targetLength-this.length;
+
+			if(targetLength > padString.length)
+			{
+				padString += padString.repeat(targetLength/padString.length);
+			}
+
+			return String(this) + padString.slice(0,targetLength);
 		}
 	};
 }
