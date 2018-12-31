@@ -126,11 +126,21 @@ protocol =
 		}
 	},
 
-	//
-	queryBitDB: function(accountName, accountNumber, collisionHash)
+	queryBlockHeight: function()
+	{
+		let query = JSON.parse(JSON.stringify(this.queryTemplate));
+
+		query.q.db = ["c"]
+		query.q.limit = 1;
+		query.q.find = {};
+
+		return this.queryBitDB(query);
+	},
+
+	queryRegistrations: function(accountName, accountNumber, collisionHash)
 	{
 		// Make a copy of the default query template.
-		let query = this.queryTemplate;
+		let query = JSON.parse(JSON.stringify(this.queryTemplate));
 
 		// If a blockheight was supplied, add it to the query.
 		if(typeof accountNumber === 'number' && accountNumber > 0)
@@ -147,7 +157,13 @@ protocol =
 		{
 			query.q.find["out.s2"] = { "$regex": "^.", "$options": "i" };
 		}
+		
+		return this.queryBitDB(query);
+	},
 
+	//
+	queryBitDB: function(query)
+	{
 		// Encode the query.
 		let base64_query = btoa(JSON.stringify(query));
 
@@ -423,6 +439,12 @@ website =
 		document.getElementById('alias_create_transaction').disabled = !entry_status;
 	},
 
+	//
+	update_expected_identifier: function(blockheight)
+	{
+		document.getElementById('alias_expected_blockheight').innerHTML = (blockheight - protocol.heightModifier) + ";";
+	},
+
 	update_scroll_positions: function()
 	{
 		let temp_navigation_nodes = document.getElementById('navigation_list').childNodes;
@@ -456,9 +478,14 @@ website =
 			window['scroll_ready'] = true;
 		}
 	},
-	
-	lookup_identifier: function()
+
+	lookup_identifier: function(searchString = null)
 	{
+		if(searchString)
+		{
+			document.getElementById('lookup_search_string').value = searchString;
+		}
+
 		let accountParts = [null];
 		let identifier = document.getElementById('lookup_search_string').value.trim();
 
@@ -468,7 +495,7 @@ website =
 			accountParts = protocol.accountRegExp.exec(identifier);
 		}
 
-		protocol.queryBitDB(accountParts[1], parseInt(accountParts[3]), accountParts[4]).then
+		protocol.queryRegistrations(accountParts[1], parseInt(accountParts[3]), accountParts[4]).then
 		(
 			function(results)
 			{
@@ -667,6 +694,45 @@ window.addEventListener
 
 		// Make an initial identifier lookup to populate the result list.
 		website.lookup_identifier();
+
+		protocol.queryBlockHeight().then
+		(
+			function(results)
+			{
+				website.update_expected_identifier(results.c[0].blockheight);
+			}
+		);
+		
+		let queryTemplate = 
+		{
+			"v": 3,
+			"q": 
+			{
+				"db": ["c"],
+				"find": {}
+			},
+			"r":
+			{
+				"f": "[ .[] | { blockheight: .blk.i?, protocol: .out[0].h1?, blockhash: .blk.h?, transactionhash: .tx.h?, name: .out[0].s2, data: .out[0].h3} ]"
+			}
+		};
+
+		//
+		let b64 = Buffer.from(JSON.stringify(queryTemplate)).toString("base64");
+
+		//
+		let bitsocket = new EventSource('https://bitsocket.org/s/' + b64);
+
+		//
+		bitsocket.onmessage = function(message)
+		{
+			let eventMessage = JSON.parse(message.data);
+
+			if(eventMessage.type != 'open')
+			{
+				website.update_expected_identifier(eventMessage.index);
+			}
+		}
 
 		alert("Cash Accounts are currently in beta.\nFeel free to mess around and report bugs.\n\nAll accounts created during this beta period will be \ninvalid when the system is finalized at the 10-year \nanniversary of the Bitcoin Genesis block.");
 	}
