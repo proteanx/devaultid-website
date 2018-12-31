@@ -116,6 +116,7 @@ protocol =
 		"v": 3,
 		"q": 
 		{
+			"db": ["u", "c"],
 			"limit": 9,
 			"find": 
 			{
@@ -351,7 +352,7 @@ website =
 			document.getElementById('alias_name_predication').innerHTML = document.getElementById('alias_name').value;
 
 			// alias_name_lookup_button
-			document.getElementById('alias_lookup_transaction').innerHTML = 'Lookup ' + document.getElementById('alias_name').value;
+			document.getElementById('alias_lookup_transaction').innerHTML = 'Lookup: ' + document.getElementById('alias_name').value;
 
 			// Set the alias name property on the create registration button.
 			document.getElementById('alias_create_transaction').setAttribute('alias', document.getElementById('alias_name').value);
@@ -444,7 +445,10 @@ website =
 	//
 	update_expected_identifier: function(blockheight)
 	{
-		document.getElementById('alias_expected_blockheight').innerHTML = (blockheight - protocol.heightModifier) + ";";
+		if(document.getElementById('fieldset_confirm_transaction').className !== 'complete')
+		{
+			document.getElementById('alias_expected_blockheight').innerHTML = (blockheight - protocol.heightModifier + 1) + ";";
+		}
 	},
 
 	update_scroll_positions: function()
@@ -601,7 +605,7 @@ website =
 							account_emoji = "<span class='emoji' title='" + unicode_emoji_names[String.fromCodePoint(account_emoji_code)] + "'>&#" + account_emoji_code + ";</span>";
 						}
 
-						if(account_number >= 100)
+						if(results[transaction_types[type]][index]['blockheight'] === null || account_number >= 100)
 						{
 							if(typeof account_collision === 'undefined' || account_hash.startsWith(account_collision.substring(1)))
 							{

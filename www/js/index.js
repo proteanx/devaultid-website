@@ -114,6 +114,7 @@ protocol =
 		"v": 3,
 		"q": 
 		{
+			"db": ["u", "c"],
 			"limit": 9,
 			"find": 
 			{
@@ -602,7 +603,7 @@ website =
 							account_emoji = "<span class='emoji' title='" + unicode_emoji_names[String.fromCodePoint(account_emoji_code)] + "'>&#" + account_emoji_code + ";</span>";
 						}
 
-						if(account_number >= 100)
+						if(results[transaction_types[type]][index]['blockheight'] === null || account_number >= 100)
 						{
 							if(typeof account_collision === 'undefined' || account_hash.startsWith(account_collision.substring(1)))
 							{
