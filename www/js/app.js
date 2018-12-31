@@ -301,20 +301,58 @@ protocol =
 		(
 			function(data)
 			{
-				// Mark fieldsets as active/inactive.
-				document.getElementById('fieldset_broadcast_transaction').className = 'complete';
-				document.getElementById('fieldset_confirm_transaction').className = 'active';
+				if(typeof data.txid.toUpperCase === 'undefined')
+				{
+					alert('Backend failed to create transaction.');
+				}
+				else
+				{
+					// Mark fieldsets as active/inactive.
+					document.getElementById('fieldset_broadcast_transaction').className = 'complete';
+					document.getElementById('fieldset_confirm_transaction').className = 'active';
 
-				// Mark form elements as enabled/disabled.
-				document.getElementById('alias_lookup_transaction').disabled = false;
-				document.getElementById('alias_broadcast_transaction').disabled = true;
+					// Mark form elements as enabled/disabled.
+					document.getElementById('alias_lookup_transaction').disabled = false;
+					document.getElementById('alias_broadcast_transaction').disabled = true;
 
-				// Update the registration status
-				document.getElementById('alias_registration_status').innerHTML = 'Broadcasted';
-				document.getElementById('alias_registration_status').setAttribute('title', 'Waiting for inclusion in a block.');
+					// Update the registration status
+					document.getElementById('alias_registration_status').innerHTML = 'Broadcasted';
+					document.getElementById('alias_registration_status').setAttribute('title', 'Waiting for inclusion in a block.');
 
-				// Update the TXID
-				document.getElementById('alias_transaction_hash').innerHTML = data.txid.toUpperCase();
+					// Update the TXID
+					document.getElementById('alias_transaction_hash').innerHTML = data.txid.toUpperCase();
+
+					// 
+					let query = 
+					{
+						"v": 3,
+						"q": 
+						{
+							"db": ["c"],
+							"find": { "tx.h": data.txid }
+						},
+						"r": { "f": "[ .[] | { blockheight: .blk.i? } ]" }
+					};
+	console.log(query);
+					//
+					let b64 = Buffer.from(JSON.stringify(query)).toString("base64");
+
+					//
+					let bitsocket = new EventSource('https://bitsocket.org/s/' + b64);
+
+					//
+					bitsocket.onmessage = function(message)
+					{
+						console.log(message);
+						let eventMessage = JSON.parse(message.data);
+
+						if(eventMessage.type != 'open')
+						{
+							document.getElementById('alias_registration_status').innerHTML = 'Confirmed';
+							document.getElementById('fieldset_confirm_transaction').className = 'complete';
+						}
+					};
+				}
 			}
 		);
 	}
