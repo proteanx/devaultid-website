@@ -52,6 +52,9 @@ router.post('/:id/broadcast', async function (req, res) {
     const alias = await Alias.findById(alias_id);
 
     rpc.init(process.env.ABC_RPC_ADDR, process.env.ABC_RPC_PORT, process.env.ABC_RPC_USER, process.env.ABC_RPC_PASS);
+
+	// pentuple timeout length from 500 to 2500 (2.5seconds).
+	rpc.setTimeout(2500)
     console.log('test');
     rpc.call('listunspent', [0], (err, r) => {
         if (err) {
