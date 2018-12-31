@@ -301,7 +301,7 @@ protocol =
 		(
 			function(data)
 			{
-				if(typeof data.txid.toUpperCase === 'undefined')
+				if(typeof data.txid === 'undefined')
 				{
 					alert('Backend failed to create transaction.');
 				}
@@ -312,7 +312,6 @@ protocol =
 					document.getElementById('fieldset_confirm_transaction').className = 'active';
 
 					// Mark form elements as enabled/disabled.
-					document.getElementById('alias_lookup_transaction').disabled = false;
 					document.getElementById('alias_broadcast_transaction').disabled = true;
 
 					// Update the registration status
@@ -333,7 +332,7 @@ protocol =
 						},
 						"r": { "f": "[ .[] | { blockheight: .blk.i? } ]" }
 					};
-	console.log(query);
+
 					//
 					let b64 = Buffer.from(JSON.stringify(query)).toString("base64");
 
@@ -349,6 +348,8 @@ protocol =
 						if(eventMessage.type != 'open')
 						{
 							document.getElementById('alias_registration_status').innerHTML = 'Confirmed';
+							document.getElementById('alias_registration_status').setAttribute('title', 'Registration is complete.');
+							document.getElementById('alias_lookup_transaction').disabled = false;
 							document.getElementById('fieldset_confirm_transaction').className = 'complete';
 						}
 					};
