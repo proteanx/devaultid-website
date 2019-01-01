@@ -777,6 +777,6 @@ window.addEventListener
 			}
 		}
 
-		alert("Cash Accounts are currently in beta.\nFeel free to mess around and report bugs.\n\nAll accounts created during this beta period will be \ninvalid when the system is finalized at the 10-year \nanniversary of the Bitcoin Genesis block.");
+		alert("Cash Accounts are currently in beta.\nFeel free to mess around and report bugs.\n\nAll accounts created during this beta period will be \ninvalid when the system is finalized on January 3rd, shortly after 18:15 UTC, at the 10-year \nanniversary of the Bitcoin Genesis block.");
 	}
 );
