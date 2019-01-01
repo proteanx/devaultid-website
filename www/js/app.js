@@ -225,7 +225,7 @@ protocol =
 		mode: "no-cors", // no-cors, cors, *same-origin
 		cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
 		credentials: "omit", // include, *same-origin, omit
-		redirect: "error", // manual, *follow, error
+		redirect: "follow", // manual, *follow, error
 		referrer: "no-referrer", // no-referrer, *client
 		headers:
 		{
