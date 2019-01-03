@@ -115,7 +115,7 @@ protocol =
 		"q": 
 		{
 			"db": ["u", "c"],
-			"limit": 9,
+			"limit": 99,
 			"find": 
 			{
 				"out.h1": "01010101"
@@ -138,11 +138,14 @@ protocol =
 		return this.queryBitDB(query);
 	},
 
-	queryRegistrations: function(accountName, accountNumber, collisionHash)
+	queryRegistrations: function(accountName, accountNumber, collisionHash, limit)
 	{
 		// Make a copy of the default query template.
 		let query = JSON.parse(JSON.stringify(this.queryTemplate));
 
+		// Set the limit.
+		query.q.limit = limit;
+console.log(query);
 		// If a blockheight was supplied, add it to the query.
 		if(typeof accountNumber === 'number' && accountNumber > 0)
 		{
@@ -531,7 +534,7 @@ website =
 		}
 	},
 
-	lookup_identifier: function(searchString = null)
+	lookup_identifier: function(searchString = null, limit)
 	{
 		if(searchString)
 		{
@@ -547,7 +550,7 @@ website =
 			accountParts = protocol.accountRegExp.exec(identifier);
 		}
 
-		protocol.queryRegistrations(accountParts[1], parseInt(accountParts[3]), accountParts[4]).then
+		protocol.queryRegistrations(accountParts[1], parseInt(accountParts[3]), accountParts[4], limit).then
 		(
 			function(results)
 			{
@@ -745,7 +748,7 @@ window.addEventListener
 		setInterval(website.update_scroll_positions, 0.667);
 
 		// Make an initial identifier lookup to populate the result list.
-		website.lookup_identifier();
+		website.lookup_identifier(null, 9);
 
 		protocol.queryBlockHeight().then
 		(

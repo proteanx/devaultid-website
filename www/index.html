@@ -134,13 +134,13 @@
 						<li><span>Status</span><span><i id='alias_registration_status' title='Not yet created'>None</i><!--, <i id='alias_registration_status_collision' title='No competing registration for this name in the mempool'>Collision-Free</i>--></span></li>
 					</ul>
 					<label>
-						<button id='alias_lookup_transaction' onclick="website.lookup_identifier(this.innerHTML.substring(8)); window.location = '#lookup';" disabled>Lookup: SatoshiNakamoto</button>
+						<button id='alias_lookup_transaction' onclick="website.lookup_identifier(this.innerHTML.substring(8), 999); window.location = '#lookup';" disabled>Lookup: SatoshiNakamoto</button>
 					</label>
 				</fieldset>
 			</form>
 		</section>
 		<section id='lookup'>
-			<form onsubmit='website.lookup_identifier(); return false;'>
+			<form onsubmit='website.lookup_identifier(null, 999); return false;'>
 				<fieldset>
 					<legend>Look up Cash Account</legend>
 					<input id='lookup_search_string' name='' type='text' placeholder='Search for account...' />
