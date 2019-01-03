@@ -147,10 +147,6 @@ function id_payment_data(pd) {
             const type = bchaddr.detectAddressType(item)
             id[type] = Buffer.from(cashaddr.decode(bchaddr.toCashAddress(item)).hash).toString('hex');
             continue;
-            // return {
-            //     type: type,
-            //     hash: Buffer.from(cashaddr.decode(bchaddr.toCashAddress(item)).hash).toString('hex')
-            // }
         } catch (err) { }
     
         try {
@@ -159,10 +155,6 @@ function id_payment_data(pd) {
             if (b58.prefix.toString('hex') === '47' && b58.data.length == 80) {
                 id['p2pc'] = b58.data.toString('hex');
                 continue;
-                // return {
-                //     type: 'p2pc',
-                //     hash: b58.data.toString('hex')
-                // }
             }
         } catch (err) { }
 
