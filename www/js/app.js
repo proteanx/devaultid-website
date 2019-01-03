@@ -336,7 +336,7 @@ console.log(query);
 						},
 						"r": { "f": "[ .[] | { blockheight: .blk.i? } ]" }
 					};
-
+console.log('Waiting for confirmation for: ' + data.txid, query);
 					//
 					let b64 = Buffer.from(JSON.stringify(query)).toString("base64");
 
@@ -351,6 +351,7 @@ console.log(query);
 
 						if(eventMessage.type != 'open')
 						{
+							console.log(eventMessage);
 							document.getElementById('alias_registration_status').innerHTML = 'Confirmed';
 							document.getElementById('alias_registration_status').setAttribute('title', 'Registration is complete.');
 							document.getElementById('alias_lookup_transaction').disabled = false;
