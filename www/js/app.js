@@ -437,12 +437,15 @@ website =
 				//console.log('Trying to decode as CashAddr');
 
 				let source_value = document.getElementById('alias_payload').value;
+				console.log('raw:'  + source_value);
 				if(document.getElementById('alias_payload').value.substring(0, 12) != 'bitcoincash:')
 				{
 					source_value = 'bitcoincash:' + document.getElementById('alias_payload').value;
+					console.log('prepend:'  + source_value);
 				}
 
 				let address = cashaddr.decode(source_value);
+				console.log('addr:'  + address);
 				payload_hex = arrayToHex(address.hash).toUpperCase();
 				payload_type = address.type;
 			}
