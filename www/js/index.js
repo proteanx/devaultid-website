@@ -339,7 +339,7 @@ console.log(query);
 					let b64 = Buffer.from(JSON.stringify(query)).toString("base64");
 
 					//
-					let bitsocket = new EventSource('https://bitsocket.org/s/' + b64);
+					let bitsocket = new EventSource('https://bitsocket.bch.sx/s/' + b64);
 
 					//
 					bitsocket.onmessage = function(message)
@@ -777,7 +777,7 @@ window.addEventListener
 		let b64 = Buffer.from(JSON.stringify(queryTemplate)).toString("base64");
 
 		//
-		let bitsocket = new EventSource('https://bitsocket.org/s/' + b64);
+		let bitsocket = new EventSource('https://bitsocket.bch.sx/s/' + b64);
 
 		//
 		bitsocket.onmessage = function(message)
