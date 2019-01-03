@@ -174,10 +174,11 @@ console.log(query);
 		let base64_query = btoa(JSON.stringify(query));
 
 		// Set the URL of the query request.
-		let url = "https://bitdb.network/q/" + base64_query;
+		let url = "https://bitdb.bch.sx/q/" + base64_query;
 
 		// Configure the bitDB API key in the request header.
-		let header = { headers: { key: "qqdd9rf6uf2l2h4uzjdkqgqqeg4rpw25e53lus6qrt" } };
+		// let header = { headers: { key: "qqdd9rf6uf2l2h4uzjdkqgqqeg4rpw25e53lus6qrt" } };
+		let header = { headers: {} };
 
 		// Return the result set.
 		return fetch(url, header).then(response => response.json());
