@@ -418,15 +418,15 @@ website =
 		{
 			"P2PKH": "Key Hash",
 			"P2SH": "Script Hash",
-			"P2SK": "Stealth Keys",
-			"P2PC": "Payment Code"
+			"P2PC": "Payment Code",
+			"P2SK": "Stealth Keys"
 		}
 		let address_codes =
 		{
 			"P2PKH": "01",
 			"P2SH": "02",
-			"P2SK": "03",
-			"P2PC": "04"
+			"P2PC": "03",
+			"P2SK": "04"
 		}
 
 		try
