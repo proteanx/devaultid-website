@@ -31,8 +31,10 @@ router.post('/', async function (req, res) {
 
     const alias = await Alias.create({
         alias: requested_alias,
-        payment_data: { [pd.type]: pd.hash }
+        payment_data: pd
     });
+
+    console.log(alias);
 
     const s = s2h(build_script(alias));
 
@@ -136,28 +138,39 @@ function s2h(script) {
 }
 
 function id_payment_data(pd) {
-    try {
-        //p2pkh/p2sh
-        const type = bchaddr.detectAddressType(pd)
-        return {
-            type: type,
-            hash: Buffer.from(cashaddr.decode(bchaddr.toCashAddress(pd)).hash).toString('hex')
-        }
-    } catch (err) { }
-
-    try {
-        //bip47 payment code
-        const b58 = base58check.decode(pd);
-        if (b58.prefix.toString('hex') === '47' && b58.data.length == 80) {
-            return {
-                type: 'p2pc',
-                hash: b58.data.toString('hex')
+    if (typeof pd === 'string') pd = [pd];
+    const id = {};
+    
+    for (let item of pd) {
+        try {
+            //p2pkh/p2sh
+            const type = bchaddr.detectAddressType(item)
+            id[type] = Buffer.from(cashaddr.decode(bchaddr.toCashAddress(item)).hash).toString('hex');
+            continue;
+            // return {
+            //     type: type,
+            //     hash: Buffer.from(cashaddr.decode(bchaddr.toCashAddress(item)).hash).toString('hex')
+            // }
+        } catch (err) { }
+    
+        try {
+            //bip47 payment code
+            const b58 = base58check.decode(item);
+            if (b58.prefix.toString('hex') === '47' && b58.data.length == 80) {
+                id['p2pc'] = b58.data.toString('hex');
+                continue;
+                // return {
+                //     type: 'p2pc',
+                //     hash: b58.data.toString('hex')
+                // }
             }
-        }
-    } catch (err) { }
+        } catch (err) { }
 
-    // failed to detect an address
-    return false;
+        // failed to detect an address
+        return false;
+    }
+
+    return id;
 }
 
 module.exports = router;
