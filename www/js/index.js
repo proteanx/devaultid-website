@@ -347,9 +347,10 @@ console.log('Waiting for confirmation for: ' + data.txid, query);
 						console.log(message);
 						let eventMessage = JSON.parse(message.data);
 
-						if(eventMessage.type != 'open')
+						if(eventMessage.type != 'open' && eventMessage.data.length >= 1)
 						{
 							console.log(eventMessage);
+
 							document.getElementById('alias_registration_status').innerHTML = 'Confirmed';
 							document.getElementById('alias_registration_status').setAttribute('title', 'Registration is complete.');
 							document.getElementById('alias_lookup_transaction').disabled = false;
