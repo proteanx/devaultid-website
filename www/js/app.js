@@ -590,7 +590,7 @@ website =
 					let collisionHash = protocol.calculateAccountIdentity(results['c'][index]['blockhash'], results['c'][index]['transactionhash']).collisionHash;
 
 					// Add this collision to the collision list for this name at this blockheight.
-					deepSet(collisionTable)[results['c'][index]['blockheight']][results['c'][index]['name']]['collisions'][collisionHash] = collisionHash;
+					deepSet(collisionTable)[results['c'][index]['blockheight']][results['c'][index]['name'].toLowerCase()]['collisions'][collisionHash] = collisionHash;
 				}
 
 				// Calculate the shortest identifiers.
@@ -602,10 +602,10 @@ website =
 					let collisionHash = protocol.calculateAccountIdentity(results['c'][index]['blockhash'], results['c'][index]['transactionhash']).collisionHash;
 
 					// For each collision registered to this name and blockheight..
-					for(collision in collisionTable[blockHeight][accountName]['collisions'])
+					for(collision in collisionTable[blockHeight][accountName.toLowerCase()]['collisions'])
 					{
 						// Make a temporary copy for code legibility reasons.
-						let currentCollision = collisionTable[blockHeight][accountName]['collisions'][collision];
+						let currentCollision = collisionTable[blockHeight][accountName.toLowerCase()]['collisions'][collision];
 
 						// Start at collision length of 10 and work backwards until we discover the shortest collision..
 						let length = 11;
@@ -624,7 +624,7 @@ website =
 						}
 
 						// Set the collision length if there was at least one collision.
-						if(Object.keys(collisionTable[blockHeight][accountName]['collisions']).length > 1)
+						if(Object.keys(collisionTable[blockHeight][accountName.toLowerCase()]['collisions']).length > 1)
 						{
 							collisionTable[results['c'][index]['transactionhash']] = 1 + length;
 						}
