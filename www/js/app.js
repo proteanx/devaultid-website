@@ -634,90 +634,99 @@ website =
 				//
 				for(type in transaction_types)
 				{
+					let max_limit = 90;
+					let cur_limit = 1;
+
 					for(index in results[transaction_types[type]])
 					{
-						// Create an account template for an unconfirmed registration transaction.
-						let account_name = results[transaction_types[type]][index]['name'];
-						let transaction_id = results[transaction_types[type]][index]['transactionhash'];
-						let account_number = '????';
-						let block_height = 'Pending';
-						let block_hash = 'Pending';
-						let account_hash = '??????????';
-						let account_emoji = "<span class='emoji'>&nbsp;</span>";
-						let account_class = 'unconfirmed';
+						//
+						cur_limit += 1;
 
-						// Update the template based on data from the mined registration transaction.
-						if(results[transaction_types[type]][index]['blockheight'] !== null)
+						if(cur_limit < max_limit)
 						{
-							account_number = results[transaction_types[type]][index]['blockheight'] - protocol.heightModifier;
-							block_height = results[transaction_types[type]][index]['blockheight'];
-							block_hash = results[transaction_types[type]][index]['blockhash'];
+							// Create an account template for an unconfirmed registration transaction.
+							let account_name = results[transaction_types[type]][index]['name'];
+							let transaction_id = results[transaction_types[type]][index]['transactionhash'];
+							let account_number = '????';
+							let block_height = 'Pending';
+							let block_hash = 'Pending';
+							let account_hash = '??????????';
+							let account_emoji = "<span class='emoji'>&nbsp;</span>";
+							let account_class = 'unconfirmed';
 
-							account_class = 'confirmed';
-							account_hash = protocol.calculateAccountIdentity(block_hash, transaction_id).collisionHash;
-							account_emoji_code = protocol.calculateAccountIdentity(block_hash, transaction_id).accountEmoji;
-							account_emoji = "<span class='emoji' title='" + unicode_emoji_names[String.fromCodePoint(account_emoji_code)] + "'>&#" + account_emoji_code + ";</span>";
-						}
-
-						if(results[transaction_types[type]][index]['blockheight'] === null || account_number >= 100)
-						{
-							if(typeof account_collision === 'undefined' || account_hash.startsWith(account_collision.substring(1)))
+							// Update the template based on data from the mined registration transaction.
+							if(results[transaction_types[type]][index]['blockheight'] !== null)
 							{
-								let account_identifier = "<td><span>" + account_name + "</span></td><td><a href='https://blockchair.com/bitcoin-cash/transaction/" + transaction_id + "'>#" + account_number;
-								if(typeof collisionTable[transaction_id] !== 'undefined' && collisionTable[transaction_id] > 0)
-								{
-									account_identifier += "<i title='Due to a naming collision the account number has been extended by " + collisionTable[transaction_id] + " digits.'>." + account_hash.substring(0, collisionTable[transaction_id]) + "</i><i title='The remaining numbers are also part of the account but is not needed to uniquely identify the account.'>" + account_hash.substring( collisionTable[transaction_id]) + "</i></a></td>";
-								}
-								else
-								{
-									account_identifier += "<i></i><i title='These number are part of the account but is not needed to uniquely identify the account.'>." + account_hash.substring( collisionTable[transaction_id]) + "</i></a></td>";
-								}
+								account_number = results[transaction_types[type]][index]['blockheight'] - protocol.heightModifier;
+								block_height = results[transaction_types[type]][index]['blockheight'];
+								block_hash = results[transaction_types[type]][index]['blockhash'];
 
-								let payment_type = '<i>Unknown payment type</i>';
-								let payment_data = 'Unknown';
-								let account_address_type = 'Unknown';
-								let account_address = '';
+								account_class = 'confirmed';
+								account_hash = protocol.calculateAccountIdentity(block_hash, transaction_id).collisionHash;
+								account_emoji_code = protocol.calculateAccountIdentity(block_hash, transaction_id).accountEmoji;
+								account_emoji = "<span class='emoji' title='" + unicode_emoji_names[String.fromCodePoint(account_emoji_code)] + "'>&#" + account_emoji_code + ";</span>";
+							}
 
-								try
+							if(results[transaction_types[type]][index]['blockheight'] === null || account_number >= 100)
+							{
+								if(typeof account_collision === 'undefined' || account_hash.startsWith(account_collision.substring(1)))
 								{
-									if(parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) !== 0 && parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) <= 4)
+									let account_identifier = "<td><span>" + account_name + "</span></td><td><a href='https://blockchair.com/bitcoin-cash/transaction/" + transaction_id + "'>#" + account_number;
+									if(typeof collisionTable[transaction_id] !== 'undefined' && collisionTable[transaction_id] > 0)
 									{
-										payment_type_code = results[transaction_types[type]][index]['data'].substring(0,2);
-										payment_type = payment_types[results[transaction_types[type]][index]['data'].substring(0,2)];
-										payment_data = results[transaction_types[type]][index]['data'].substring(2);
-										account_address_type = payment_data_types[results[transaction_types[type]][index]['data'].substring(0,2)];
+										account_identifier += "<i title='Due to a naming collision the account number has been extended by " + collisionTable[transaction_id] + " digits.'>." + account_hash.substring(0, collisionTable[transaction_id]) + "</i><i title='The remaining numbers are also part of the account but is not needed to uniquely identify the account.'>" + account_hash.substring( collisionTable[transaction_id]) + "</i></a></td>";
+									}
+									else
+									{
+										account_identifier += "<i></i><i title='These number are part of the account but is not needed to uniquely identify the account.'>." + account_hash.substring( collisionTable[transaction_id]) + "</i></a></td>";
+									}
 
-										if(payment_type_code == '01' || payment_type_code == '02')
+									let payment_type = '<i>Unknown payment type</i>';
+									let payment_data = 'Unknown';
+									let account_address_type = 'Unknown';
+									let account_address = '';
+
+									try
+									{
+										if(parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) !== 0 && parseInt(results[transaction_types[type]][index]['data'].substring(0,2)) <= 4)
 										{
-											account_address = cashaddr.encode('bitcoincash', account_address_type, arrayFromHex(payment_data)).substring(12);
-										}
-										
-										if(payment_type_code == '03')
-										{
-											account_address = base58check.encode(payment_data, '47');
+											payment_type_code = results[transaction_types[type]][index]['data'].substring(0,2);
+											payment_type = payment_types[results[transaction_types[type]][index]['data'].substring(0,2)];
+											payment_data = results[transaction_types[type]][index]['data'].substring(2);
+											account_address_type = payment_data_types[results[transaction_types[type]][index]['data'].substring(0,2)];
+
+											if(payment_type_code == '01' || payment_type_code == '02')
+											{
+												account_address = cashaddr.encode('bitcoincash', account_address_type, arrayFromHex(payment_data)).substring(12);
+											}
+											
+											if(payment_type_code == '03')
+											{
+												account_address = base58check.encode(payment_data, '47');
+											}
 										}
 									}
-								}
-								catch (e)
-								{
-								}
-
-								document.getElementById('result_list').innerHTML += "<li id='" + transaction_id + "' class='" + account_class + "'><span class='account_identifier'>" + account_identifier + "</span>" + account_emoji + "<span class='account_payment_link'><a href='https://blockchair.com/bitcoin-cash/address/" + account_address + "'>	" + account_address + "</a></span>";
-
-								setTimeout
-								(
-									function()
+									catch (e)
 									{
-										if(account_address)
+									}
+
+									document.getElementById('result_list').innerHTML += "<li id='" + transaction_id + "' class='" + account_class + "'><span class='account_identifier'>" + account_identifier + "</span>" + account_emoji + "<span class='account_payment_link'><a href='https://blockchair.com/bitcoin-cash/address/" + account_address + "'>	" + account_address + "</a></span>";
+
+									setTimeout
+									(
+										function()
 										{
-											$('#' + transaction_id).qrcode(account_address);
-										}
-										else
-										{
-											document.getElementById(transaction_id).innerHTML += "<p>Unable to parse payment information</p>";
-										}
-									}, 100
-								);
+											if(account_address)
+											{
+												$('#' + transaction_id).qrcode(account_address);
+											}
+											else
+											{
+												document.getElementById(transaction_id).innerHTML += "<p>Unable to parse payment information</p>";
+											}
+										}, 100
+									);
+								}
 							}
 						}
 					}
