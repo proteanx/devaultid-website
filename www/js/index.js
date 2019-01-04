@@ -145,7 +145,7 @@ protocol =
 
 		// Set the limit.
 		query.q.limit = limit;
-console.log(query);
+
 		// If a blockheight was supplied, add it to the query.
 		if(typeof accountNumber === 'number' && accountNumber > 0)
 		{
@@ -334,7 +334,7 @@ console.log(query);
 						},
 						"r": { "f": "[ .[] | { blockheight: .blk.i? } ]" }
 					};
-console.log('Waiting for confirmation for: ' + data.txid, query);
+
 					//
 					let b64 = Buffer.from(JSON.stringify(query)).toString("base64");
 
@@ -597,8 +597,10 @@ website =
 					// Make temporary copies for code legibility reasons.
 					let blockHeight = results['c'][index]['blockheight'];
 					let accountName = results['c'][index]['name'];
+					let currentTXID = results['c'][index]['transactionhash'];
 					let collisionHash = protocol.calculateAccountIdentity(results['c'][index]['blockhash'], results['c'][index]['transactionhash']).collisionHash;
-
+					let collisionMinimal = 0;
+					
 					// For each collision registered to this name and blockheight..
 					for(collision in collisionTable[blockHeight][accountName.toLowerCase()]['collisions'])
 					{
@@ -606,8 +608,8 @@ website =
 						let currentCollision = collisionTable[blockHeight][accountName.toLowerCase()]['collisions'][collision];
 
 						// Start at collision length of 10 and work backwards until we discover the shortest collision..
-						let length = 11;
-						while(--length > 0)
+						let length = 10;
+						while(length > collisionMinimal)
 						{
 							// .. but only compare with actual collisions, not with ourselves.
 							if(collisionHash != currentCollision)
@@ -619,13 +621,16 @@ website =
 									break;
 								}
 							}
+							length -= 1;
 						}
+						
+						collisionMinimal = length;
+					}
 
-						// Set the collision length if there was at least one collision.
-						if(Object.keys(collisionTable[blockHeight][accountName.toLowerCase()]['collisions']).length > 1)
-						{
-							collisionTable[results['c'][index]['transactionhash']] = 1 + length;
-						}
+					// Set the collision length if there was at least one collision.
+					if(Object.keys(collisionTable[blockHeight][accountName.toLowerCase()]['collisions']).length > 1)
+					{
+						collisionTable[currentTXID] = 1 + collisionMinimal;
 					}
 				}
 
