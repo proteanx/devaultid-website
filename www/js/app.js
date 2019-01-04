@@ -793,8 +793,6 @@ window.addEventListener
 				website.update_expected_identifier(eventMessage.index);
 			}
 		}
-
-		alert("Cash Accounts is now live!\nHappy 10-year anniversary of the Bitcoin Genesis block!");
 	}
 );
 
