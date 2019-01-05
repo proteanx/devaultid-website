@@ -693,11 +693,12 @@ section#wallets > div > ul > li > a.edge { background-image: url('../img/wallet_
 section#wallets > div > ul > li > a.electroncash { background-image: url('../img/wallet_electroncash.png'); }
 section#wallets > div > ul > li > a.exodus { background-image: url('../img/wallet_exodus.png'); }
 section#wallets > div > ul > li > a.guarda { background-image: url('../img/wallet_guarda.png'); }
+section#wallets > div > ul > li > a.ifwallet { background-image: url('../img/wallet_ifwallet.png'); }
 section#wallets > div > ul > li > a.ipayyou { background-image: url('../img/wallet_ipayyou.png'); }
 section#wallets > div > ul > li > a.jaxx { background-image: url('../img/wallet_jaxx.png'); }
 section#wallets > div > ul > li > a.keepkey { background-image: url('../img/wallet_keepkey.png'); }
 section#wallets > div > ul > li > a.ledger { background-image: url('../img/wallet_ledger.png'); }
-section#wallets > div > ul > li > a.meliso { background-image: url('../img/wallet_meliso.png'); }
+section#wallets > div > ul > li > a.melisio { background-image: url('../img/wallet_melisio.png'); }
 section#wallets > div > ul > li > a.mobi { background-image: url('../img/wallet_mobi.png'); }
 section#wallets > div > ul > li > a.stash { background-image: url('../img/wallet_stashwallet.png'); }
 section#wallets > div > ul > li > a.strongcoin { background-image: url('../img/wallet_strongcoin.png'); }
