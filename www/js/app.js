@@ -95,16 +95,16 @@ protocol =
 	{
 		'01': "P2PKH",
 		'02': "P2SH",
-		'03': "P2SK",
-		'04': "P2PC"
+		'03': "P2PC",
+		'04': "P2SK"
 	},
 
 	paymentCodeNumbers:
 	{
 		"P2PKH": '01',
 		"P2SH": '02',
-		"P2SK": '03',
-		"P2PC": '04'
+		"P2PC": '04',
+		"P2SK": '03'
 	},
 
 	//
