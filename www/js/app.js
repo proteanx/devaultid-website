@@ -126,7 +126,8 @@ protocol =
 		},
 		"r":
 		{
-			"f": "[ .[] | { blockheight: .blk.i?, blockhash: .blk.h?, transactionhash: .tx.h?, name: .out[0].s2, data: .out[0].h3} ]"
+			// "f": "[ .[] | { blockheight: .blk.i?, blockhash: .blk.h?, transactionhash: .tx.h?, name: .out[0].s2, data: .out[0].h3} ]"
+			"f": "[ .[] | ( .out[] | select(.b0.op==106) ) as $outWithData | { blockheight: .blk.i?, blockhash: .blk.h?, transactionhash: .tx.h?, name: $outWithData.s2, data: $outWithData.h3 } ]"
 		}
 	},
 
@@ -788,7 +789,8 @@ window.addEventListener
 			},
 			"r":
 			{
-				"f": "[ .[] | { blockheight: .blk.i?, protocol: .out[0].h1?, blockhash: .blk.h?, transactionhash: .tx.h?, name: .out[0].s2, data: .out[0].h3} ]"
+				// "f": "[ .[] | { blockheight: .blk.i?, protocol: .out[0].h1?, blockhash: .blk.h?, transactionhash: .tx.h?, name: .out[0].s2, data: .out[0].h3} ]"
+				"f": "[ .[] | ( .out[] | select(.b0.op==106) ) as $outWithData | { blockheight: .blk.i?, blockhash: .blk.h?, transactionhash: .tx.h?, name: $outWithData.s2, data: $outWithData.h3 } ]"
 			}
 		};
 
