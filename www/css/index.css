@@ -679,6 +679,7 @@ section#wallets > div > ul > li.pending > .status { background-color: rgb(224, 1
 section#wallets > div > ul > li.negative > .status { background-color: rgb(242, 32, 32); }
 
 section#wallets > div > ul > li > a.badger { background-image: url('../img/wallet_badger.png'); }
+section#wallets > div > ul > li > a.bchgallery { background-image: url('../img/wallet_bchgallery.png'); }
 section#wallets > div > ul > li > a.bitcoincash { background-image: url('../img/wallet_bitcoincash.png'); }
 section#wallets > div > ul > li > a.bitcoindotcom { background-image: url('../img/wallet_bitcoindotcom.png'); }
 section#wallets > div > ul > li > a.bitpay { background-image: url('../img/wallet_bitpay.png'); }
