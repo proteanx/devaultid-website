@@ -173,7 +173,7 @@ protocol =
 		let base64_query = btoa(JSON.stringify(query));
 
 		// Set the URL of the query request.
-		let url = "https://bitdb.bch.sx/q/" + base64_query;
+		let url = "https://bitdb.exploredvt.com/q/" + base64_query;
 
 		// Configure the bitDB API key in the request header.
 		// let header = { headers: { key: "qqdd9rf6uf2l2h4uzjdkqgqqeg4rpw25e53lus6qrt" } };
