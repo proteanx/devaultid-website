@@ -714,7 +714,7 @@ website =
 									{
 									}
 
-									document.getElementById('result_list').innerHTML += "<li id='" + transaction_id + "' class='" + account_class + "'><span class='account_identifier'>" + account_identifier + "</span>" + account_emoji + "<span class='account_payment_link'><a href='https://blockchair.com/bitcoin-cash/address/" + account_address + "'>	" + account_address + "</a></span>";
+									document.getElementById('result_list').innerHTML += "<li id='" + transaction_id + "' class='" + account_class + "'><span class='account_identifier'>" + account_identifier + "</span>" + account_emoji + "<span class='account_payment_link'><a href='https://exploredvt.com/#/DVT/mainnet/address/" + account_address + "'>	" + account_address + "</a></span>";
 
 									setTimeout
 									(
