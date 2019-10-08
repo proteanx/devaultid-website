@@ -446,7 +446,7 @@ website =
 
 				let source_value = document.getElementById('alias_payload').value;
 				console.log('raw:'  + source_value);
-				if(document.getElementById('alias_payload').value.substring(0, 12) != 'devault:')
+				if(document.getElementById('alias_payload').value.substring(0, 8) != 'devault:')
 				{
 					source_value = 'devault:' + document.getElementById('alias_payload').value;
 					console.log('prepend:'  + source_value);
@@ -2450,7 +2450,7 @@ var VALID_PREFIXES = ['devault', 'dvtest', 'dvtreg'];
 
 /**
  * Checks whether a string is a valid prefix; ie., it has a single letter case
- * and is one of 'bitcoincash', 'bchtest', or 'bchreg'.
+ * and is one of 'devault', 'dvtest', or 'dvtreg'.
  *
  * @private
  * @param {string} prefix 
