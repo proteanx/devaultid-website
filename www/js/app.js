@@ -446,9 +446,9 @@ website =
 
 				let source_value = document.getElementById('alias_payload').value;
 				console.log('raw:'  + source_value);
-				if(document.getElementById('alias_payload').value.substring(0, 12) != 'bitcoincash:')
+				if(document.getElementById('alias_payload').value.substring(0, 12) != 'devault:')
 				{
-					source_value = 'bitcoincash:' + document.getElementById('alias_payload').value;
+					source_value = 'devault:' + document.getElementById('alias_payload').value;
 					console.log('prepend:'  + source_value);
 				}
 
@@ -704,7 +704,7 @@ website =
 
 											if(payment_type_code == '01' || payment_type_code == '02')
 											{
-												account_address = cashaddr.encode('bitcoincash', account_address_type, arrayFromHex(payment_data)).substring(12);
+												account_address = cashaddr.encode('devault', account_address_type, arrayFromHex(payment_data)).substring(12);
 											}
 											
 											if(payment_type_code == '03')
@@ -2410,7 +2410,7 @@ function encode(prefix, type, hash) {
  * Decodes the given address into its constituting prefix, type and hash. See [#encode()]{@link encode}.
  * 
  * @static
- * @param {string} address Address to decode. E.g.: 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'.
+ * @param {string} address Address to decode. E.g.: 'devault:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'.
  * @returns {object}
  * @throws {ValidationError}
  */
@@ -2446,7 +2446,7 @@ var ValidationError = validation.ValidationError;
  *
  * @private
  */
-var VALID_PREFIXES = ['bitcoincash', 'bchtest', 'bchreg'];
+var VALID_PREFIXES = ['devault', 'dvtest', 'dvtreg'];
 
 /**
  * Checks whether a string is a valid prefix; ie., it has a single letter case
