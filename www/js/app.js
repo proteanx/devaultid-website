@@ -704,7 +704,7 @@ website =
 
 											if(payment_type_code == '01' || payment_type_code == '02')
 											{
-												account_address = cashaddr.encode('devault', account_address_type, arrayFromHex(payment_data)).substring(12);
+												account_address = cashaddr.encode('devault', account_address_type, arrayFromHex(payment_data)).substring(8);
 											}
 											
 											if(payment_type_code == '03')
