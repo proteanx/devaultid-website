@@ -671,7 +671,7 @@ website =
 								account_emoji = "<span class='emoji' title='" + protocol.emojiNames[account_emoji_code] + "'>&#" + account_emoji_code + ";</span>";
 							}
 
-							if(results[transaction_types[type]][index]['blockheight'] === null || account_number >= 100)
+							if(results[transaction_types[type]][index]['blockheight'] === null || account_number >= 1)
 							{
 								if(typeof account_collision === 'undefined' || account_hash.startsWith(account_collision.substring(1)))
 								{
