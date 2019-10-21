@@ -11,7 +11,7 @@
   "dependencies": {
     "base58check": "^2.0.0",
     "bchaddrjs": "^0.3.0",
-    "bitcore-lib-cash": "^0.19.0",
+    "bitcore-lib-dvt": "^8.1.2",
     "cashaddrjs": "^0.3.2",
     "express": "^4.16.4",
     "mongoose": "^5.3.15",
