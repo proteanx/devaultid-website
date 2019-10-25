@@ -263,7 +263,7 @@ protocol =
 			"payment_data": document.getElementById('alias_create_transaction').getAttribute('payload')
 		}
 
-		protocol.requestPost('https://www.devaultid.com/alias', data).then
+		protocol.requestPost('https://rest.dvtapi.com/alias', data).then
 		(
 			function(data)
 			{
@@ -300,7 +300,7 @@ protocol =
 		let registration_id = document.getElementById('alias_broadcast_transaction').getAttribute('data-registration-id');
 
 		// Broadcast the transaction
-		protocol.requestPost('https://www.devaultid.com/alias/' + registration_id + '/broadcast', { 'id': registration_id }).then
+		protocol.requestPost('https://rest.dvtapi.com/alias/' + registration_id + '/broadcast', { 'id': registration_id }).then
 		(
 			function(data)
 			{
