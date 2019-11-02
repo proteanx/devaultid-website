@@ -1,39 +1,26 @@
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
-RUN groupadd -r bitcoin && useradd -r -m -g bitcoin bitcoin
+RUN groupadd -r devault && useradd -r -m -g devault devault
 
 RUN set -ex \
 	&& apt-get update \
-	&& apt-get install -qq --no-install-recommends ca-certificates curl dirmngr gosu gpg libssl-dev ntp wget \
-	&& rm -rf /var/lib/apt/lists/*
+	&& apt-get install -qq --no-install-recommends ca-certificates curl dirmngr gosu gpg libssl-dev ntp wget software-properties-common \
+	&& add-apt-repository ppa:devault/devault -y
 
-ENV BITCOIN_VERSION 0.17.0.1
-ENV BITCOIN_URL https://bitcoin.org/bin/bitcoin-core-0.17.0.1/bitcoin-0.17.0.1-x86_64-linux-gnu.tar.gz
-ENV BITCOIN_SHA256 6ccc675ee91522eee5785457e922d8a155e4eb7d5524bd130eb0ef0f0c4a6008
-ENV BITCOIN_ASC_URL https://bitcoin.org/bin/bitcoin-core-0.17.0.1/SHA256SUMS.asc
-ENV BITCOIN_PGP_KEY 01EA5486DE18A882D4C2684590C8019E36C2E964
-
-# install bitcoin binaries
+# install devault binaries
 RUN set -ex \
-	&& cd /tmp \
-	&& wget -qO bitcoin.tar.gz "$BITCOIN_URL" \
-	&& echo "$BITCOIN_SHA256 bitcoin.tar.gz" | sha256sum -c - \
-	&& gpg --keyserver keyserver.ubuntu.com --no-tty --recv-keys "$BITCOIN_PGP_KEY" \
-	&& wget -qO bitcoin.asc "$BITCOIN_ASC_URL" \
-	&& gpg --verify bitcoin.asc \
-	&& tar -xzvf bitcoin.tar.gz -C /usr/local --strip-components=1 --exclude=*-qt \
-	&& rm -rf /tmp/*
+	&& apt-get install devaultd -y
 
 # create data directory
-ENV BITCOIN_DATA /data
-RUN mkdir "$BITCOIN_DATA" \
-	&& chown -R bitcoin:bitcoin "$BITCOIN_DATA" \
-	&& ln -sfn "$BITCOIN_DATA" /home/bitcoin/.bitcoin \
-	&& chown -h bitcoin:bitcoin /home/bitcoin/.bitcoin
+ENV DEVAULT_DATA /data
+RUN mkdir "$DEVAULT_DATA" \
+	&& chown -R devault:devault "$DEVAULT_DATA" \
+	&& ln -sfn "$DEVAULT_DATA" /home/devault/.devault \
+	&& chown -h devault:devault /home/devault/.devault
 # VOLUME /data
 
-COPY ./docker/bitcoin-node/docker-entrypoint.sh /entrypoint.sh
-COPY ./docker/bitcoin-node/walletnotify.sh /walletnotify.sh
+COPY ./docker/devault-node/docker-entrypoint.sh /entrypoint.sh
+COPY ./docker/devault-node/walletnotify.sh /walletnotify.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["bitcoind"]
+CMD ["devaultd"]

@@ -2,32 +2,32 @@
 
 set -e
 
-if [[ "$1" == "bitcoin-cli" || "$1" == "bitcoin-tx" || "$1" == "bitcoind" || "$1" == "test_bitcoin" ]]; then
-	mkdir -p "$BITCOIN_DATA"
+if [[ "$1" == "devault-cli" || "$1" == "devault-tx" || "$1" == "devaultd" || "$1" == "test_devault" ]]; then
+	mkdir -p "$DEVAULT_DATA"
 
-	if [[ ! -s "$BITCOIN_DATA/bitcoin.conf" ]]; then
-		cat <<-EOF > "$BITCOIN_DATA/bitcoin.conf"
+	if [[ ! -s "$DEVAULT_DATA/devault.conf" ]]; then
+		cat <<-EOF > "$DEVAULT_DATA/devault.conf"
 		printtoconsole=1
 		rpcallowip=::/0
-		rpcpassword=$BITCOIND_RPC_PASS
-		rpcuser=$BITCOIND_RPC_USER
+		rpcpassword=$DEVAULTD_RPC_PASS
+		rpcuser=$DEVAULTD_RPC_USER
 		proxy=tor:9050
 		prune=550
 		walletnotify=/walletnotify.sh %s
 		regtest=$TEST_MODE
 		EOF
-		chown bitcoin:bitcoin "$BITCOIN_DATA/bitcoin.conf"
+		chown devault:devault "$DEVAULT_DATA/devault.conf"
 	fi
 
 	# ensure correct ownership and linking of data directory
 	# we do not update group ownership here, in case users want to mount
 	# a host directory and still retain access to it
-	chown -R bitcoin "$BITCOIN_DATA"
-	ln -sfn "$BITCOIN_DATA" /home/bitcoin/.bitcoin
-	chown -h bitcoin:bitcoin /home/bitcoin/.bitcoin
-	chown bitcoin:bitcoin /walletnotify.sh
+	chown -R devault "$DEVAULT_DATA"
+	ln -sfn "$DEVAULT_DATA" /home/devault/.devault
+	chown -h devault:devault /home/devault/.devault
+	chown devault:devault /walletnotify.sh
 
-	exec gosu bitcoin "$@"
+	exec gosu devault "$@"
 fi
 
 exec "$@"
